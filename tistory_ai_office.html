@@ -18098,7 +18098,15 @@ function closeAllModals() {
 
   try {
     const saved = localStorage.getItem('tistory_latest_shorts');
-    if (saved) latestShortsData = JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // 구버전(32초 초과 또는 씬 4개 이상인 구형 강의식 영상) 캐시는 즉시 삭제
+      if (parsed && (parsed.duration > 32 || (parsed.scenes && parsed.scenes.length > 3))) {
+        localStorage.removeItem('tistory_latest_shorts');
+      } else {
+        latestShortsData = parsed;
+      }
+    }
   } catch(e) {}
 
   // 키워드로부터 해시태그 스마트 생성
@@ -18135,7 +18143,7 @@ function closeAllModals() {
     if (metaTitle) metaTitle.textContent = `${t} 20초 시크릿 요약 #Shorts`;
     if (metaTags) metaTags.textContent = generateSmartTags(t);
     if (metaComment) metaComment.textContent = `📌 [더 알아보기] '${t}' 상세 가이드와 실시간 꿀팁은 고정 댓글 블로그에서 확인하세요! 👉 ${blogUrl}`;
-    if (metaDur) metaDur.textContent = `대기 중 (~45초)`;
+    if (metaDur) metaDur.textContent = `대기 중 (~20초)`;
     if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | 새 키워드 제작 대기 중`;
 
     if (dlLink) {
@@ -18333,7 +18341,7 @@ function closeAllModals() {
 
     const videoSrc = data.web_url || (data.filename ? `/output/shorts/${data.filename}` : '');
     if (player && videoSrc) {
-      player.src = videoSrc;
+      player.src = videoSrc + (videoSrc.includes('?') ? '&' : '?') + 't=' + Date.now();
       player.load();
     }
     if (dlLink && videoSrc) {

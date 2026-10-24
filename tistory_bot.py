@@ -1154,8 +1154,10 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
             blog_url = payload.get("blog_url", f"https://{self.app_instance.config.TISTORY_BLOG_NAME}.tistory.com/" if self.app_instance else "")
             print(f"\n[웹 대시보드] 🎬 숏폼 영상 제작 요청 감지! 주제: '{topic}'")
             try:
-                from shorts_pipeline import generate_shorts_pipeline
-                result = generate_shorts_pipeline(topic=topic, blog_url=blog_url)
+                import importlib
+                import shorts_pipeline
+                importlib.reload(shorts_pipeline)
+                result = shorts_pipeline.generate_shorts_pipeline(topic=topic, blog_url=blog_url)
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self._send_cors_headers()
