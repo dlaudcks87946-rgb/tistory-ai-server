@@ -7030,18 +7030,18 @@ if __name__ == "__main__":
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>무료 키 발급받기
               </a>
             </label>
-            <input type="password" id="setting-gemini-key" placeholder="Google AI Studio에서 발급받은 AIzaSy... 키를 입력하세요" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-500 focus:outline-none font-mono text-xs">
+            <input type="password" id="setting-gemini-key" placeholder="Google AI Studio에서 발급받은 API 키 (AQ... 또는 AIzaSy...)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-500 focus:outline-none font-mono text-xs">
             <span class="text-[11px] text-emerald-600 font-semibold mt-1 block">✨ 키를 등록하면 어떤 키워드든 Gemini AI가 실제 신청경로·서류·절차를 100% 맞춤형 실전 원고로 자동 집필합니다.</span>
           </div>
 
           <div>
             <label class="block font-bold text-slate-700 mb-1">AI 모델 제공자 (LLM)</label>
             <select id="setting-llm-provider" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-500 focus:outline-none font-medium">
-              <option value="gemini">Google Gemini 2.5 Flash</option>
-              <option value="openai">OpenAI GPT-4o</option>
-              <option value="claude">Anthropic Claude 3.5 Sonnet</option>
-              <option value="local">Ollama Local LLM</option>
+              <option value="gemini" selected>Google Gemini (무료 추천 - 현재 키 연동 완료)</option>
+              <option value="openai">OpenAI ChatGPT (유료 별도 API 키 필요)</option>
+              <option value="claude">Anthropic Claude (유료 별도 API 키 필요)</option>
             </select>
+            <span class="text-[11px] text-slate-500 mt-1 block">💡 현재 등록하신 키가 Google Gemini 키이므로, <b>Google Gemini</b>로 선택해 두시면 됩니다.</span>
           </div>
 <div>
             <label class="block font-bold text-slate-700 mb-1">기본 발행 상태</label>
