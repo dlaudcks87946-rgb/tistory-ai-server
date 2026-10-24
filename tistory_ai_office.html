@@ -12860,6 +12860,14 @@ async function triggerRealPublish(payloadData = null) {
     elements.btnClearLog.addEventListener('click', () => { elements.logContainer.innerHTML = '<div class="text-slate-500">[로그 초기화됨]</div>'; });
     elements.btnSaveSettings.addEventListener('click', () => showToast("설정이 브라우저에 안전하게 저장되었습니다.", "success"));
 
+    // Tistory Main Instant Publish Button in Report
+    if (elements.btnPublishTistory) {
+      elements.btnPublishTistory.addEventListener('click', () => {
+        addLog("대표이사", "🚀 [티스토리 즉시 발행 지시] 현재 결재 보고서의 글을 티스토리에 즉시 포스팅합니다.", "text-emerald-400");
+        triggerRealPublish();
+      });
+    }
+
     // Tabs
     elements.tabOffice.addEventListener('click', () => switchTab(elements.tabOffice));
     elements.tabReport.addEventListener('click', () => switchTab(elements.tabReport));
