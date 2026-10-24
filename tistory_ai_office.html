@@ -14568,13 +14568,10 @@ async function triggerRealPublish(payloadData = null) {
       box.innerHTML = `
         <!-- [16:9 신디자이너 핵심 인포그래픽 썸네일 이미지] -->
         ${infographicImgUrl ? `
-        <figure style="margin: 32px 0 24px 0; text-align: center;">
+        <figure style="margin: 28px 0 20px 0; text-align: center;">
           <img src="${infographicImgUrl}" alt="${safeTopic} 16:9 핵심 요약 인포그래픽" style="width: 100%; max-width: 860px; aspect-ratio: 16/9; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); border: 1.5px solid #cbd5e1; display: block; margin: 0 auto; object-fit: cover;" />
-          <figcaption style="margin-top: 10px; font-size: 13px; color: #64748b; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <span><i class="fa-solid fa-image text-teal-600"></i> <b>${safeTopic}</b> 핵심 요약 인포그래픽 (16:9 규격)</span>
-            <a href="${infographicImgUrl}" download="${safeFilename}_16x9_인포그래픽.png" style="font-size: 12px; padding: 4px 12px; background: #0f766e; color: #ffffff; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(15,118,110,0.25);">
-              <i class="fa-solid fa-download"></i> 16:9 고화질 PNG 저장
-            </a>
+          <figcaption style="margin-top: 8px; font-size: 13px; color: #64748b; text-align: center;">
+            <i class="fa-solid fa-image text-teal-600"></i> ▲ <b>${safeTopic}</b> 핵심 요약 인포그래픽
           </figcaption>
         </figure>
         ` : ''}
