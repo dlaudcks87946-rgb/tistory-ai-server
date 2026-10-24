@@ -11138,6 +11138,7 @@ ${P(`오늘 살펴본 <strong>${cleanMain}</strong>의 모든 핵심 내용을 �
 
       // 1. [0초 즉각 렌더링] 기다림 없이 완결형 기승전결 원고를 즉시 100% 온전하게 출력
       elements.previewBody.innerHTML = data.html;
+      try { injectMediaVisualBlocks(topic); } catch(e) { console.warn(e); }
       updateArticleWordCount();
       renderComprehensiveMeetingMinutes(topic);
       showToast("정부장이 5개 부서 종합 취합 결재 서류를 즉시 완성했습니다!", "success");
@@ -11149,6 +11150,7 @@ ${P(`오늘 살펴본 <strong>${cleanMain}</strong>의 모든 핵심 내용을 �
         generateArticleWithGeminiAI(topic).then(aiGeneratedHtml => {
           if (aiGeneratedHtml && elements.previewBody) {
             elements.previewBody.innerHTML = aiGeneratedHtml;
+            try { injectMediaVisualBlocks(topic); } catch(e) { console.warn(e); }
             updateArticleWordCount();
             showToast("✨ Google Gemini AI 맞춤형 원고로 실시간 업그레이드되었습니다!", "success");
             addLog("이과장", "✨ [Gemini AI 실전 원고 완결] 키워드 의도를 정밀 분석하여 실제 신청경로와 구비서류를 완벽 작성했습니다.", "text-emerald-400");
@@ -14105,36 +14107,306 @@ async function triggerRealPublish(payloadData = null) {
     };
     window.ShortformVideoEngine = ShortformVideoEngine;
 
-    // 미디어&비주얼팀 산출물을 블로그 본문에도 자동 삽입 (인터랙티브 9:16 숏폼 플레이어 포함)
+    // ========================================================
+    // 🎨 SHIN DESIGNER 16:9 INFOGRAPHIC THUMBNAIL ENGINE
+    // (주제, 대표 썸네일, 데이터 시각화를 반영한 16:9 고화질 캔버스 그래픽 생성기)
+    // ========================================================
+    function generateInfographicImage(topic) {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 675; // 16:9 규격 (HD)
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return null;
+
+        // 1. 다크 프리미엄 배경 그라데이션
+        const bgGrad = ctx.createLinearGradient(0, 0, 1200, 675);
+        bgGrad.addColorStop(0, '#090d16');
+        bgGrad.addColorStop(0.5, '#0f172a');
+        bgGrad.addColorStop(1, '#064e3b');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 1200, 675);
+
+        // 2. 글로우 오브 이펙트 (Ambient Glow Orbs)
+        const orb1 = ctx.createRadialGradient(200, 140, 0, 200, 140, 380);
+        orb1.addColorStop(0, 'rgba(45, 212, 191, 0.24)');
+        orb1.addColorStop(1, 'rgba(45, 212, 191, 0)');
+        ctx.fillStyle = orb1;
+        ctx.fillRect(0, 0, 1200, 675);
+
+        const orb2 = ctx.createRadialGradient(1020, 520, 0, 1020, 520, 420);
+        orb2.addColorStop(0, 'rgba(20, 184, 166, 0.20)');
+        orb2.addColorStop(1, 'rgba(20, 184, 166, 0)');
+        ctx.fillStyle = orb2;
+        ctx.fillRect(0, 0, 1200, 675);
+
+        // 3. 미세 테크 그리드 라인
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+        ctx.lineWidth = 1;
+        for (let x = 60; x < 1200; x += 60) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, 675);
+          ctx.stroke();
+        }
+        for (let y = 45; y < 675; y += 45) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(1200, y);
+          ctx.stroke();
+        }
+
+        // 외곽 세련된 보더 프레임
+        ctx.strokeStyle = 'rgba(45, 212, 191, 0.5)';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(20, 20, 1160, 635);
+
+        // 코너 포인트 데코
+        const corners = [[20, 20], [1180, 20], [20, 655], [1180, 655]];
+        ctx.fillStyle = '#2dd4bf';
+        corners.forEach(([cx, cy]) => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // 둥근 캡슐 헬퍼 함수
+        function drawPill(x, y, w, h, radius, fillStyle) {
+          ctx.beginPath();
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + w - radius, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+          ctx.lineTo(x + w, y + h - radius);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+          ctx.lineTo(x + radius, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fillStyle = fillStyle;
+          ctx.fill();
+        }
+
+        // 4. 상단 헤더 뱃지
+        // 좌측 뱃지 (신디자이너 인포그래픽)
+        drawPill(60, 48, 300, 38, 19, 'rgba(15, 118, 110, 0.9)');
+        ctx.strokeStyle = '#2dd4bf';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🎨 신디자이너 핵심 요약 인포그래픽', 80, 67);
+
+        // 우측 뱃지 (CTR 500% 규격)
+        drawPill(890, 48, 250, 38, 19, 'rgba(30, 41, 59, 0.9)');
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CTR 500% 규격 (1200×675 HD)', 1015, 67);
+
+        // 5. 중앙 메인 타이틀 (호기심 후킹 + 가독성 헤드라인)
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // 서브 후킹 태그
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+        ctx.fillText('⚡ 2026 공식 핵심 총정리 가이드', 600, 126);
+
+        // 주제명 줄바꿈 처리
+        const rawTitle = (topic || "2026 핵심 정보 가이드").trim();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 37px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+
+        let lines = [];
+        if (rawTitle.length > 24) {
+          const mid = Math.ceil(rawTitle.length / 2);
+          let splitIdx = rawTitle.indexOf(' ', mid - 4);
+          if (splitIdx === -1 || splitIdx > mid + 6) splitIdx = mid;
+          lines.push(rawTitle.substring(0, splitIdx).trim());
+          lines.push(rawTitle.substring(splitIdx).trim());
+        } else {
+          lines.push(rawTitle);
+        }
+
+        if (lines.length === 1) {
+          ctx.fillText(lines[0], 600, 180);
+        } else {
+          ctx.fillText(lines[0], 600, 162);
+          ctx.fillStyle = '#5eead4'; // 두 번째 줄 강조색
+          ctx.fillText(lines[1], 600, 210);
+        }
+
+        // 6. 3단 데이터 시각화 카드 (주제 핵심 타깃 / 대표 절차 및 신청 / 데이터 시각화 혜택)
+        const cardY = 265;
+        const cardH = 305;
+        const cardW = 345;
+        const cardSpacing = 22;
+        const startX = 60;
+
+        const cards = [
+          {
+            num: 'STEP 01',
+            title: '🎯 주제 핵심 타깃',
+            desc1: '지원 대상 및 핵심 조건 완벽 매칭',
+            desc2: '누구나 3분 만에 끝내는 필수 체크리스트',
+            badge: '적합도 99% 매칭 확인',
+            color: '#2dd4bf',
+            bg: 'rgba(15, 23, 42, 0.85)',
+            border: 'rgba(45, 212, 191, 0.55)',
+            progress: 0.94
+          },
+          {
+            num: 'STEP 02',
+            title: '📋 대표 절차 & 신청',
+            desc1: '정부24 및 공식 온라인 포털 간편 접수',
+            desc2: '필수 구비서류 자동 검증 및 반려 예방',
+            badge: '간편 서류 준비율 100%',
+            color: '#38bdf8',
+            bg: 'rgba(15, 23, 42, 0.85)',
+            border: 'rgba(56, 189, 248, 0.55)',
+            progress: 1.0
+          },
+          {
+            num: 'STEP 03',
+            title: '💎 데이터 시각화 & 혜택',
+            desc1: '최대 수혜 지원금 및 독점 우대 혜택',
+            desc2: '업무 생산성 300% 극대화 실전 적용',
+            badge: '만족도 99.8% 달성',
+            color: '#fbbf24',
+            bg: 'rgba(15, 23, 42, 0.85)',
+            border: 'rgba(251, 191, 36, 0.55)',
+            progress: 0.98
+          }
+        ];
+
+        cards.forEach((c, idx) => {
+          const cx = startX + idx * (cardW + cardSpacing);
+
+          // 카드 배경 박스
+          drawPill(cx, cardY, cardW, cardH, 16, c.bg);
+          ctx.strokeStyle = c.border;
+          ctx.lineWidth = 1.8;
+          ctx.stroke();
+
+          // 스텝 라벨
+          ctx.fillStyle = c.color;
+          ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(c.num, cx + 22, cardY + 36);
+
+          // 카드 제목
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 19.5px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+          ctx.fillText(c.title, cx + 22, cardY + 70);
+
+          // 구분선
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(cx + 22, cardY + 90);
+          ctx.lineTo(cx + cardW - 22, cardY + 90);
+          ctx.stroke();
+
+          // 설명문
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '14px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+          ctx.fillText(`• ${c.desc1}`, cx + 22, cardY + 125);
+          ctx.fillText(`• ${c.desc2}`, cx + 22, cardY + 158);
+
+          // 데이터 시각화 프로그레스 게이지 라벨
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+          ctx.fillText('실시간 분석 지표 (Data Metric):', cx + 22, cardY + 204);
+
+          // 배경 게이지 트랙
+          const barX = cx + 22;
+          const barY = cardY + 220;
+          const barW = cardW - 44;
+          const barH = 12;
+          drawPill(barX, barY, barW, barH, 6, 'rgba(255, 255, 255, 0.1)');
+
+          // 채워진 게이지
+          drawPill(barX, barY, barW * c.progress, barH, 6, c.color);
+
+          // 뱃지 라벨
+          drawPill(cx + 22, cardY + 248, cardW - 44, 32, 8, 'rgba(0, 0, 0, 0.5)');
+          ctx.fillStyle = c.color;
+          ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(c.badge, cx + (cardW / 2), cardY + 264);
+        });
+
+        // 7. 하단 푸터 워터마크
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.85)';
+        ctx.font = '13px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
+        ctx.fillText('🛡️ VERIFIED BY 신디자이너 R&D OFFICE  |  GOOGLE DISCOVER & TISTORY SEO OPTIMIZED  |  1200×675 HD', 600, 620);
+
+        return canvas.toDataURL('image/png');
+      } catch (err) {
+        console.error('Failed to generate infographic thumbnail image:', err);
+        return null;
+      }
+    }
+    window.generateInfographicImage = generateInfographicImage;
+
+    // 미디어&비주얼팀 산출물을 블로그 본문에도 자동 삽입 (16:9 인포그래픽 썸네일 실물 이미지 포함)
     function injectMediaVisualBlocks(topic) {
       const body = elements.previewBody;
       if (!body) return;
       const existing = body.querySelector('[data-media-injected]');
       if (existing) existing.remove();
 
-      const plan = buildShortformPlan(topic);
+      const safeTopic = topic || (state && state.topic) || "핵심 가이드";
+      const infographicImgUrl = generateInfographicImage(safeTopic);
+      const safeFilename = safeTopic.replace(/[^a-zA-Z0-9가-힣]/g, '_').substring(0, 30);
+
       const box = document.createElement('div');
       box.setAttribute('data-media-injected', '1');
       box.className = "chat-highlight-active";
       box.innerHTML = `
-        <!-- [인포그래픽 요약 블록] -->
-        <div style="margin:24px 0;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);border:2px solid #2dd4bf;box-shadow:0 4px 14px rgba(45, 212, 191, 0.15);">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1.5px solid #99f6e4;padding-bottom:8px;">
-            <h3 style="margin:0;font-size:16.5px;font-weight:900;color:#0f766e;display:flex;align-items:center;gap:6px;">
+        <!-- [인포그래픽 요약 블록 & 16:9 이미지] -->
+        <div style="margin:28px 0;padding:20px;border-radius:18px;background:linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);border:2px solid #2dd4bf;box-shadow:0 8px 24px rgba(45, 212, 191, 0.18);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1.5px solid #99f6e4;padding-bottom:10px;">
+            <h3 style="margin:0;font-size:17px;font-weight:900;color:#0f766e;display:flex;align-items:center;gap:8px;">
               <i class="fa-solid fa-image text-teal-600"></i> 🖼️ 한눈에 보는 핵심 요약 (신디자이너 인포그래픽)
             </h3>
-            <span style="font-size:10px;font-weight:bold;background:#14b8a6;color:#ffffff;padding:2px 8px;border-radius:6px;">CTR 500% 규격</span>
+            <span style="font-size:11px;font-weight:bold;background:#14b8a6;color:#ffffff;padding:3px 10px;border-radius:8px;box-shadow:0 2px 6px rgba(20,184,166,0.3);">CTR 500% 규격 (1200×675)</span>
           </div>
-          <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#ffffff;border-radius:10px;overflow:hidden;">
-            <tr><td style="padding:8px 12px;border:1px solid #99f6e4;width:28%;background:#f0fdfa;font-weight:bold;color:#0f766e;">주제</td><td style="padding:8px 12px;border:1px solid #99f6e4;color:#1e293b;font-weight:bold;">${topic}</td></tr>
-            <tr><td style="padding:8px 12px;border:1px solid #99f6e4;background:#f0fdfa;font-weight:bold;color:#0f766e;">대표 썸네일</td><td style="padding:8px 12px;border:1px solid #99f6e4;color:#0369a1;">16:9 규격(1200px) 호기심 후킹 + 가독성 헤드라인 (구글 디스커버 최적화)</td></tr>
-            <tr><td style="padding:8px 12px;border:1px solid #99f6e4;background:#f0fdfa;font-weight:bold;color:#0f766e;">데이터 시각화</td><td style="padding:8px 12px;border:1px solid #99f6e4;color:#b45309;">본문 핵심 포인트 및 데이터 시각화 블록 연동</td></tr>
+
+          <!-- 실제 생성된 16:9 인포그래픽 썸네일 이미지 -->
+          ${infographicImgUrl ? `
+          <div style="margin: 14px 0 16px 0; text-align: center; background: #0f172a; padding: 12px; border-radius: 14px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);">
+            <img src="${infographicImgUrl}" alt="${safeTopic} 신디자이너 핵심 인포그래픽 요약 썸네일" style="width: 100%; max-width: 860px; aspect-ratio: 16/9; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.35); border: 1.5px solid #2dd4bf; object-fit: cover; display: block; margin: 0 auto;" />
+            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center; padding: 0 6px;">
+              <span style="color: #94a3b8; font-size: 12px; font-weight: 500;">
+                <i class="fa-solid fa-circle-check text-teal-400"></i> 블로그 대표 썸네일 및 디스커버 최적화 생성 완료
+              </span>
+              <a href="${infographicImgUrl}" download="${safeFilename}_인포그래픽_썸네일.png" style="font-size: 12.5px; padding: 6px 14px; background: #0f766e; color: #ffffff; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(15,118,110,0.3);">
+                <i class="fa-solid fa-download"></i> 16:9 고화질 PNG 저장
+              </a>
+            </div>
+          </div>
+          ` : ''}
+
+          <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <tr><td style="padding:10px 14px;border:1px solid #99f6e4;width:24%;background:#f0fdfa;font-weight:bold;color:#0f766e;">주제</td><td style="padding:10px 14px;border:1px solid #99f6e4;color:#1e293b;font-weight:bold;">${safeTopic}</td></tr>
+            <tr><td style="padding:10px 14px;border:1px solid #99f6e4;background:#f0fdfa;font-weight:bold;color:#0f766e;">대표 썸네일</td><td style="padding:10px 14px;border:1px solid #99f6e4;color:#0369a1;font-weight:500;">16:9 규격(1200×675) 호기심 후킹 + 가독성 헤드라인 (구글 디스커버 최적화 완료)</td></tr>
+            <tr><td style="padding:10px 14px;border:1px solid #99f6e4;background:#f0fdfa;font-weight:bold;color:#0f766e;">데이터 시각화</td><td style="padding:10px 14px;border:1px solid #99f6e4;color:#b45309;font-weight:500;">본문 핵심 포인트 3단계 카드 및 실시간 데이터 지표 게이지 연동</td></tr>
           </table>
         </div>
       `;
 
       body.appendChild(box);
-      addLog("신디자이너", "🎨 [비주얼 완성] 썸네일·인포그래픽 요약 블록을 블로그 본문에 삽입했습니다.", "text-pink-400");
+      addLog("신디자이너", "🎨 [비주얼 완성] 16:9 인포그래픽 썸네일 실물 이미지 및 핵심 요약 블록을 블로그 본문에 성공적으로 삽입했습니다.", "text-pink-400");
     }
     window.applyShortformPlaybook = applyShortformPlaybook;
     window.injectMediaVisualBlocks = injectMediaVisualBlocks;
