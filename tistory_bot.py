@@ -235,75 +235,89 @@ class AgentKimPlanner:
 # 4. 사내 에이전트 2: 이과장 (주제별 지능형 전문 원고 집필)
 # ==========================================
 class AgentLeeWriter:
-    """기획안의 카테고리와 주제에 맞춰 키워드 100% 밀착 전문 칼럼 서식 원고 작성"""
+    """기획안의 키워드 검색 의도(신청방법, 감면, 혜택, 실전가이드)에 맞춘 진짜 유용한 실전 매뉴얼 원고 집필"""
     def write(self, plan: dict) -> str:
         category = plan.get("category", "general")
         title = plan["title"]
         raw_topic = plan.get("raw_topic", title)
+        low_topic = raw_topic.lower()
+
         clean_topic = re.sub(r'^(202[0-9]|완벽|총정리|비교|추천|분석|가이드|꿀팁|법|정리|\s)+', '', raw_topic).strip()
         if not clean_topic:
             clean_topic = raw_topic
 
-        print(f"\n[이과장 (작가)] ✍️ '{clean_topic}' 키워드에 100% 밀착된 맞춤형 전문 원고 집필 중...")
+        print(f"\n[이과장 (작가)] ✍️ '{clean_topic}' 의도에 100% 부합하는 실전 신청 매뉴얼 원고 집필 중...")
+
+        # 관련 접수처 자동 추정
+        portal_name = "정부24(gov.kr) 및 복지로(bokjiro.go.kr)"
+        if any(w in low_topic for w in ['취득세', '재산세', '자동차세', '양도세', '세금', '감면', '지방세']):
+            portal_name = "위택스(wetax.go.kr) 또는 서울시 이택스(etax.seoul.go.kr)"
+        elif any(w in low_topic for w in ['전기', '한전']):
+            portal_name = "한전ON(online.kepco.co.kr)"
+        elif any(w in low_topic for w in ['월세', '주택', '대출', '디딤돌', '버팀목']):
+            portal_name = "기금e든든(enhuf.molit.go.kr) 또는 LH청약플러스"
 
         html_content = f"""
 <div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 오늘은 많은 분들이 궁금해하시고 검색하고 계시는 <strong>{title}</strong>에 대해 실생활과 업무에 꼭 필요한 핵심 정보만 엄선하여 알기 쉽게 정리해 드립니다.</p>
+    <p style="font-size: 16px;">안녕하세요! 오늘은 절차가 복잡해 놓치기 쉬운 <strong>{title}</strong>에 대해 실제 누구나 보고 바로 신청할 수 있도록 <strong>[공식 신청 포털 + 온라인 4단계 접수 방법 + 필수 제출 서류 리스트 + 처리 기간과 FAQ]</strong>까지 실무자가 작성한 실전 매뉴얼로 꼼꼼하게 정리해 드립니다.</p>
     
     <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 18px; margin: 24px 0; border-radius: 8px;">
         <p style="margin: 0 0 8px 0; font-weight: bold; color: #15803d; font-size: 16px;">📌 {clean_topic} 핵심 3줄 요약</p>
         <ul style="margin: 0; padding-left: 20px; color: #166534; font-size: 14px;">
-            <li><strong>핵심 가치:</strong> {clean_topic}의 필수 정보와 핵심 기준을 사전 점검하여 최적의 선택을 돕습니다.</li>
-            <li><strong>실전 활용:</strong> 불필요한 시행착오를 줄이고 오늘부터 즉시 적용할 수 있는 단계별 실천 팁을 제공합니다.</li>
-            <li><strong>주의사항:</strong> 신청 및 활용 전 반드시 확인해야 할 유의사항과 체크포인트를 알기 쉽게 짚어드립니다.</li>
+            <li><strong>신청 포털:</strong> <strong>{portal_name}</strong>을 통해 주말과 야간에도 24시간 온라인 접수가 가능합니다.</li>
+            <li><strong>핵심 혜택:</strong> 감면 요건 충족 시 즉시 고지서 비용 차감 또는 지정 계좌 환급 혜택이 적용됩니다.</li>
+            <li><strong>처리 기간:</strong> 접수일로부터 <strong>통상 7일~14일 이내</strong> 심사가 완료되며 알림톡으로 결과가 안내됩니다.</li>
         </ul>
     </div>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        1. {clean_topic}이란? 핵심 개념 및 최신 동향
+        1. {clean_topic} 지원 대상 및 감면 자격 요건
     </h2>
-    <p>정보가 넘쳐나는 환경에서 <strong>{clean_topic}</strong>의 본질과 핵심 기준을 명확히 파악하는 것은 시간과 비용을 아끼는 가장 확실한 방법입니다. 최근 관련 제도와 트렌드가 빠르게 변화하고 있는 만큼, 최신 가이드라인에 맞춘 올바른 접근이 필요합니다.</p>
-    
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 16px; font-weight: bold; color: #0f172a; margin-top: 0;">💡 {clean_topic} 핵심 체크포인트</h3>
-        <p style="margin-bottom: 6px;">공신력 있는 기준과 실제 검증된 사례를 바탕으로 내 상황에 가장 유리한 조건을 확인하세요. 사소한 차이가 최종 결과에서 큰 차이를 만듭니다.</p>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        2. {clean_topic} 주요 특징 및 실패 없는 선택 기준
-    </h2>
-    <p>개인마다 처한 환경과 목적이 다르기 때문에, 천편일률적인 기준 대신 나에게 꼭 맞는 최적의 기준표를 세워야 합니다.</p>
+    <p>신청 전 본인이 감면 및 지원 대상에 해당하는지 자격 요건을 먼저 확인해야 반려 없이 한 번에 승인받을 수 있습니다.</p>
     
     <ul style="padding-left: 20px; margin-bottom: 20px;">
-        <li style="margin-bottom: 10px;"><strong>자격 및 스펙 요건:</strong> 필수 기준과 사전 준비물을 철저히 대조 점검하세요.</li>
-        <li style="margin-bottom: 10px;"><strong>가성비 및 효율성:</strong> 들이는 시간과 비용 대비 얻을 수 있는 실질적인 혜택을 꼼꼼히 비교하세요.</li>
-        <li style="margin-bottom: 10px;"><strong>지속 가능성:</strong> 단발성 시도에 그치지 않고 지속적으로 효과를 볼 수 있는지 확인하세요.</li>
+        <li style="margin-bottom: 10px;"><strong>소득 및 가구 기준:</strong> 공고된 자격 조건 충족 여부를 확인합니다.</li>
+        <li style="margin-bottom: 10px;"><strong>법정 우대 요건:</strong> 다자녀, 장애인, 생애최초, 청년층 등 우대 기준에 따라 최대 50%~100% 감면율이 적용됩니다.</li>
+        <li style="margin-bottom: 10px;"><strong>중복 제한 확인:</strong> 유사 공공 감면 제도와의 중복 수혜 가능 여부를 사전 검토해야 합니다.</li>
     </ul>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        3. 누구나 쉽게 따라하는 {clean_topic} 3단계 실천 로드맵
+        2. 신청 전 반드시 챙겨야 할 필수 구비 서류
     </h2>
-    <p>복잡하게 생각할 필요 없이 다음 3단계 순서에 따라 차근차근 진행하시면 누구나 쉽게 원하는 결과를 얻으실 수 있습니다.</p>
+    <p>서류가 누락되면 보완 요청이 발생하여 심사가 늦어질 수 있습니다. 아래 서류를 미리 사진 또는 PDF로 준비해 두세요.</p>
     
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (사전 점검):</strong> 공식 포털 또는 신뢰할 수 있는 소스에서 최신 기준표와 대상 여부를 확인합니다.</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (자료 준비):</strong> 필요한 서류 및 준비물을 누락 없이 구비하여 접수 준비를 마칩니다.</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (실행 및 피드백):</strong> 온라인으로 신청을 완료하고, 진행 상황을 주기적으로 모니터링합니다.</li>
-    </ol>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        4. 진행 시 반드시 주의해야 할 사항
-    </h2>
-    <p>사소한 실수로 불이익을 받거나 기회를 놓치지 않도록 아래 주의사항을 최종적으로 점검해 주세요.</p>
-    
-    <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin: 20px 0; border-radius: 6px;">
-        <p style="margin: 0; color: #92400e; font-size: 14px;"><strong>⚠️ 필수 체크:</strong> 부정확한 정보 입력이나 마감 기한 경과는 반려의 주요 원인이 됩니다. 제출 전 항목을 면밀히 재검토하세요.</p>
+    <div style="background: #f8fafc; border: 1.5px solid #0284c7; border-radius: 8px; padding: 18px; margin: 16px 0;">
+        <ul style="margin: 0; padding-left: 18px; color: #334155; font-size: 14px; line-height: 1.85;">
+            <li><strong>① 신분증 사본:</strong> 주민등록증 또는 운전면허증</li>
+            <li><strong>② 주민등록등본:</strong> 정부24 무료 발급 (최근 1개월 이내 발급분)</li>
+            <li><strong>③ 감면 자격 증빙서류:</strong> 대상자별 증명서 (가족관계증명서, 수급자/장애인 증명서 등)</li>
+            <li><strong>④ 계약서 및 납부영수증:</strong> 매매계약서, 임대차계약서, 또는 고지서 사본</li>
+            <li><strong>⑤ 환급금 수령 계좌 통장 사본:</strong> 본인 명의 입출금 계좌</li>
+        </ul>
     </div>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        5. 마치며: {clean_topic} 최종 요약
+        3. [실전편] 화면 보고 따라하는 온라인 신청 4단계 절차
     </h2>
-    <p>오늘 정리해 드린 <strong>{clean_topic}</strong> 완벽 가이드가 여러분의 궁금증을 해소하고 현명한 결정을 내리는 데 큰 도움이 되었기를 바랍니다. 실천이 곧 가장 빠른 지름길입니다!</p>
+    <p>기관 방문 없이 집에서 스마트폰이나 PC로 10분 만에 신청을 마칠 수 있는 구체적인 단계별 절차입니다.</p>
+    
+    <ol style="padding-left: 20px; margin-bottom: 24px;">
+        <li style="margin-bottom: 10px;"><strong>1단계 (포털 접속):</strong> <strong>{portal_name}</strong>에 접속하여 간편인증(카카오, 네이버, 패스)으로 로그인합니다.</li>
+        <li style="margin-bottom: 10px;"><strong>2단계 (메뉴 이동):</strong> 상단 메뉴에서 [민원서비스/세무신고] ➔ [감면·환급 신청] 메뉴를 선택합니다.</li>
+        <li style="margin-bottom: 10px;"><strong>3단계 (정보 입력 및 서류 첨부):</strong> 신청인 정보와 사유를 입력하고 준비한 서류 파일을 첨부합니다.</li>
+        <li style="margin-bottom: 10px;"><strong>4단계 (최종 접수):</strong> [신청완료]를 누르고 접수번호를 확인합니다. 처리 상태는 문자로 발송됩니다.</li>
+    </ol>
+
+    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
+        4. 자주 묻는 질문(FAQ) 및 처리 기간
+    </h2>
+    <p><strong>Q. 이미 납부한 경우에도 감면받을 수 있나요?</strong><br>A. 네, 감면 요건을 충족했으나 기납부한 경우 법정 기한 내에 <strong>경정청구(과오납 환급신청)</strong>를 통해 돌려받으실 수 있습니다.</p>
+    <p style="margin-top: 10px;"><strong>Q. 처리 기간은 얼마나 걸리나요?</strong><br>A. 접수일로부터 영업일 기준 7일~14일 정도 소요되며 승인 시 문자 알림이 전송됩니다.</p>
+
+    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
+        5. 마치며: {clean_topic} 혜택을 놓치지 마세요
+    </h2>
+    <p>오늘 안내해 드린 <strong>{clean_topic}</strong>의 상세 절차와 서류를 확인하셔서 정당한 감면 혜택을 꼭 챙기시길 바랍니다!</p>
 </div>
 """
         return html_content
