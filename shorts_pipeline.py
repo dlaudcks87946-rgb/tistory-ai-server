@@ -52,6 +52,8 @@ class ShortsScriptGenerator:
                 "tags": ["직장인사이다", "회사썰", "상사참교육", "사이다", "Shorts", "Reels"],
                 "pinned_comment": "📌 여러분도 직장에서 겪어본 최악의 빌런이 있나요? 댓글로 사연을 남겨주세요! (채널 구독 & 좋아요는 큰 힘이 됩니다 ❤️)",
                 "broll_pref": "norm_broll_typing.mp4",
+                "voice": "ko-KR-InJoonNeural",
+                "rate": "+1%",
                 "cta_text": "[댓글] 여러분의 생각은? 댓글로 남겨주세요!",
                 "scenes": [
                     {
@@ -60,23 +62,31 @@ class ShortsScriptGenerator:
                         "hero_line1": "내 도시락 훔쳐먹던",
                         "hero_line2": "꼰대 과장 참교육!",
                         "accent": "꼰대 과장 참교육!",
-                        "speech": f"회사에서 제 도시락을 매일 한두 입씩 뺏어먹던 꼰대 과장님, 참다못해 제가 결단을 내렸습니다."
+                        "speech": "회사에서 매일 제 도시락을 한두 입씩 뺏어먹던 꼰대 과장님, 참다못해 제가 결단을 내렸습니다."
                     },
                     {
-                        "badge": "[TIP] 은밀한 작전 개시",
+                        "badge": "[작전] 비밀 작전 개시",
                         "badge_color": (245, 158, 11),
-                        "hero_line1": "초강력 캡사이신을",
-                        "hero_line2": "듬뿍 뿌려뒀더니?",
-                        "accent": "듬뿍 뿌려뒀더니?",
-                        "speech": "점심시간 직전에 세상에서 가장 매운 불마왕 캡사이신 소스를 듬뿍 뿌려두고 모른 척 자리를 비웠습니다."
+                        "hero_line1": "불마왕 캡사이신 소스",
+                        "hero_line2": "도시락에 듬뿍 투하!",
+                        "accent": "도시락에 듬뿍 투하!",
+                        "speech": "점심시간 직전에 세상에서 가장 매운 불마왕 캡사이신 소스를 밥 속에 듬뿍 숨겨두고 모른 척 자리를 비웠습니다."
                     },
                     {
-                        "badge": "[GO!] 통쾌한 결말",
-                        "badge_color": (168, 85, 247),
-                        "hero_line1": "탕비실 비명 폭발!",
+                        "badge": "[폭발] 탕비실 대참사",
+                        "badge_color": (239, 68, 68),
+                        "hero_line1": "탕비실 비명 소리!",
+                        "hero_line2": "우유 찾고 난리법석",
+                        "accent": "우유 찾고 난리법석",
+                        "speech": "잠시 후 탕비실에서 과장님 비명이 터지더니, 얼굴이 새빨개져서 땀을 뻘뻘 흘리며 정수기 물을 들이켜더라고요."
+                    },
+                    {
+                        "badge": "[결말] 통쾌한 사이다",
+                        "badge_color": (16, 185, 129),
+                        "hero_line1": "그 뒤로 손도 못 댐!",
                         "hero_line2": "여러분 생각은?",
                         "accent": "여러분 생각은?",
-                        "speech": "잠시 후 탕비실에서 비명이 터지더니 우유 찾고 난리가 났더라고요. 여러분이라면 이 상황에서 어떻게 하셨을 것 같나요?"
+                        "speech": "그 뒤로는 제 도시락 근처에도 얼씬 못 하고 있습니다. 여러분이라면 이 상황에서 어떻게 하셨을 것 같나요?"
                     }
                 ]
             }
@@ -92,6 +102,8 @@ class ShortsScriptGenerator:
                 "tags": ["소개팅썰", "연애빌런", "레전드썰", "더치페이", "Shorts", "Reels"],
                 "pinned_comment": "📌 여러분이 겪었던 가장 황당했던 소개팅은 무엇인가요? 댓글로 공유해 주세요! 💬",
                 "broll_pref": "norm_broll_coffee.mp4",
+                "voice": "ko-KR-InJoonNeural",
+                "rate": "+1%",
                 "cta_text": "[댓글] 이런 사람 만나보셨나요? 댓글 공유!",
                 "scenes": [
                     {
@@ -103,20 +115,28 @@ class ShortsScriptGenerator:
                         "speech": "주말에 소개팅을 나갔는데, 첫 만남부터 비싼 호텔 뷔페를 가자더니 계산할 때 지갑을 안 가져왔다는 겁니다."
                     },
                     {
-                        "badge": "[주의] 위기 발생",
+                        "badge": "[위기] 30분째 잠적",
                         "badge_color": (245, 158, 11),
-                        "hero_line1": "30분째 감감무소식",
+                        "hero_line1": "화장실 간다더니",
                         "hero_line2": "황당한 카톡 한 통",
                         "accent": "황당한 카톡 한 통",
-                        "speech": "화장실 다녀온다더니 30분째 안 오길래 전화했더니, 급한 일 생겨서 차 타고 먼저 갔다며 톡이 오더라고요."
+                        "speech": "화장실 다녀온다더니 30분째 안 오길래 전화했더니, 급한 약속이 생겨서 먼저 갔다며 톡이 오더라고요."
                     },
                     {
-                        "badge": "[GO!] 사이다 결말",
+                        "badge": "[응징] 경찰 신고 접수",
+                        "badge_color": (239, 68, 68),
+                        "hero_line1": "CCTV 즉시 확보 후",
+                        "hero_line2": "경찰에 무전취식 신고!",
+                        "accent": "경찰에 무전취식 신고!",
+                        "speech": "너무 어이가 없어서 매니저님과 함께 CCTV를 확보하고, 곧바로 경찰서에 무전취식으로 신고 접수했습니다."
+                    },
+                    {
+                        "badge": "[결말] 사이다 칼송금",
                         "badge_color": (16, 185, 129),
-                        "hero_line1": "경찰 신고하니까",
-                        "hero_line2": "1분 만에 칼송금!",
-                        "accent": "1분 만에 칼송금!",
-                        "speech": "매니저님 불러서 CCTV 확인하고 무전취식으로 경찰 신고 접수하자마자, 1분 만에 바로 전액 송금하더라고요. 진짜 여러분은 이런 빌런 만나본 적 있으신가요?"
+                        "hero_line1": "경찰 연락 가자마자",
+                        "hero_line2": "1분 만에 전액 입금!",
+                        "accent": "1분 만에 전액 입금!",
+                        "speech": "경찰관 연락을 받자마자 1분 만에 싹싹 빌며 전액을 칼송금하더라고요. 진짜 여러분은 살면서 이런 황당한 사람 만나보셨나요?"
                     }
                 ]
             }
@@ -132,6 +152,8 @@ class ShortsScriptGenerator:
                 "tags": ["소름실화", "미스터리", "자취방썰", "충격반전", "Shorts", "Reels"],
                 "pinned_comment": "📌 혼자 자취하시는 분들은 꼭 이중 잠금장치 하세요! 여러분이 겪은 소름돋는 경험담도 댓글로 알려주세요.",
                 "broll_pref": "norm_broll_city.mp4",
+                "voice": "ko-KR-InJoonNeural",
+                "rate": "+1%",
                 "cta_text": "[구독] 더 소름돋는 실화는 채널 구독!",
                 "scenes": [
                     {
@@ -140,23 +162,31 @@ class ShortsScriptGenerator:
                         "hero_line1": "새벽 3시마다 울리는",
                         "hero_line2": "우리 집 도어락 소리",
                         "accent": "우리 집 도어락 소리",
-                        "speech": "자취방으로 이사 온 첫날부터, 매일 새벽 3시만 되면 도어락 번호 누르는 소리가 삐빅거리며 들렸습니다."
+                        "speech": "자취방으로 이사 온 첫날부터, 매일 새벽 3시만 되면 도어락 번호 누르는 삐빅 소리가 들렸습니다."
                     },
                     {
-                        "badge": "[추적] 숨막히는 추적",
+                        "badge": "[추적] 새벽의 감시",
                         "badge_color": (239, 68, 68),
-                        "hero_line1": "문 앞 스마트폰에",
-                        "hero_line2": "촬영된 충격적 정체",
-                        "accent": "촬영된 충격적 정체",
-                        "speech": "너무 무서워서 다음 날 현관문 틈 사이에 스마트폰 카메라를 켜두고 몰래 잠들었는데, 아침에 영상을 돌려보고 얼어붙었습니다."
+                        "hero_line1": "문 틈새 공기계로",
+                        "hero_line2": "현관문 밤샘 촬영",
+                        "accent": "현관문 밤샘 촬영",
+                        "speech": "너무 공포스러워서 다음 날 현관문 틈 사이에 공기계를 켜두고 촬영을 시작했는데, 아침에 영상을 돌려보고 얼어붙었습니다."
                     },
                     {
-                        "badge": "[반전] 충격적인 반전",
+                        "badge": "[충격] 의문의 정체",
                         "badge_color": (245, 158, 11),
-                        "hero_line1": "온몸에 소름이...",
-                        "hero_line2": "문단속 꼭 하세요!",
-                        "accent": "문단속 꼭 하세요!",
-                        "speech": "알고 보니 윗집 사람이 술에 취해 층수를 헷갈려 매일 우리 집 비밀번호를 눌렀던 거였습니다. 진짜 여러분도 자취방 문단속 꼭 철저히 하세요!"
+                        "hero_line1": "촬영된 영상 속",
+                        "hero_line2": "충격적인 남성의 정체",
+                        "accent": "충격적인 남성의 정체",
+                        "speech": "알고 보니 윗집 사람이 매일 술에 취해 층수를 헷갈려 저희 집 도어락에 자기 집 비밀번호를 눌렀던 거였습니다."
+                    },
+                    {
+                        "badge": "[주의] 문단속 필수",
+                        "badge_color": (16, 185, 129),
+                        "hero_line1": "이중 잠금장치 설치!",
+                        "hero_line2": "자취생 문단속 주의",
+                        "accent": "자취생 문단속 주의",
+                        "speech": "바로 건물 관리실에 항의해서 사과받고 이중 잠금장치 달았습니다. 혼자 자취하시는 분들은 꼭 문단속 조심하세요!"
                     }
                 ]
             }
@@ -172,6 +202,8 @@ class ShortsScriptGenerator:
                 "tags": ["배달썰", "황당실화", "자취방썰", "웃긴썰", "Shorts", "Reels"],
                 "pinned_comment": "📌 여러분이라면 배달원이 닭다리 하나 먹고 쪽지 남겼을 때 용서 가능하신가요? 댓글 투표! 🍗",
                 "broll_pref": "norm_broll_coffee.mp4",
+                "voice": "ko-KR-InJoonNeural",
+                "rate": "+1%",
                 "cta_text": "[댓글] 여러분이라면 용서 가능? 댓글 투표!",
                 "scenes": [
                     {
@@ -183,20 +215,28 @@ class ShortsScriptGenerator:
                         "speech": "야식으로 치킨 한 마리를 시켰는데, 배달 봉투 안쪽에 웬 작은 포스트잇 쪽지가 하나 붙어있는 겁니다."
                     },
                     {
-                        "badge": "[고백] 황당한 고백",
+                        "badge": "[고백] 황당한 자백",
                         "badge_color": (245, 158, 11),
                         "hero_line1": "냄새가 너무 좋아서",
                         "hero_line2": "닭다리 하나 먹었습니다",
                         "accent": "닭다리 하나 먹었습니다",
-                        "speech": "쪽지를 펴보니까, '냄새가 너무 맛있어 보여서 참지 못하고 닭다리 하나 먹었습니다. 죄송합니다'라고 적혀있더라고요."
+                        "speech": "쪽지를 펴보니까, 냄새가 너무 맛있어 보여서 참지 못하고 닭다리 하나를 먹었습니다. 정말 죄송합니다라고 적혀있더라고요."
                     },
                     {
-                        "badge": "[결말] 레전드 결말",
+                        "badge": "[보상] 전액 환불 처리",
+                        "badge_color": (239, 68, 68),
+                        "hero_line1": "치킨값 전액 환불에",
+                        "hero_line2": "3만원 쿠폰까지 지급!",
+                        "accent": "3만원 쿠폰까지 지급!",
+                        "speech": "어이가 없어서 고객센터에 사진을 보냈더니, 치킨값 전액 환불에 3만 원 상당의 상품권까지 즉시 지급해 줬습니다."
+                    },
+                    {
+                        "badge": "[투표] 황당한 결말",
                         "badge_color": (244, 63, 94),
-                        "hero_line1": "전액 환불 + 쿠폰!",
+                        "hero_line1": "솔직한 쪽지 고백",
                         "hero_line2": "여러분은 용서 가능?",
                         "accent": "여러분은 용서 가능?",
-                        "speech": "어이가 없어서 고객센터에 문의했더니 치킨 전액 환불에 3만 원 상품권까지 보내줬습니다. 여러분이라면 닭다리 하나 용서 가능하신가요?"
+                        "speech": "그래도 쪽지까지 솔직하게 남겨두고 간 게 너무 황당하고 웃겼습니다. 여러분이라면 닭다리 하나 용서 가능하신가요?"
                     }
                 ]
             }
@@ -340,11 +380,11 @@ class ShortsVideoRenderer:
                 break
 
         if font_file:
-            self.font_badge = ImageFont.truetype(font_file, 36)
-            self.font_hero = ImageFont.truetype(font_file, 66)
-            self.font_accent = ImageFont.truetype(font_file, 76)
-            self.font_sub = ImageFont.truetype(font_file, 62)
-            self.font_cta = ImageFont.truetype(font_file, 34)
+            self.font_badge = ImageFont.truetype(font_file, 34)
+            self.font_hero = ImageFont.truetype(font_file, 64)
+            self.font_accent = ImageFont.truetype(font_file, 72)
+            self.font_sub = ImageFont.truetype(font_file, 58)
+            self.font_cta = ImageFont.truetype(font_file, 32)
         else:
             self.font_badge = ImageFont.load_default()
             self.font_hero = ImageFont.load_default()
@@ -370,6 +410,11 @@ class ShortsVideoRenderer:
             "🕒": "[NOW]",
             "🎯": "[핵심]",
             "👑": "[TOP]",
+            "💔": "[실화]",
+            "😱": "[소름]",
+            "🤣": "[황당]",
+            "💬": "[댓글]",
+            "🍗": "[치킨]",
         }
         for emo, sym in replacements.items():
             text = text.replace(emo, sym)
@@ -378,7 +423,7 @@ class ShortsVideoRenderer:
         return text
 
     def _calculate_kinetic_chunks(self, speech: str, duration: float) -> List[Dict]:
-        """나레이션 대본을 2~3단어 단위의 다이내믹 키네틱 팝업 자막 청크로 분할 (체류시간 극대화)"""
+        """나레이션 대본을 자연스러운 호흡 단위(12~18자, ~2.2초)로 분절하여 가독성과 몰입도 극대화"""
         words = speech.split()
         if not words:
             return [{"text": "", "start": 0.0, "end": duration}]
@@ -387,12 +432,18 @@ class ShortsVideoRenderer:
         curr = []
         for w in words:
             curr.append(w)
-            # 2~3단어 또는 8~11글자 단위로 짧게 분절하여 화면에 빠른 템포로 팝업
-            if len(" ".join(curr)) >= 8 or len(curr) >= 3:
-                chunks.append(" ".join(curr))
+            curr_str = " ".join(curr)
+            # 자연스러운 의미 단위(13~18자 또는 쉼표/마침표 구두점 끝맺음)
+            if (len(curr_str) >= 13 or (len(curr_str) >= 9 and curr_str[-1] in ',.!?~')) and len(curr) >= 2:
+                chunks.append(curr_str)
                 curr = []
         if curr:
-            chunks.append(" ".join(curr))
+            curr_str = " ".join(curr)
+            # 자투리 단어가 너무 짧으면 이전 청크에 자연스럽게 병합
+            if chunks and len(curr_str) < 8:
+                chunks[-1] = chunks[-1] + " " + curr_str
+            else:
+                chunks.append(curr_str)
 
         num_chunks = max(1, len(chunks))
         chunk_dur = duration / num_chunks
@@ -409,12 +460,14 @@ class ShortsVideoRenderer:
         temp_dir = os.path.join(os.path.dirname(output_filepath), f"temp_{int(time.time()*1000)}")
         os.makedirs(temp_dir, exist_ok=True)
 
-        # 1. Edge-TTS 음성 생성 (+12% 신속 쾌속 전달)
+        # 1. Edge-TTS 음성 생성 (자연스러운 템포 & 진솔한 스토리텔러 음성)
         audio_files = []
         scene_durations = []
+        voice_name = script_data.get("voice", "ko-KR-InJoonNeural")
+        rate_val = script_data.get("rate", "+1%")
         for idx, scene in enumerate(script_data["scenes"]):
             scene_audio = os.path.join(temp_dir, f"scene_{idx}.mp3")
-            communicate = edge_tts.Communicate(scene["speech"], "ko-KR-SunHiNeural", rate="+12%")
+            communicate = edge_tts.Communicate(scene["speech"], voice_name, rate=rate_val)
             await communicate.save(scene_audio)
             audio_files.append(scene_audio)
 
@@ -446,7 +499,7 @@ class ShortsVideoRenderer:
             merged_voice
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
-        # 2. 감성 Lo-Fi BGM 배경음악 자동 믹싱 (BGM 18% 음량)
+        # 2. 감성 Lo-Fi BGM 배경음악 자동 믹싱 (음성 전달력 최적화: BGM 13% 음량)
         base_dir = os.path.dirname(os.path.abspath(__file__))
         lofi_bgm_path = os.path.join(base_dir, "assets", "audio", "lofi_beat.mp3")
         final_audio_path = merged_voice
@@ -457,7 +510,7 @@ class ShortsVideoRenderer:
                 self.ffmpeg_exe, "-y",
                 "-i", merged_voice,
                 "-i", lofi_bgm_path,
-                "-filter_complex", "[1:a]volume=0.18[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[aout]",
+                "-filter_complex", "[1:a]volume=0.13[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[aout]",
                 "-map", "[aout]",
                 "-c:a", "libmp3lame",
                 "-b:a", "192k",
@@ -585,7 +638,8 @@ class ShortsVideoRenderer:
             img = self._render_frame(
                 scene, progress, current_time, scene_time,
                 active_chunk, time_in_chunk, has_broll=bool(broll_video),
-                global_cta=script_data.get("cta_text")
+                global_cta=script_data.get("cta_text"),
+                scene_idx=current_scene_idx
             )
             proc.stdin.write(img.tobytes())
 
@@ -619,14 +673,14 @@ class ShortsVideoRenderer:
     def _render_frame(
         self, scene: Dict, progress: float, current_time: float, scene_time: float,
         active_chunk: Dict, time_in_chunk: float, has_broll: bool,
-        global_cta: Optional[str] = None
+        global_cta: Optional[str] = None, scene_idx: int = 0
     ) -> Image.Image:
-        """PPT 느낌을 100% 제거한 감성 바이럴 오버레이 렌더러 (실사 영상 + 팝업 바운스 자막)"""
+        """단일 시선 집중(Single Center Focus) 바이럴 숏폼 렌더러 (시선 분산 100% 방지)"""
         if has_broll:
             img = Image.new("RGBA", (self.WIDTH, self.HEIGHT), (0, 0, 0, 0))
             draw = ImageDraw.Draw(img)
 
-            # 상단 & 하단 시네마틱 딥 그라데이션 (자막 및 헤드라인 시인성 극대화)
+            # 상단 & 하단 시네마틱 딥 그라데이션 (자막 및 텍스트 시인성 극대화)
             for y in range(320):
                 a = int(175 * (1 - y / 320))
                 draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
@@ -646,43 +700,63 @@ class ShortsVideoRenderer:
         draw.rounded_rectangle([60, 40, self.WIDTH - 60, 56], radius=8, fill=(255, 255, 255, 40) if has_broll else (50, 50, 70))
         draw.rounded_rectangle([60, 40, prog_w, 56], radius=8, fill=(244, 63, 94, 255) if has_broll else (244, 63, 94))
 
-        # 2. 상단 카테고리 바이럴 뱃지 (Pill Capsule)
+        # 2. 상단 카테고리 칩 (Pill Capsule)
         badge_color = scene.get("badge_color", (239, 68, 68))
-        badge_text = self._clean_text_for_font(scene.get("badge", "[HOT] 핵심 꿀팁 공개"))
-        draw.rounded_rectangle([180, 180, 900, 270], radius=45, fill=(15, 23, 42, 220) if has_broll else (24, 24, 38), outline=badge_color, width=3)
-        draw.text((self.WIDTH // 2, 225), badge_text, fill=(255, 255, 255), font=self.font_badge, anchor="mm")
+        badge_text = self._clean_text_for_font(scene.get("badge", "[HOT] 실화 사이다 썰"))
+        draw.rounded_rectangle([180, 170, 900, 255], radius=42, fill=(15, 23, 42, 220) if has_broll else (24, 24, 38), outline=badge_color, width=3)
+        draw.text((self.WIDTH // 2, 212), badge_text, fill=(255, 255, 255), font=self.font_badge, anchor="mm")
 
-        # 3. 중앙 상단 시선 강탈 헤드라인 (Upper Center Hero Hook)
-        hook_y1 = 440
-        hook_y2 = 540
-        line1 = self._clean_text_for_font(scene.get("hero_line1", ""))
-        line2 = self._clean_text_for_font(scene.get("hero_line2", ""))
-        accent = self._clean_text_for_font(scene.get("accent", ""))
+        # 3. 중앙 상단 시선 강탈 헤드라인 (첫 3.8초 훅 구간에만 노출하여 초반 이탈을 완벽 방지하고 이후 시선 집중)
+        is_hook_stage = (current_time <= 3.8)
+        if is_hook_stage:
+            hook_y1 = 460
+            hook_y2 = 560
+            line1 = self._clean_text_for_font(scene.get("hero_line1", ""))
+            line2 = self._clean_text_for_font(scene.get("hero_line2", ""))
+            accent = self._clean_text_for_font(scene.get("accent", ""))
 
-        # 텍스트 깊이감 그림자 효과
-        for ox, oy in [(-3, -3), (3, -3), (-3, 3), (3, 3), (0, 5)]:
-            draw.text((self.WIDTH // 2 + ox, hook_y1 + oy), line1, fill=(0, 0, 0, 255), font=self.font_hero, anchor="mm")
-            draw.text((self.WIDTH // 2 + ox, hook_y2 + oy), line2, fill=(0, 0, 0, 255), font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
+            # 텍스트 깊이감 그림자 효과
+            for ox, oy in [(-3, -3), (3, -3), (-3, 3), (3, 3), (0, 5)]:
+                draw.text((self.WIDTH // 2 + ox, hook_y1 + oy), line1, fill=(0, 0, 0, 255), font=self.font_hero, anchor="mm")
+                draw.text((self.WIDTH // 2 + ox, hook_y2 + oy), line2, fill=(0, 0, 0, 255), font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
 
-        draw.text((self.WIDTH // 2, hook_y1), line1, fill=(255, 255, 255), font=self.font_hero, anchor="mm")
-        accent_color = (250, 204, 21) if line2 == accent else (255, 255, 255)
-        draw.text((self.WIDTH // 2, hook_y2), line2, fill=accent_color, font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
+            draw.text((self.WIDTH // 2, hook_y1), line1, fill=(255, 255, 255), font=self.font_hero, anchor="mm")
+            accent_color = (250, 204, 21) if line2 == accent else (255, 255, 255)
+            draw.text((self.WIDTH // 2, hook_y2), line2, fill=accent_color, font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
 
-        # 4. 하단 키네틱 다이내믹 팝업 자막 (Kinetic Pop-Up Subtitle)
-        # 지루한 PPT 텍스트 박스를 완전히 없애고, 1초마다 통통 튀며 바뀌는 숏폼 특화 자막
+        # 4. 단일 시선 집중(Single Center Focus) 2줄 자동 래핑 자막 (화면 정중앙 배치)
         sub_text = self._clean_text_for_font(active_chunk.get("text", ""))
         if sub_text:
-            sub_y = 1260
-            is_pop = time_in_chunk < 0.22  # 단어가 처음 등장할 때 0.22초간 시각적 팝업 바운스 강조
+            # 자연스러운 2줄 자동 래핑 (14자 이상이고 양쪽 줄 길이가 균형 잡힐 때만 2줄 정렬)
+            words = sub_text.split()
+            display_text = sub_text
+            if len(words) >= 3 and len(sub_text) >= 14:
+                best_mid = -1
+                best_diff = 999
+                for i in range(1, len(words)):
+                    l1 = " ".join(words[:i])
+                    l2 = " ".join(words[i:])
+                    if len(l1) <= 2 or len(l2) <= 2:
+                        continue
+                    diff = abs(len(l1) - len(l2))
+                    if diff < best_diff:
+                        best_diff = diff
+                        best_mid = i
+                if best_mid != -1:
+                    display_text = " ".join(words[:best_mid]) + "\n" + " ".join(words[best_mid:])
 
-            bbox = draw.textbbox((self.WIDTH // 2, sub_y), sub_text, font=self.font_sub, anchor="mm")
-            pad_x = 45 + (12 if is_pop else 0)
-            pad_y = 22 + (4 if is_pop else 0)
+            # 도입부 훅(첫 3.8초) 구간은 상단 헤드라인이 있으므로 하단(y=1260), 이후는 시선 고정 정중앙(y=980)
+            sub_y = 1260 if is_hook_stage else 980
+            is_pop = time_in_chunk < 0.22
 
-            pill_outline = (255, 255, 255, 255) if is_pop else (250, 204, 21, 240)
+            bbox = draw.multiline_textbbox((self.WIDTH // 2, sub_y), display_text, font=self.font_sub, anchor="mm", align="center", spacing=14)
+            pad_x = 48 + (10 if is_pop else 0)
+            pad_y = 24 + (4 if is_pop else 0)
+
+            pill_outline = (255, 255, 255, 255) if is_pop else (250, 204, 21, 230)
             pill_width = 5 if is_pop else 3
 
-            # 세련된 다크 글래스 필 캡슐
+            # 프리미엄 다크 글래스 필 캡슐
             draw.rounded_rectangle(
                 [bbox[0] - pad_x, bbox[1] - pad_y, bbox[2] + pad_x, bbox[3] + pad_y],
                 radius=32,
@@ -693,14 +767,14 @@ class ShortsVideoRenderer:
 
             # 자막 외곽선 그림자
             for ox, oy in [(-3, -3), (3, -3), (-3, 3), (3, 3), (0, 4)]:
-                draw.text((self.WIDTH // 2 + ox, sub_y + oy), sub_text, fill=(0, 0, 0, 255), font=self.font_sub, anchor="mm")
+                draw.multiline_text((self.WIDTH // 2 + ox, sub_y + oy), display_text, fill=(0, 0, 0, 255), font=self.font_sub, anchor="mm", align="center", spacing=14)
 
-            # 팝업 상태에 따라 네온 옐로우 / 화이트 텍스트
+            # 텍스트 컬러 (팝업 바운스 시 네온 골드, 평상시 선명한 화이트)
             text_color = (255, 240, 80) if is_pop else (255, 255, 255)
-            draw.text((self.WIDTH // 2, sub_y), sub_text, fill=text_color, font=self.font_sub, anchor="mm")
+            draw.multiline_text((self.WIDTH // 2, sub_y), display_text, fill=text_color, font=self.font_sub, anchor="mm", align="center", spacing=14)
 
-        # 5. 최하단 고정 CTA 배너 (Floating Pill)
-        cta = scene.get("cta_text") or global_cta or "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!"
+        # 5. 최하단 참여 유도 / 댓글 투표 배너 (Floating Pill)
+        cta = scene.get("cta_text") or global_cta or "[댓글] 여러분의 생각은? 댓글로 공유해주세요!"
         cta_text = self._clean_text_for_font(cta)
         draw.rounded_rectangle([140, 1720, 940, 1820], radius=30, fill=(225, 29, 72, 230), outline=(255, 255, 255, 180), width=2)
         draw.text((self.WIDTH // 2, 1770), cta_text, fill=(255, 255, 255), font=self.font_cta, anchor="mm")
