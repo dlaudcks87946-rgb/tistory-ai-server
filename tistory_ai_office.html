@@ -7024,6 +7024,17 @@ if __name__ == "__main__":
 
           
           <div>
+            <label class="block font-bold text-slate-700 mb-1 flex items-center justify-between">
+              <span>Google Gemini API Key (무료 실시간 AI 글쓰기 연동)</span>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs text-orange-600 font-bold hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>무료 키 발급받기
+              </a>
+            </label>
+            <input type="password" id="setting-gemini-key" placeholder="Google AI Studio에서 발급받은 AIzaSy... 키를 입력하세요" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-500 focus:outline-none font-mono text-xs">
+            <span class="text-[11px] text-emerald-600 font-semibold mt-1 block">✨ 키를 등록하면 어떤 키워드든 Gemini AI가 실제 신청경로·서류·절차를 100% 맞춤형 실전 원고로 자동 집필합니다.</span>
+          </div>
+
+          <div>
             <label class="block font-bold text-slate-700 mb-1">AI 모델 제공자 (LLM)</label>
             <select id="setting-llm-provider" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-500 focus:outline-none font-medium">
               <option value="gemini">Google Gemini 2.5 Flash</option>
@@ -10805,7 +10816,71 @@ ${P(`오늘 정리해 드린 <strong>${cleanMain}</strong> 완벽 가이드가 �
     }
     window.renderComprehensiveMeetingMinutes = renderComprehensiveMeetingMinutes;
 
-    function generateFinalReport(topic) {
+
+    // ========================================================
+    // 🧠 GOOGLE GEMINI AI REAL-TIME ARTICLE SYNTHESIZER
+    // Gemini 2.5 / 1.5 Flash 무료 API를 활용한 100% 맞춤형 실전 글쓰기 엔진
+    // ========================================================
+    async function generateArticleWithGeminiAI(topic) {
+      const apiKey = localStorage.getItem('gemini_api_key') || (document.getElementById('setting-gemini-key') ? document.getElementById('setting-gemini-key').value.trim() : '');
+      if (!apiKey) {
+        return null; // Key가 없으면 고품질 템플릿으로 폴백
+      }
+
+      const prompt = `당신은 네이버/구글 상위 1% 전문 티스토리 블로거이자 실무 전문가입니다.
+주제: "${topic}"
+
+반드시 아래 가이드라인을 100% 준수하여 독자가 읽고 "진짜 유용하다"고 감탄할 실전 블로그 원고를 완성도 높은 HTML 형식으로 작성해 주세요:
+1. 뜬구름 잡는 추상적인 문장, 뻔한 템플릿 설명, "준비하세요/노력하세요" 식의 영혼 없는 글은 절대 쓰지 마세요.
+2. 만약 주제가 '신청 방법', '감면', '지원금', '혜택', '절차', '서류' 등이라면:
+   - 실제 공식 포털 사이트 이름(예: 위택스, 홈택스, 정부24, 복지로, 한전ON, 기금e든든 등)을 정확히 명시하세요.
+   - 독자가 화면을 보고 그대로 따라 할 수 있는 구체적인 [1단계 ~ 4단계 온라인 신청 경로]를 작성하세요.
+   - 실제로 필요한 필수 제출 서류 목록(발급처 포함)을 체크리스트로 상세히 적으세요.
+   - 처리 기간(영업일 7~14일 등) 및 자주 묻는 질문(FAQ 2~3개)을 포함하세요.
+3. 만약 주제가 IT/테크, 제품, 부업, 생활 정보 등 다른 주제라면:
+   - 실제 기능, 세팅 방법, 구체적인 스펙 비교표, 실사용 장단점과 주의사항을 사실적으로 작성하세요.
+4. 서식 스타일:
+   - 도입부에 <div style="background:#f0fdf4;border-left:5px solid #16a34a;padding:18px 20px;margin:24px 0;border-radius:10px;"><p style="margin:0 0 8px;font-weight:800;color:#166534;font-size:16.5px;">📌 핵심 3줄 요약</p>...</div> 박스를 반드시 넣으세요.
+   - H2 소제목은 <h2 style="font-size:21px;font-weight:800;color:#0f172a;margin-top:38px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #16a34a;">번호. 제목</h2> 형식으로 작성하세요.
+   - 본문 문단은 <p style="font-size:15px;margin-bottom:14px;line-height:1.85;color:#334155;"> 태그를 사용하세요.
+   - 표(table)나 불렛포인트(ul/ol)를 적극 활용해 가독성을 높이세요.
+5. 오직 <div class="tistory-content-wrapper">...</div> 형태의 순수 HTML 본문 코드만 출력하세요. 마크다운 백틱(\`\`\`html)이나 인사말 등 부가 설명은 일체 배제하세요.`;
+
+      const models = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+      for (const model of models) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.7, maxOutputTokens: 4096 }
+            })
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            let text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+              text = text.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+              if (text.includes('<div') || text.includes('<h2')) {
+                return text;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn(`Gemini model ${model} fetch failed:`, e);
+        }
+      }
+      return null;
+    }
+    window.generateArticleWithGeminiAI = generateArticleWithGeminiAI;
+
+    async function generateFinalReport(topic) {
+      let aiGeneratedHtml = null;
+      try { aiGeneratedHtml = await generateArticleWithGeminiAI(topic); } catch(e) { console.warn(e); }
+
       const data = getArticleData(topic);
       elements.reportTitleHeading.textContent = `[결재 서류] ${data.title}`;
       elements.previewTitle.textContent = data.title;
@@ -10813,7 +10888,17 @@ ${P(`오늘 정리해 드린 <strong>${cleanMain}</strong> 완벽 가이드가 �
       elements.previewTagsList.innerHTML = data.tags.map(k => 
         `<span class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium cursor-pointer transition">#${k}</span>`
       ).join('');
-      elements.previewBody.innerHTML = data.html;
+      if (aiGeneratedHtml) {
+        elements.previewBody.innerHTML = aiGeneratedHtml;
+        showToast("✨ Google Gemini AI가 100% 맞춤형 실전 원고를 자율 집필했습니다!", "success");
+        addLog("이과장", "✨ [Gemini AI 실전 원고 집필 완료] 키워드 의도를 정밀 분석하여 실제 신청경로와 구비서류를 완벽 작성했습니다.", "text-emerald-400");
+      } else {
+        elements.previewBody.innerHTML = data.html;
+        const hasKey = localStorage.getItem('gemini_api_key');
+        if (!hasKey) {
+          showToast("💡 [설정] 탭에 무료 Gemini API 키를 등록하시면 AI가 무제한 실전 원고를 씁니다!", "info");
+        }
+      }
 
       const textOnly = elements.previewBody.innerText.trim();
       const charCount = textOnly.length;
@@ -12803,7 +12888,22 @@ async function triggerRealPublish(payloadData = null) {
     elements.btnCopyMd.addEventListener('click', () => { const temp = document.createElement('div'); temp.innerHTML = getCleanPublishHtml(elements.previewBody.innerHTML); copyText(temp.innerText, "티스토리 포스팅용 클린 텍스트 내용이 클립보드에 복사되었습니다!"); });
     elements.btnCopyPyCode.addEventListener('click', () => copyText(document.querySelector('#view-code code').innerText, "파이썬 전체 소스코드가 클립보드에 복사되었습니다!"));
     elements.btnClearLog.addEventListener('click', () => { elements.logContainer.innerHTML = '<div class="text-slate-500">[로그 초기화됨]</div>'; });
-    elements.btnSaveSettings.addEventListener('click', () => showToast("설정이 브라우저에 안전하게 저장되었습니다.", "success"));
+    elements.btnSaveSettings.addEventListener('click', () => {
+      const gKey = document.getElementById('setting-gemini-key') ? document.getElementById('setting-gemini-key').value.trim() : '';
+      if (gKey) {
+        localStorage.setItem('gemini_api_key', gKey);
+        showToast("✨ Gemini API Key가 저장되었습니다! 앞으로 AI가 자율 글쓰기를 진행합니다.", "success");
+      } else {
+        localStorage.removeItem('gemini_api_key');
+        showToast("설정이 브라우저에 안전하게 저장되었습니다.", "success");
+      }
+    });
+    // Load saved gemini key on page load
+    setTimeout(() => {
+      const savedGKey = localStorage.getItem('gemini_api_key');
+      const gInput = document.getElementById('setting-gemini-key');
+      if (savedGKey && gInput) gInput.value = savedGKey;
+    }, 500);
 
     // Tistory Main Instant Publish Button in Report
     if (elements.btnPublishTistory) {
