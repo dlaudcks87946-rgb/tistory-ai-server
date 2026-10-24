@@ -21,6 +21,16 @@ import json
 import urllib.parse
 from typing import Dict, List, Optional
 
+# Windows 콘솔 이모지/한글 인코딩 방어
+if sys.platform.startswith("win"):
+    try:
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        if hasattr(sys.stderr, 'reconfigure'):
+            sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 # 셀레니움 라이브러리 임포트
 try:
     from selenium import webdriver

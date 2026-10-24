@@ -12,6 +12,11 @@ ENV/
 # Logs
 *.log
 
+# Runtime Data & Caches
+rnd_live_cache.json
+used_keywords.json
+chrome_session/
+
 # IDE
 .vscode/
 .idea/
