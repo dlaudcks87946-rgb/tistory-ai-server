@@ -12913,6 +12913,9 @@ async function triggerRealPublish(payloadData = null) {
       // 1. 입력창 및 전역 주제 갱신
       elements.inputTopic.value = keyword;
       state.topic = keyword;
+      if (typeof window.syncTopicToShorts === 'function') {
+        window.syncTopicToShorts(keyword);
+      }
       elements.inputTopic.classList.add('ring-4', 'ring-orange-400', 'bg-orange-50');
       setTimeout(() => {
         elements.inputTopic.classList.remove('ring-4', 'ring-orange-400', 'bg-orange-50');
@@ -18085,30 +18088,105 @@ function closeAllModals() {
   const $ = id => document.getElementById(id);
   let latestShortsData = null;
 
-  // 로컬 스토리지에서 이전 생성 데이터 복원
   try {
     const saved = localStorage.getItem('tistory_latest_shorts');
     if (saved) latestShortsData = JSON.parse(saved);
   } catch(e) {}
 
+  // 키워드로부터 해시태그 스마트 생성
+  function generateSmartTags(topic) {
+    if (!topic) return '#Shorts #Reels #AI영상 #지식정보';
+    const words = topic.replace(/[^a-zA-Z0-9가-힣\s]/g, ' ')
+                       .split(/\s+/)
+                       .filter(w => w.length >= 2 && !['및', '의', '을', '를', '에', '와', '과', '첫', '달'].includes(w));
+    const uniqueWords = Array.from(new Set(words)).slice(0, 5);
+    const tags = uniqueWords.map(w => '#' + w).join(' ');
+    return tags ? `${tags} #Shorts #Reels` : '#Shorts #Reels #핵심요약';
+  }
+
+  // 키워드에 따라 숏폼 프리뷰 메타데이터 및 대본 실시간 동기화
+  window.updateTopicMetadataPreview = function(topic) {
+    const t = (topic && topic.trim()) ? topic.trim() : '2026 AI 트렌드와 직장인 업무 생산성을 300% 높이는 핵심 도구 가이드';
+    const blogUrl = ($('shorts-input-blog') && $('shorts-input-blog').value.trim()) || 'https://tistory-ai-corp.tistory.com';
+    
+    // 만약 방금 완성된 영상의 주제와 동일하다면 완성 데이터 렌더링
+    if (latestShortsData && (latestShortsData.topic === t || latestShortsData.title?.includes(t.substring(0, 10)))) {
+      renderShortsResult(latestShortsData);
+      return;
+    }
+
+    // 새로운 주제에 맞게 제목, 해시태그, 고정댓글, 5단계 대본 즉시 생성
+    const metaTitle = $('shorts-meta-title');
+    const metaTags = $('shorts-meta-tags');
+    const metaComment = $('shorts-meta-comment');
+    const metaDur = $('shorts-meta-duration');
+    const fileStats = $('shorts-file-stats');
+    const timeline = $('shorts-timeline-scenes');
+    const dlLink = $('shorts-btn-download');
+
+    if (metaTitle) metaTitle.textContent = `${t} 40초 핵심 요약 #Shorts`;
+    if (metaTags) metaTags.textContent = generateSmartTags(t);
+    if (metaComment) metaComment.textContent = `📌 [더 알아보기] '${t}' 상세 가이드와 실시간 꿀팁은 고정 댓글 블로그에서 확인하세요! 👉 ${blogUrl}`;
+    if (metaDur) metaDur.textContent = `대기 중 (~45초)`;
+    if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | 새 키워드 제작 대기 중`;
+
+    if (dlLink) {
+      if (latestShortsData && latestShortsData.web_url) {
+        dlLink.href = latestShortsData.web_url;
+      }
+    }
+
+    if (timeline) {
+      const dynamicScenes = [
+        { badge: '🚨 충격 후킹', text: `${t}, 아직도 제대로 모르고 계셨나요? 딱 40초 만에 정리해 드립니다!` },
+        { badge: '💡 핵심 포인트', text: `${t}의 가장 중요한 핵심 요점과 필수 정보를 바로 알려드립니다.` },
+        { badge: '⚠️ 주의사항', text: `놓치면 손해보는 필수 주의사항과 자격 조건을 반드시 확인하세요.` },
+        { badge: '🔑 시크릿 꿀팁', text: `전문가들만 아는 실전 적용 꿀팁과 200% 활용 노하우 대공개!` },
+        { badge: '👉 프로필 링크', text: `더 상세한 실전 신청 방법과 링크는 프로필 블로그 포스팅에서 지금 바로 확인하세요!` }
+      ];
+      timeline.innerHTML = '';
+      dynamicScenes.forEach((sc, idx) => {
+        const item = document.createElement('div');
+        item.className = 'p-2 rounded-lg bg-slate-900 border border-slate-800 flex items-start gap-2.5';
+        item.innerHTML = `
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 whitespace-nowrap">${sc.badge}</span>
+          <span class="text-slate-300 text-[11px] leading-relaxed">${sc.text}</span>
+        `;
+        timeline.appendChild(item);
+      });
+    }
+  };
+
+  // 외부(레이더 선택, 텍스트 입력 등)에서 키워드가 변경되었을 때 호출
+  window.syncTopicToShorts = function(topic) {
+    if (!topic || !topic.trim()) return;
+    const t = topic.trim();
+    const shortsTopicInput = $('shorts-input-topic');
+    if (shortsTopicInput) {
+      shortsTopicInput.value = t;
+    }
+    updateTopicMetadataPreview(t);
+  };
+
   window.openShortsStudio = function() {
     const modal = $('modal-shorts-studio');
     if (!modal) return;
     
-    // 블로그 포스팅 주제가 설정되어 있다면 자동으로 숏폼 주제에 동기화
-    const topicInput = $('topic-input');
+    // 현재 메인 대시보드에서 선택되거나 입력된 실시간 키워드 읽기
+    const mainInput = $('input-topic');
+    const curTopic = (mainInput && mainInput.value.trim()) || 
+                     (window.state && window.state.topic) || 
+                     (elements && elements.inputTopic && elements.inputTopic.value.trim()) ||
+                     "2026 AI 트렌드와 직장인 업무 생산성을 300% 높이는 핵심 도구 가이드";
+
     const shortsTopicInput = $('shorts-input-topic');
-    if (shortsTopicInput && (!shortsTopicInput.value || shortsTopicInput.value.trim() === '')) {
-      if (topicInput && topicInput.value.trim()) {
-        shortsTopicInput.value = topicInput.value.trim();
-      } else {
-        shortsTopicInput.value = "2026 정부 청년 지원금 및 혜택 신청 총정리";
-      }
+    if (shortsTopicInput) {
+      shortsTopicInput.value = curTopic;
     }
 
     // 블로그 URL 동기화
     const blogInput = $('shorts-input-blog');
-    if (blogInput && !blogInput.value) {
+    if (blogInput) {
       try {
         const savedUrl = localStorage.getItem('tistory_blog_url') || '';
         blogInput.value = savedUrl || 'https://tistory-ai-corp.tistory.com';
@@ -18117,27 +18195,15 @@ function closeAllModals() {
       }
     }
 
-    // 이전 데이터가 있다면 렌더링
-    if (latestShortsData) {
-      renderShortsResult(latestShortsData);
-    } else {
-      // 기본 샘플 데이터 표시 (첫만남이용권)
-      renderShortsResult({
-        web_url: '/output/shorts/shorts_국민행복카드_바우처_혜택_총정리_첫만_1792860111.mp4',
-        filename: 'shorts_국민행복카드_바우처_혜택_총정리_첫만_1792860111.mp4',
-        duration: 48.2,
-        size_mb: 1.02,
-        title: '국민행복카드 바우처 혜택 총정리: 첫만남이용권 200만원 사용처 핵심 요약 #Shorts',
-        tags: '#국민행복카드 #바우처혜택 #첫만남이용권 #정부지원금 #Shorts #Reels',
-        pinned_comment: '📌 더 자세한 신청 방법과 꿀팁은 고정 댓글 링크(블로그)에서 확인하세요! 👉 https://tistory-ai-corp.tistory.com',
-        scenes: [
-          { badge: '🚨 충격 반전', narration: '국민행복카드 바우처 혜택 총정리, 아직도 제대로 모르고 계셨나요?' },
-          { badge: '💡 핵심 포인트', narration: '첫만남이용권 200만원 사용처의 가장 중요한 핵심은 바로 신청 기한과 지원 조건입니다.' },
-          { badge: '⚠️ 주의사항', narration: '단, 신청 기간이 지나면 소멸되므로 반드시 기한 내에 신청하셔야 합니다.' },
-          { badge: '🔑 시크릿 꿀팁', narration: '정부24 및 온라인 간편 신청을 통해 3분 만에 신청을 완료할 수 있습니다.' },
-          { badge: '👉 프로필 링크', narration: '더 상세한 신청 절차와 실시간 혜택은 프로필 링크 블로그 글에서 바로 확인하세요!' }
-        ]
-      });
+    // 선택된 키워드에 맞게 실시간 메타데이터 & 대본 갱신
+    updateTopicMetadataPreview(curTopic);
+
+    // 이전 생성 영상이 있다면 비디오 플레이어에 로드
+    if (latestShortsData && latestShortsData.web_url) {
+      const player = $('shorts-player');
+      if (player && !player.src) {
+        player.src = latestShortsData.web_url;
+      }
     }
 
     modal.classList.remove('hidden');
@@ -18154,8 +18220,9 @@ function closeAllModals() {
   };
 
   window.generateShortsVideo = async function() {
-    const topic = $('shorts-input-topic').value.trim() || '2026 정부 지원금 혜택 총정리';
-    const blogUrl = $('shorts-input-blog').value.trim() || '';
+    const topic = ($('shorts-input-topic') ? $('shorts-input-topic').value.trim() : '') || 
+                  ($('input-topic') ? $('input-topic').value.trim() : '2026 정부 지원금 혜택 총정리');
+    const blogUrl = ($('shorts-input-blog') ? $('shorts-input-blog').value.trim() : '') || 'https://tistory-ai-corp.tistory.com';
     const btn = $('btn-render-shorts');
     const renderBox = $('shorts-rendering-box');
     const statusText = $('shorts-status-text');
@@ -18163,9 +18230,8 @@ function closeAllModals() {
     btn.disabled = true;
     btn.classList.add('opacity-50', 'cursor-not-allowed');
     renderBox.classList.remove('hidden');
-    statusText.textContent = `🎬 배PD & 신디자이너가 '${topic}' 40초 숏폼 영상을 제작하고 있습니다...`;
+    statusText.textContent = `🎬 배PD & 신디자이너가 '${topic}' 40초 숏폼 영상을 렌더링하고 있습니다...`;
 
-    // 스텝 표시 초기화
     const updateStep = (id, text, isDone, isActive) => {
       const el = $(id);
       if (!el) return;
@@ -18181,20 +18247,19 @@ function closeAllModals() {
     updateStep('step-render', '대기 중', false, false);
     updateStep('step-finish', '대기 중', false, false);
 
+    // API 엔드포인트 자동 판정 (localhost 또는 상대 경로)
     const apiBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? '' : 'http://localhost:8080';
 
     try {
-      // 10초 후 음성 더빙 단계로 시각적 전환
       setTimeout(() => {
         updateStep('step-script', '완료 ✔', true, false);
-        updateStep('step-audio', '합성 중 (Edge-TTS)...', false, true);
+        updateStep('step-audio', '합성 중 (Edge-TTS 한국어 음성)...', false, true);
       }, 3500);
 
-      // 20초 후 비디오 합성 단계로 전환
       setTimeout(() => {
         updateStep('step-audio', '완료 ✔', true, false);
-        updateStep('step-render', 'FFmpeg 인코딩 중...', false, true);
-      }, 8000);
+        updateStep('step-render', 'FFmpeg 1080x1920 세로형 인코딩 중...', false, true);
+      }, 8500);
 
       const response = await fetch(`${apiBase}/api/shorts/generate`, {
         method: 'POST',
@@ -18203,7 +18268,7 @@ function closeAllModals() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: 영상 제작 중 오류가 발생했습니다.`);
+        throw new Error(`HTTP ${response.status}: 서버에서 숏폼 제작을 처리하지 못했습니다. (서버 상태 확인 필요)`);
       }
 
       const data = await response.json();
@@ -18211,13 +18276,14 @@ function closeAllModals() {
         throw new Error(data.error);
       }
 
+      data.topic = topic; // 생성된 주제 명시적 바인딩
+      latestShortsData = data;
+      try { localStorage.setItem('tistory_latest_shorts', JSON.stringify(data)); } catch(e) {}
+
       updateStep('step-script', '완료 ✔', true, false);
       updateStep('step-audio', '완료 ✔', true, false);
       updateStep('step-render', '완료 ✔', true, false);
       updateStep('step-finish', '제작 완료 🎉', true, false);
-
-      latestShortsData = data;
-      try { localStorage.setItem('tistory_latest_shorts', JSON.stringify(data)); } catch(e) {}
 
       renderShortsResult(data);
 
@@ -18226,11 +18292,11 @@ function closeAllModals() {
           addLog('배PD', `🎬 [40초 숏폼 제작 완료] '${topic}' 1080x1920 세로 영상 및 메타데이터를 성공적으로 생성했습니다!`, 'text-pink-400');
         }
         if (typeof showToast === 'function') {
-          showToast('🎬 40초 숏폼 영상 제작이 완료되었습니다!', 'success');
+          showToast(`🎬 '${topic}' 40초 숏폼 영상 제작이 완료되었습니다!`, 'success');
         }
       } catch(e) {}
 
-      statusText.textContent = `✅ 40초 숏폼 영상이 성공적으로 완성되었습니다!`;
+      statusText.textContent = `✅ '${topic}' 40초 숏폼 영상이 성공적으로 완성되었습니다!`;
       setTimeout(() => {
         renderBox.classList.add('hidden');
       }, 2500);
@@ -18309,6 +18375,28 @@ function closeAllModals() {
       try { if (typeof showToast === 'function') showToast('복사에 실패했습니다.', 'error'); } catch(e) {}
     });
   };
+
+  function setupShortsListeners() {
+    const shortsTopicInput = $('shorts-input-topic');
+    if (shortsTopicInput) {
+      shortsTopicInput.addEventListener('input', (e) => {
+        updateTopicMetadataPreview(e.target.value);
+      });
+    }
+
+    const mainTopicInput = $('input-topic');
+    if (mainTopicInput) {
+      mainTopicInput.addEventListener('input', (e) => {
+        syncTopicToShorts(e.target.value);
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupShortsListeners);
+  } else {
+    setupShortsListeners();
+  }
 
 })();
 </script>

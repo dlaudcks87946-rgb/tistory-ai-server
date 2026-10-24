@@ -1041,6 +1041,9 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
         self._send_cors_headers()
         self.end_headers()
 
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         if self.path == "/" or self.path.startswith("/?"):
             self.send_response(200)
@@ -1099,7 +1102,7 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 "gemini_api_key": gemini_key
             }).encode("utf-8"))
         elif self.path.startswith("/output/"):
-            clean_path = self.path.split("?")[0].lstrip("/")
+            clean_path = urllib.parse.unquote(self.path.split("?")[0].lstrip("/"))
             file_disk_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), clean_path)
             if os.path.exists(file_disk_path) and os.path.isfile(file_disk_path):
                 self.send_response(200)
@@ -1219,6 +1222,12 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 self._send_cors_headers()
                 self.end_headers()
                 self.wfile.write(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False).encode("utf-8"))
+            return
+
+        self.send_response(404)
+        self._send_cors_headers()
+        self.end_headers()
+        self.wfile.write(json.dumps({"error": f"Endpoint not found: {self.path}"}).encode("utf-8"))
 
 
 def run_web_dashboard(port: int = 8080):
