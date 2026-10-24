@@ -3066,7 +3066,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                      ======================================================= -->
 
                 <!-- ROOM A (ZONE 6): [단독 분리] 프리미엄 사내 탕비실 & 카페테리아 (Executive Pantry & Cafe) -->
-                <div class="rug-pantry absolute bottom-3 left-4 w-[295px] h-[255px] rounded-3xl p-3 border-2 border-amber-300/90 pointer-events-none shadow-md z-0 flex flex-col justify-between">
+                <div class="rug-pantry absolute bottom-3 left-4 w-[295px] h-[255px] rounded-3xl p-3 border-2 border-amber-300/90 pointer-events-none shadow-md z-0 overflow-hidden">
+                  <!-- Room Header -->
                   <div class="flex items-center justify-between pb-1.5 border-b border-amber-300/80">
                     <div class="flex items-center gap-1.5">
                       <span class="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[11px] shadow-sm">
@@ -3081,6 +3082,123 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                       FREE COFFEE
                     </span>
                   </div>
+
+                  <!-- [Pantry Interior 1] 프리미엄 바리스타 바 & 에스프레소 머신 -->
+                  <div class="absolute top-[48px] left-[12px] w-[95px] h-[75px] bg-gradient-to-b from-stone-800 to-slate-900 border border-stone-600 rounded-xl p-1.5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-stone-700 pb-0.5">
+                      <span class="text-[6.5px] font-black text-amber-300 flex items-center gap-0.5">
+                        <i class="fa-solid fa-mug-saucer text-amber-400"></i> 바리스타바
+                      </span>
+                      <span class="text-[5.5px] font-mono text-emerald-400">HOT ✔</span>
+                    </div>
+                    <div class="flex items-center justify-around py-0.5">
+                      <!-- Espresso Machine -->
+                      <div class="relative w-10 h-8 bg-gradient-to-b from-slate-300 to-slate-500 rounded border border-slate-600 p-0.5 shadow-xs flex flex-col justify-between items-center">
+                        <div class="w-7 h-1 bg-slate-700 rounded-full"></div>
+                        <div class="flex gap-1 items-center">
+                          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        </div>
+                        <div class="cafe-steam-active text-amber-200 text-[8px] -mt-2"><i class="fa-solid fa-wind"></i></div>
+                        <div class="w-6 h-1.5 bg-stone-900 rounded-xs"></div>
+                      </div>
+                      <!-- Syrup & Beans -->
+                      <div class="flex flex-col gap-0.5">
+                        <div class="w-3.5 h-4 bg-amber-800/80 rounded-xs border border-amber-600/70 text-[5px] text-amber-200 text-center font-bold">시럽</div>
+                        <div class="w-3.5 h-3 bg-stone-700 rounded-xs text-[5px] text-stone-300 text-center">원두</div>
+                      </div>
+                    </div>
+                    <div class="text-[5.5px] font-mono text-amber-200/90 text-center bg-stone-950/80 rounded py-0.2">
+                      콜롬비아 수프레모 100%
+                    </div>
+                  </div>
+
+                  <!-- [Pantry Interior 2] 스마트 글래스 냉장고 & 음료 -->
+                  <div class="absolute top-[132px] left-[12px] w-[46px] h-[98px] bg-gradient-to-b from-slate-200 via-slate-300 to-slate-400 border-2 border-slate-400 rounded-xl p-1 shadow-md flex flex-col justify-between">
+                    <div class="text-[5.5px] font-black text-slate-800 text-center border-b border-slate-300 pb-0.5">
+                      냉장고 <span class="text-cyan-700 font-mono">2.4℃</span>
+                    </div>
+                    <!-- Glass Window with cold glow & soda cans -->
+                    <div class="w-full h-14 bg-cyan-950/80 border border-cyan-400/50 rounded p-1 flex flex-col justify-around shadow-inner">
+                      <div class="flex justify-around">
+                        <div class="w-2.5 h-3.5 bg-rose-600 rounded-xs shadow-2xs" title="콜라"></div>
+                        <div class="w-2.5 h-3.5 bg-emerald-500 rounded-xs shadow-2xs" title="탄산수"></div>
+                        <div class="w-2.5 h-3.5 bg-sky-500 rounded-xs shadow-2xs" title="이온음료"></div>
+                      </div>
+                      <div class="flex justify-around">
+                        <div class="w-2.5 h-3.5 bg-amber-500 rounded-xs shadow-2xs" title="에너지드링크"></div>
+                        <div class="w-2.5 h-3.5 bg-purple-600 rounded-xs shadow-2xs" title="포도주스"></div>
+                        <div class="w-2.5 h-3.5 bg-stone-800 rounded-xs shadow-2xs" title="더치커피"></div>
+                      </div>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-600 rounded-xs"></div>
+                  </div>
+
+                  <!-- [Pantry Interior 3] 얼음 정수기 & 3단 스낵바 -->
+                  <div class="absolute top-[132px] left-[62px] w-[46px] h-[98px] bg-white border-2 border-amber-300 rounded-xl p-1 shadow-md flex flex-col justify-between">
+                    <div class="text-[5.5px] font-black text-amber-900 text-center border-b border-amber-200 pb-0.5">
+                      얼음정수기
+                    </div>
+                    <!-- Purifier Faucets -->
+                    <div class="w-full h-7 bg-slate-100 rounded border border-slate-200 flex flex-col items-center justify-around py-0.5">
+                      <div class="flex gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                      </div>
+                      <div class="w-6 h-1 bg-slate-300 rounded-full"></div>
+                    </div>
+                    <!-- 3-Tier Snack Bar -->
+                    <div class="w-full bg-amber-50 rounded border border-amber-200 p-0.5 flex flex-col gap-0.5">
+                      <div class="text-[5px] font-bold text-amber-900 text-center">🍫 무제한 스낵</div>
+                      <div class="flex justify-around">
+                        <span class="w-2 h-1.5 bg-amber-700 rounded-2xs"></span>
+                        <span class="w-2 h-1.5 bg-yellow-500 rounded-2xs"></span>
+                        <span class="w-2 h-1.5 bg-red-600 rounded-2xs"></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- [Pantry Interior 4] 원목 라운드 카페 테이블 & 의자 -->
+                  <div class="absolute top-[52px] left-[175px] w-[105px] h-[105px] flex items-center justify-center">
+                    <!-- Top Chair -->
+                    <div class="absolute top-0 w-6 h-4 bg-amber-800 rounded-t-lg border border-amber-900 shadow-xs"></div>
+                    <!-- Round Table -->
+                    <div class="relative w-[72px] h-[72px] rounded-full bg-gradient-to-br from-amber-100 via-amber-200 to-amber-300 border-2 border-amber-500/80 shadow-lg flex flex-col items-center justify-center p-1">
+                      <!-- Table Center Succulent Vase -->
+                      <div class="w-4 h-4 rounded-full bg-emerald-700/30 border border-emerald-600/50 flex items-center justify-center text-[7px] text-emerald-800">
+                        <i class="fa-solid fa-seedling"></i>
+                      </div>
+                      <div class="flex gap-2 mt-0.5">
+                        <span class="text-[7px] text-amber-900"><i class="fa-solid fa-mug-saucer"></i></span>
+                        <span class="text-[7px] text-amber-900"><i class="fa-solid fa-mug-hot"></i></span>
+                      </div>
+                    </div>
+                    <!-- Bottom Chair -->
+                    <div class="absolute bottom-0 w-6 h-4 bg-amber-800 rounded-b-lg border border-amber-900 shadow-xs"></div>
+                  </div>
+
+                  <!-- [Pantry Interior 5] 전자레인지 & 분리수거 클린 스테이션 -->
+                  <div class="absolute top-[168px] left-[175px] w-[105px] h-[64px] bg-stone-900 border border-stone-700 rounded-xl p-1.5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-stone-800 pb-0.5">
+                      <span class="text-[6px] font-bold text-stone-300"><i class="fa-solid fa-recycle text-emerald-400 mr-0.5"></i>클린스테이션</span>
+                      <span class="text-[5.5px] font-mono text-cyan-400 bg-black/60 px-1 rounded">01:30</span>
+                    </div>
+                    <!-- Recycling 3 Bins -->
+                    <div class="flex items-center justify-around pt-1">
+                      <div class="flex flex-col items-center">
+                        <div class="w-5 h-6 bg-emerald-600 rounded-t-xs border border-emerald-400 shadow-2xs"></div>
+                        <span class="text-[5px] text-emerald-300 font-bold">캔·페트</span>
+                      </div>
+                      <div class="flex flex-col items-center">
+                        <div class="w-5 h-6 bg-blue-600 rounded-t-xs border border-blue-400 shadow-2xs"></div>
+                        <span class="text-[5px] text-blue-300 font-bold">종이류</span>
+                      </div>
+                      <div class="flex flex-col items-center">
+                        <div class="w-5 h-6 bg-slate-700 rounded-t-xs border border-slate-500 shadow-2xs"></div>
+                        <span class="text-[5px] text-slate-400 font-bold">일반</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <!-- Pantry Doorway -->
                 <div id="door-pantry" class="dept-doorway-portal doorway-threshold-mat absolute top-[552px] left-[125px] w-[80px] h-[26px] rounded-t-lg border-x-2 border-t-2 border-amber-500 flex items-center justify-between px-1.5 shadow-md z-0 pointer-events-none">
@@ -3092,7 +3210,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
 
                 <!-- ROOM B (ZONE 7): [신규 즐길 공간 1] 힐링 웰니스 & 프리미엄 안마의자 룸 (Wellness & Massage Lounge) -->
-                <div class="rug-healing absolute bottom-3 left-[324px] w-[295px] h-[255px] rounded-3xl p-3 border-2 border-emerald-400/90 pointer-events-none shadow-md z-0 flex flex-col justify-between">
+                <div class="rug-healing absolute bottom-3 left-[324px] w-[295px] h-[255px] rounded-3xl p-3 border-2 border-emerald-400/90 pointer-events-none shadow-md z-0 overflow-hidden">
+                  <!-- Room Header -->
                   <div class="flex items-center justify-between pb-1.5 border-b border-emerald-300/80">
                     <div class="flex items-center gap-1.5">
                       <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[11px] shadow-sm">
@@ -3107,6 +3226,110 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                       HEALING ZONE
                     </span>
                   </div>
+
+                  <!-- [Healing Interior 1] 프리미엄 무중력 안마의자 2대 -->
+                  <div class="absolute top-[48px] left-[14px] w-[50px] h-[78px] massage-chair-active bg-gradient-to-b from-stone-800 via-amber-950 to-stone-900 border-2 border-amber-400/90 rounded-2xl p-1 shadow-xl flex flex-col justify-between items-center" title="바디프랜드 럭셔리 안마의자 #1">
+                    <div class="w-7 h-3.5 bg-amber-900/90 rounded-full border border-amber-400/60 flex items-center justify-center">
+                      <span class="text-[5px] text-amber-200 font-black">헤드레스트</span>
+                    </div>
+                    <div class="w-full h-8 bg-stone-900/90 rounded-lg p-0.5 flex flex-col items-center justify-around border border-amber-500/30">
+                      <div class="flex gap-1 items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span class="text-[5px] font-mono text-emerald-300">스트레칭</span>
+                      </div>
+                    </div>
+                    <div class="w-6 h-2 bg-stone-950 rounded-xs border border-amber-400/40"></div>
+                  </div>
+
+                  <div class="absolute top-[48px] left-[70px] w-[50px] h-[78px] massage-chair-active bg-gradient-to-b from-stone-800 via-stone-900 to-amber-950 border-2 border-amber-400/90 rounded-2xl p-1 shadow-xl flex flex-col justify-between items-center" style="animation-delay: 0.9s;" title="바디프랜드 럭셔리 안마의자 #2">
+                    <div class="w-7 h-3.5 bg-amber-900/90 rounded-full border border-amber-400/60 flex items-center justify-center">
+                      <span class="text-[5px] text-amber-200 font-black">헤드레스트</span>
+                    </div>
+                    <div class="w-full h-8 bg-stone-900/90 rounded-lg p-0.5 flex flex-col items-center justify-around border border-amber-500/30">
+                      <div class="flex gap-1 items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span class="text-[5px] font-mono text-cyan-300">수면모드</span>
+                      </div>
+                    </div>
+                    <div class="w-6 h-2 bg-stone-950 rounded-xs border border-amber-400/40"></div>
+                  </div>
+
+                  <!-- [Healing Interior 2] 프로페셔널 인조잔디 퍼팅 골프 매트 -->
+                  <div class="absolute top-[48px] left-[150px] w-[130px] h-[100px] bg-gradient-to-b from-emerald-600 to-emerald-700 border-2 border-emerald-400/80 rounded-2xl p-1.5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-emerald-500/70 pb-0.5">
+                      <span class="text-[6.5px] font-black text-white flex items-center gap-0.5">
+                        <i class="fa-solid fa-flag text-rose-300"></i> 미니 퍼팅존
+                      </span>
+                      <span class="text-[5.5px] font-mono text-emerald-200">PAR 3</span>
+                    </div>
+                    <!-- Putting Mat Green with Distance Marks -->
+                    <div class="flex items-center justify-between px-2 py-1">
+                      <div class="flex flex-col gap-1 items-center">
+                        <span class="text-[5px] text-emerald-200 font-mono">1.0m</span>
+                        <div class="w-2.5 h-2.5 rounded-full bg-white shadow-xs border border-slate-300"></div>
+                      </div>
+                      <div class="flex flex-col gap-1 items-center">
+                        <span class="text-[5px] text-emerald-200 font-mono">2.0m</span>
+                        <div class="w-2.5 h-2.5 rounded-full bg-white shadow-xs border border-slate-300"></div>
+                      </div>
+                      <!-- Hole Cup with Red Flag -->
+                      <div class="relative w-6 h-6 rounded-full bg-emerald-950 border-2 border-white/80 flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-flag text-rose-500 text-[9px] -mt-1"></i>
+                      </div>
+                    </div>
+                    <!-- Golf Putter Clubs Stand -->
+                    <div class="flex items-center justify-between bg-emerald-800/80 px-2 py-0.5 rounded text-[5.5px] text-white">
+                      <span><i class="fa-solid fa-golf-ball-tee text-amber-300 mr-0.5"></i>타이틀리스트 퍼터</span>
+                      <span class="text-amber-300 font-bold">HOLE-IN-ONE</span>
+                    </div>
+                  </div>
+
+                  <!-- [Healing Interior 3] 아로마 디퓨저 & 피톤치드 대형 몬스테라 -->
+                  <div class="absolute top-[136px] left-[14px] w-[54px] h-[95px] flex flex-col justify-between items-center">
+                    <!-- Ultrasonic Diffuser -->
+                    <div class="w-full bg-stone-900 border border-purple-400/70 rounded-xl p-1 text-center shadow-md">
+                      <div class="cafe-steam-active text-purple-300 text-[8px] -mt-2"><i class="fa-solid fa-wind"></i></div>
+                      <span class="text-[5px] font-bold text-purple-200">라벤더 미스트</span>
+                    </div>
+                    <!-- Potted Monstera Plant -->
+                    <div class="w-full flex flex-col items-center">
+                      <div class="text-emerald-500 text-lg -mb-1 animate-pulse"><i class="fa-solid fa-leaf"></i></div>
+                      <div class="w-7 h-5 bg-gradient-to-b from-amber-700 to-amber-900 rounded-b-md border border-amber-600 shadow-sm"></div>
+                    </div>
+                  </div>
+
+                  <!-- [Healing Interior 4] 리클라이너 수면 캡슐 & 포근한 담요 -->
+                  <div class="absolute top-[156px] left-[78px] w-[85px] h-[75px] bg-gradient-to-b from-stone-100 to-amber-50 border-2 border-amber-200 rounded-2xl p-1.5 shadow-md flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-amber-200 pb-0.5">
+                      <span class="text-[6px] font-bold text-amber-900"><i class="fa-solid fa-bed text-amber-600 mr-0.5"></i>수면베드</span>
+                      <span class="text-[5.5px] font-mono text-emerald-600">QUIET 🔕</span>
+                    </div>
+                    <!-- Memory foam cushion & blanket -->
+                    <div class="w-full h-8 bg-amber-200/60 rounded-lg p-1 flex items-center justify-between">
+                      <div class="w-4 h-3 bg-white rounded-full shadow-2xs"></div>
+                      <div class="w-8 h-5 bg-amber-400/80 rounded border border-amber-500/50 shadow-2xs"></div>
+                    </div>
+                    <div class="text-[5px] text-stone-600 text-center font-semibold">
+                      안대 &amp; 소음차단 헤드폰
+                    </div>
+                  </div>
+
+                  <!-- [Healing Interior 5] 4K 오션 수족관 벽면 디스플레이 -->
+                  <div class="absolute top-[156px] left-[172px] w-[108px] h-[75px] bg-gradient-to-b from-cyan-900 to-blue-950 border-2 border-cyan-400/80 rounded-2xl p-1.5 shadow-lg flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-cyan-700 pb-0.5">
+                      <span class="text-[6px] font-bold text-cyan-200"><i class="fa-solid fa-water text-cyan-400 mr-0.5"></i>자연의 소리 4K</span>
+                      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                    </div>
+                    <!-- Aquarium Animated Pixel Fishes -->
+                    <div class="flex items-center justify-around py-1">
+                      <span class="text-[8px] text-amber-400 animate-bounce"><i class="fa-solid fa-fish"></i></span>
+                      <span class="text-[9px] text-cyan-300 animate-pulse"><i class="fa-solid fa-shrimp"></i></span>
+                      <span class="text-[7px] text-rose-400 animate-bounce" style="animation-delay: 0.5s;"><i class="fa-solid fa-fish-fins"></i></span>
+                    </div>
+                    <div class="text-[5.5px] font-mono text-cyan-300 text-center bg-black/40 rounded py-0.2">
+                      🎧 432Hz 숙면 뇌파 사운드
+                    </div>
+                  </div>
                 </div>
                 <!-- Healing Room Doorway -->
                 <div id="door-healing" class="dept-doorway-portal doorway-threshold-mat absolute top-[552px] left-[432px] w-[80px] h-[26px] rounded-t-lg border-x-2 border-t-2 border-emerald-500 flex items-center justify-between px-1.5 shadow-md z-0 pointer-events-none">
@@ -3118,7 +3341,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
 
                 <!-- ROOM C (ZONE 5): [대표이사 집무실] CEO Executive Suite -->
-                <div class="rug-ceo absolute bottom-3 left-[633px] w-[295px] h-[255px] rounded-3xl p-3 border-2 border-amber-400/90 pointer-events-none shadow-xl z-0 flex flex-col justify-between">
+                <div class="rug-ceo absolute bottom-3 left-[633px] w-[295px] h-[255px] rounded-3xl p-3 border-2 border-amber-400/90 pointer-events-none shadow-xl z-0 overflow-hidden">
+                  <!-- Room Header -->
                   <div class="flex items-center justify-between pb-1.5 border-b border-amber-300/80">
                     <div class="flex items-center gap-1.5">
                       <span class="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center text-[11px] shadow-sm">
@@ -3133,11 +3357,97 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                       CHAIRMAN
                     </span>
                   </div>
+
+                  <!-- [CEO Interior 1] 대형 마호가니 원목 CEO 데스크 & 하이백 체어 -->
+                  <div class="absolute top-[48px] left-[70px] w-[155px] h-[78px] bg-gradient-to-b from-amber-950 via-stone-900 to-stone-950 border-2 border-amber-500/90 rounded-2xl p-1.5 shadow-2xl flex flex-col justify-between">
+                    <!-- Chairman High-Back Throne behind desk -->
+                    <div class="w-9 h-9 -top-3.5 left-[58px] absolute rounded-full bg-gradient-to-b from-red-950 to-stone-900 border-2 border-amber-400 shadow-xl flex items-center justify-center text-amber-300">
+                      <i class="fa-solid fa-crown text-[8px]"></i>
+                    </div>
+                    <!-- Desk Header Plaque & Revenue KPI -->
+                    <div class="flex items-center justify-between border-b border-amber-800 pb-0.5">
+                      <span class="px-1.5 py-0.2 rounded bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[6.5px] shadow-xs">
+                        대표이사 (Boss)
+                      </span>
+                      <span class="text-[6px] font-mono text-emerald-400 font-bold">매출 +340% 🚀</span>
+                    </div>
+                    <!-- Dual Ultra-wide Displays & Gold Seal Stamp -->
+                    <div class="flex items-center justify-around py-0.5">
+                      <div class="w-16 h-5.5 bg-slate-950 rounded border border-cyan-400/80 p-0.5 flex flex-col justify-around shadow-sm">
+                        <div class="h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full w-full"></div>
+                        <div class="text-[5px] font-mono text-cyan-300 text-center">전사 성과 대시보드</div>
+                      </div>
+                      <div class="flex flex-col items-center">
+                        <span class="w-4 h-4 rounded-full bg-red-700 border border-amber-400 flex items-center justify-center text-[7px] text-white shadow-xs" title="결재 직인">印</span>
+                        <span class="text-[4.5px] text-amber-300">전자결재</span>
+                      </div>
+                    </div>
+                    <!-- Desk Pad & Golden Pen -->
+                    <div class="w-full h-2 bg-amber-900/60 rounded border border-amber-600/50 flex items-center justify-between px-1">
+                      <span class="text-[5px] text-amber-200">몽블랑 만년필</span>
+                      <span class="w-2 h-1 bg-amber-400 rounded-2xs"></span>
+                    </div>
+                  </div>
+
+                  <!-- [CEO Interior 2] 대형 서가 & 황금 트로피 진열장 -->
+                  <div class="absolute top-[48px] left-[12px] w-[50px] h-[105px] bg-stone-900 border-2 border-amber-700/80 rounded-xl p-1 flex flex-col justify-between shadow-lg">
+                    <div class="text-[6px] font-bold text-amber-300 text-center border-b border-stone-800 pb-0.5">
+                      서가·훈장
+                    </div>
+                    <!-- Trophy Display Shelf -->
+                    <div class="w-full bg-amber-950/60 rounded p-1 flex flex-col items-center justify-center border border-amber-600/40">
+                      <i class="fa-solid fa-trophy text-amber-400 text-xs animate-pulse"></i>
+                      <span class="text-[4.5px] text-amber-200 font-bold mt-0.5">2026 대상</span>
+                    </div>
+                    <!-- Law Books & Patents -->
+                    <div class="flex justify-around items-end h-5 bg-stone-950 rounded px-0.5 pb-0.5">
+                      <div class="w-1.5 h-4 bg-amber-800 rounded-2xs"></div>
+                      <div class="w-1.5 h-3.5 bg-red-900 rounded-2xs"></div>
+                      <div class="w-1.5 h-4.5 bg-blue-900 rounded-2xs"></div>
+                      <div class="w-1.5 h-3 bg-stone-700 rounded-2xs"></div>
+                    </div>
+                    <div class="text-[5px] font-mono text-center text-slate-400">경영 백서</div>
+                  </div>
+
+                  <!-- [CEO Interior 3] 육중한 다이얼 금고 & 세계 시계 -->
+                  <div class="absolute top-[48px] left-[232px] w-[50px] h-[105px] bg-slate-900 border-2 border-amber-500/70 rounded-xl p-1 flex flex-col justify-between shadow-xl text-center">
+                    <div class="text-[6px] font-bold text-amber-300 border-b border-slate-800 pb-0.5">
+                      금고·시계
+                    </div>
+                    <!-- World Clocks -->
+                    <div class="space-y-0.5 text-[5px] font-mono bg-slate-950 rounded py-0.5">
+                      <div class="text-cyan-300">SEOUL 09:30</div>
+                      <div class="text-slate-400">NYC 20:30</div>
+                    </div>
+                    <!-- Heavy Dial Safe -->
+                    <div class="w-full bg-slate-950 border border-amber-400/50 rounded-lg p-1 flex flex-col items-center justify-around shadow-inner">
+                      <div class="w-4 h-4 rounded-full bg-amber-500 border border-amber-300 flex items-center justify-center text-[7px] text-slate-950 shadow-xs">
+                        <i class="fa-solid fa-gear"></i>
+                      </div>
+                      <div class="text-[5px] text-amber-400 font-bold mt-0.5">SECURITY 1급</div>
+                    </div>
+                  </div>
+
+                  <!-- [CEO Interior 4] VIP 접견용 가죽 소파 & 대리석 티테이블 -->
+                  <div class="absolute top-[148px] left-[28px] w-[238px] h-[78px] flex flex-col justify-between">
+                    <!-- Chesterfield Tufted Sofa -->
+                    <div class="w-[140px] h-[30px] mx-auto bg-gradient-to-r from-red-950 to-amber-950 border-2 border-amber-600 rounded-xl shadow-md flex items-center justify-around px-2 text-[6.5px] text-amber-200">
+                      <i class="fa-solid fa-couch"></i> <span>VIP 접견 체스터필드 소파</span> <i class="fa-solid fa-couch"></i>
+                    </div>
+                    <!-- Marble Coffee Table -->
+                    <div class="w-[110px] h-[22px] mx-auto bg-gradient-to-b from-slate-100 to-slate-200 border border-amber-400 rounded-lg shadow-md flex items-center justify-around px-2">
+                      <span class="text-[6px] text-amber-800"><i class="fa-solid fa-wine-glass"></i> 위스키</span>
+                      <span class="text-[6px] text-emerald-800"><i class="fa-solid fa-spa"></i> 서양란</span>
+                    </div>
+                    <div class="text-[5.5px] font-mono text-center text-amber-900 font-bold">
+                      대외 귀빈 &amp; 부서장 면담석
+                    </div>
+                  </div>
                 </div>
 
-
                 <!-- ROOM D (ZONE 8): [신규 즐길 공간 2] 레트로 아케이드 & 게임 라운지 (Retro Arcade & Play Lounge) -->
-                <div class="rug-game absolute bottom-3 right-4 w-[305px] h-[255px] rounded-3xl p-3 border-2 border-indigo-500/90 pointer-events-none shadow-xl z-0 flex flex-col justify-between">
+                <div class="rug-game absolute bottom-3 right-4 w-[305px] h-[255px] rounded-3xl p-3 border-2 border-indigo-500/90 pointer-events-none shadow-xl z-0 overflow-hidden">
+                  <!-- Room Header -->
                   <div class="flex items-center justify-between pb-1.5 border-b border-indigo-700/80">
                     <div class="flex items-center gap-1.5">
                       <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[11px] shadow-sm arcade-screen-active">
@@ -3151,6 +3461,129 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <span class="px-2 py-0.2 rounded-full text-[8px] font-black bg-pink-500 text-white border border-pink-400 arcade-screen-active">
                       GAME ON 🕹️
                     </span>
+                  </div>
+
+                  <!-- [Arcade Interior 1] 트윈 레트로 오락기 캐비닛 (스트리트파이터 & 팩맨) -->
+                  <div class="absolute top-[48px] left-[14px] w-[52px] h-[95px] bg-gradient-to-b from-purple-950 via-slate-900 to-slate-950 border-2 border-pink-500 rounded-xl p-1 shadow-2xl flex flex-col justify-between items-center" title="스트리트 파이터 II 레트로 오락기">
+                    <!-- Lighted Marquee -->
+                    <div class="w-full bg-pink-600 rounded px-1 py-0.5 text-center arcade-screen-active shadow-xs">
+                      <span class="text-[6px] font-black text-white">FIGHTER II</span>
+                    </div>
+                    <!-- CRT Scanline Screen -->
+                    <div class="w-full h-9 bg-slate-950 rounded border border-cyan-400 p-0.5 flex flex-col justify-around shadow-inner">
+                      <div class="flex justify-between items-center text-[7px]">
+                        <span class="text-rose-500 font-bold">KO!</span>
+                        <span class="text-cyan-400 font-bold text-[6px]">1P 9900</span>
+                      </div>
+                      <div class="h-0.5 bg-gradient-to-r from-yellow-400 to-rose-500 rounded-full w-full"></div>
+                    </div>
+                    <!-- Dual Joysticks & Buttons -->
+                    <div class="w-full bg-indigo-950 rounded p-1 flex justify-around items-center border border-indigo-700">
+                      <div class="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white/60"></div>
+                      <div class="flex gap-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                      </div>
+                    </div>
+                    <!-- Coin Return Slot -->
+                    <div class="w-4 h-1.5 bg-slate-800 rounded border border-slate-600 text-[4px] text-amber-300 text-center font-mono">100원</div>
+                  </div>
+
+                  <div class="absolute top-[48px] left-[72px] w-[52px] h-[95px] bg-gradient-to-b from-amber-950 via-slate-900 to-slate-950 border-2 border-yellow-400 rounded-xl p-1 shadow-2xl flex flex-col justify-between items-center" title="팩맨 & 갤러그 레트로 오락기">
+                    <!-- Lighted Marquee -->
+                    <div class="w-full bg-yellow-500 rounded px-1 py-0.5 text-center arcade-screen-active shadow-xs">
+                      <span class="text-[6px] font-black text-slate-950">PAC-RETRO</span>
+                    </div>
+                    <!-- CRT Screen -->
+                    <div class="w-full h-9 bg-slate-950 rounded border border-yellow-400 p-0.5 flex flex-col justify-around shadow-inner">
+                      <div class="flex justify-between items-center text-[6px]">
+                        <span class="text-yellow-400"><i class="fa-solid fa-ghost"></i></span>
+                        <span class="text-amber-300 font-mono">HIGH 8800</span>
+                      </div>
+                      <div class="h-0.5 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full w-full"></div>
+                    </div>
+                    <!-- Joysticks -->
+                    <div class="w-full bg-amber-950 rounded p-1 flex justify-around items-center border border-amber-700">
+                      <div class="w-2.5 h-2.5 rounded-full bg-yellow-400 border border-white/60"></div>
+                      <div class="flex gap-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      </div>
+                    </div>
+                    <div class="w-4 h-1.5 bg-slate-800 rounded border border-slate-600 text-[4px] text-amber-300 text-center font-mono">100원</div>
+                  </div>
+
+                  <!-- [Arcade Interior 2] 전자 피닉스 다트 머신 -->
+                  <div class="absolute top-[48px] left-[236px] w-[56px] h-[105px] bg-slate-900 border-2 border-indigo-500 rounded-xl p-1 flex flex-col justify-between shadow-2xl dart-target-active">
+                    <div class="text-[6px] font-bold text-indigo-300 text-center border-b border-indigo-800 pb-0.5">
+                      전자 다트 머신
+                    </div>
+                    <!-- Dart Target Ring -->
+                    <div class="w-9 h-9 mx-auto rounded-full bg-slate-950 border-2 border-rose-500 flex items-center justify-center shadow-lg">
+                      <div class="w-5 h-5 rounded-full bg-emerald-600 border border-amber-300 flex items-center justify-center">
+                        <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                      </div>
+                    </div>
+                    <!-- Score Board -->
+                    <div class="w-full bg-slate-950 border border-indigo-400/50 rounded p-0.5 text-center">
+                      <div class="text-[5px] text-indigo-300">SCORE</div>
+                      <div class="text-amber-400 font-mono text-[7px] font-black">TON 80! 🎯</div>
+                    </div>
+                    <div class="text-[5px] font-mono text-center text-slate-400">투척 라인 준수</div>
+                  </div>
+
+                  <!-- [Arcade Interior 3] 65인치 게이밍 TV & PS5 / 스위치 라운지 -->
+                  <div class="absolute top-[152px] left-[14px] w-[140px] h-[82px] bg-slate-950 border-2 border-indigo-500/80 rounded-2xl p-1.5 shadow-2xl flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-indigo-800 pb-0.5">
+                      <span class="text-[6px] font-bold text-pink-300"><i class="fa-solid fa-tv text-pink-400 mr-0.5"></i>PS5 &amp; Switch 존</span>
+                      <span class="text-[5.5px] font-mono text-cyan-300">144Hz HDR</span>
+                    </div>
+                    <!-- TV Screen with game graphics -->
+                    <div class="w-full h-8 bg-gradient-to-r from-indigo-900 to-purple-900 rounded border border-cyan-400/60 p-0.5 flex items-center justify-around">
+                      <span class="text-[8px] text-amber-300"><i class="fa-solid fa-car-side"></i></span>
+                      <span class="text-[6.5px] font-mono text-white font-black">MARIO KART 8</span>
+                      <span class="text-[8px] text-emerald-400"><i class="fa-solid fa-flag-checkered"></i></span>
+                    </div>
+                    <!-- PS5 Console & 2 Gaming Beanbags -->
+                    <div class="flex items-center justify-between px-1">
+                      <div class="flex gap-1.5 items-center">
+                        <!-- PS5 White Tower -->
+                        <div class="w-2.5 h-5 bg-white rounded-xs border border-slate-400 flex items-center justify-center">
+                          <span class="w-0.5 h-3 bg-cyan-400"></span>
+                        </div>
+                        <span class="text-[5.5px] text-slate-300 font-mono">PS5</span>
+                      </div>
+                      <div class="flex gap-1">
+                        <div class="w-6 h-5 rounded-lg bg-indigo-800 border border-pink-400 shadow-xs flex items-center justify-center text-[6px] text-pink-300">1P</div>
+                        <div class="w-6 h-5 rounded-lg bg-indigo-800 border border-cyan-400 shadow-xs flex items-center justify-center text-[6px] text-cyan-300">2P</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- [Arcade Interior 4] 카니발 팝콘 머신 & 4색 소다 분수 디스펜서 -->
+                  <div class="absolute top-[160px] left-[162px] w-[130px] h-[74px] bg-slate-900 border-2 border-pink-500/70 rounded-xl p-1.5 shadow-xl flex items-center justify-between">
+                    <!-- Popcorn Machine -->
+                    <div class="w-[56px] h-full bg-gradient-to-b from-red-600 to-rose-700 border border-amber-300 rounded-lg p-1 text-center shadow-md flex flex-col justify-between items-center">
+                      <span class="text-[5.5px] font-black text-amber-200">버터 팝콘</span>
+                      <div class="w-full h-6 bg-amber-100/90 rounded border border-amber-300 flex items-center justify-around flex-wrap p-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                      </div>
+                      <span class="text-[4.5px] text-white">무제한 리필</span>
+                    </div>
+                    <!-- Soda Dispenser -->
+                    <div class="w-[58px] h-full bg-slate-950 border border-slate-700 rounded-lg p-1 flex flex-col justify-between">
+                      <span class="text-[5.5px] font-black text-cyan-300 text-center">소다 디스펜서</span>
+                      <div class="flex justify-around py-0.5">
+                        <span class="w-2 h-4 bg-red-600 rounded-2xs text-[4px] text-white text-center">콜</span>
+                        <span class="w-2 h-4 bg-emerald-500 rounded-2xs text-[4px] text-white text-center">사</span>
+                        <span class="w-2 h-4 bg-purple-600 rounded-2xs text-[4px] text-white text-center">환</span>
+                        <span class="w-2 h-4 bg-amber-600 rounded-2xs text-[4px] text-white text-center">페</span>
+                      </div>
+                      <span class="text-[4.5px] text-slate-400 text-center font-mono">ICE COLD</span>
+                    </div>
                   </div>
                 </div>
                 <!-- Game Room Doorway -->
