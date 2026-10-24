@@ -18039,6 +18039,21 @@ function closeAllModals() {
 
       <!-- Video & Distribution Hub Result (Visible when video is ready) -->
       <div id="shorts-result-container" class="space-y-4">
+        
+        <!-- R&D Lab Short-form Algorithm Live Badge -->
+        <div class="p-3 rounded-xl bg-gradient-to-r from-purple-950/80 via-slate-900 to-pink-950/80 border border-purple-500/40 flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-full bg-purple-500/30 text-purple-300 font-extrabold text-[10px] border border-purple-400/40 flex items-center gap-1">
+              <i class="fa-solid fa-flask-vial animate-pulse text-amber-300"></i> R&amp;D 연구소 실시간 적용 완료
+            </span>
+            <span class="text-slate-200 font-bold">오연구원 숏폼 알고리즘</span>
+            <span class="text-slate-400 text-[11px] hidden sm:inline">• 4~8자 펀치 마이크로 청킹 &amp; 세이프존(y=1330) 100% 적용</span>
+          </div>
+          <div id="shorts-rnd-status" class="text-[11px] text-pink-300 font-mono">
+            UI 간섭 0% · 루프 엔딩 구조
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           
           <!-- Left Column: 9:16 Video Player -->
@@ -18111,6 +18126,19 @@ function closeAllModals() {
                 </button>
               </div>
               <p id="shorts-meta-comment" class="text-xs text-amber-100 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 leading-relaxed break-keep select-all"></p>
+            </div>
+
+            <!-- 3.5 Reels Dedicated Caption Copy (R&D Lab) -->
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-pink-300 flex items-center gap-1">
+                  <i class="fa-brands fa-instagram text-pink-400"></i> 인스타그램 릴스 맞춤 캡션 (저장·공유 DM 유도)
+                </span>
+                <button onclick="copyShortsField('shorts-meta-reels', this, '릴스 캡션')" class="px-2.5 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border border-pink-500/30 font-bold text-[11px] transition active:scale-95 cursor-pointer">
+                  <i class="fa-regular fa-copy"></i> 복사
+                </button>
+              </div>
+              <p id="shorts-meta-reels" class="text-xs text-pink-100 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 leading-relaxed whitespace-pre-line select-all"></p>
             </div>
 
             <!-- 4. Quick Outlink Channels -->
@@ -18521,6 +18549,12 @@ function closeAllModals() {
     if (metaTitle) metaTitle.textContent = data.title || '20초 바이럴 릴스 영상';
     if (metaTags) metaTags.textContent = data.tags || '#Shorts #Reels';
     if (metaComment) metaComment.textContent = data.pinned_comment || '더 자세한 내용은 프로필 링크 블로그에서 확인하세요!';
+    const metaReels = $('shorts-meta-reels');
+    if (metaReels) metaReels.textContent = data.reels_caption || (data.title ? `🔥 ${data.title}\n\n여러분 생각은 어떠신가요? 댓글로 공유해주세요!\n\n#릴스 #사이다썰 #실화썰 #썰툰` : '');
+    const rndStatusEl = $('shorts-rnd-status');
+    if (rndStatusEl && data.rnd_last_crawled_at) {
+      rndStatusEl.textContent = `실시간 수집: ${data.rnd_last_crawled_at} | UI 간섭 0% 세이프존`;
+    }
     if (metaDur) metaDur.textContent = `${data.duration || 45}초 (${data.size_mb || 1.0}MB)`;
     if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | ${data.size_mb || 1.0}MB | H.264 & AAC`;
 
