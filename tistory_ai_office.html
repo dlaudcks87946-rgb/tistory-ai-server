@@ -2562,6 +2562,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 <span class="hidden sm:inline">쿠팡 글쓰기 비법</span>
                 <span class="sm:hidden">비법</span>
               </button>
+                            <!-- YouTube Shorts & Instagram Reels Generator Button -->
+              <button id="btn-open-shorts-studio" onclick="openShortsStudio()" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-700 hover:to-pink-700 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-pink-500/25 transition active:scale-95 flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer" title="현재 블로그 주제로 40초 유튜브 숏폼 &amp; 인스타 릴스 동영상 원클릭 자동 제작">
+                <i class="fa-solid fa-clapperboard text-yellow-300 animate-pulse"></i>
+                <span>🎬 40초 숏폼 영상 제작</span>
+              </button>
               <button id="btn-start-work" class="px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm shadow-md shadow-orange-500/25 transition active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap glow-pulse" title="회의 애니메이션 후 크롬을 열어 티스토리에 자동 포스팅">
                 <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
                 <span>업무 지시 &amp; 티스토리 자동 발행</span>
@@ -4019,17 +4024,17 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                   </div>
                 </div>
 
-                <div class="absolute top-[178px] left-[1126px] w-[88px] h-[105px] bg-slate-900 border-2 border-purple-400 rounded-xl p-1.5 shadow-md flex flex-col justify-between z-0 design-glow-active">
+                <div id="media-shorts-preview-board" onclick="openShortsStudio()" class="absolute top-[178px] left-[1126px] w-[88px] h-[105px] bg-slate-900 border-2 border-purple-400 rounded-xl p-1.5 shadow-md flex flex-col justify-between z-0 design-glow-active cursor-pointer hover:border-pink-400 hover:scale-105 transition" title="클릭: 40초 숏폼(Shorts/Reels) 영상 제작 스튜디오 열기">
                   <div class="text-[7.5px] font-black text-purple-200 border-b border-purple-700 pb-0.5 flex items-center justify-between">
                     <span>🎬 숏폼릴스</span>
-                    <span class="w-1 h-1 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
                   </div>
                   <div class="text-[6.5px] font-mono text-purple-200 space-y-0.5">
-                    <div>30초 영상</div>
-                    <div>시연 GIF</div>
+                    <div>40초 HD</div>
+                    <div>음성더빙</div>
                   </div>
-                  <div class="text-[6px] font-mono text-cyan-300 text-center bg-black/40 rounded py-0.5">
-                    RENDER ON
+                  <div class="text-[6px] font-mono text-pink-300 font-bold text-center bg-purple-950/80 border border-purple-500/40 rounded py-0.5">
+                    ▶ OPEN
                   </div>
                 </div>
 
@@ -17876,4 +17881,436 @@ function closeAllModals() {
 
     
   
+
+<!-- ========================================== -->
+<!-- 🎬 40초 유튜브 숏폼 & 릴스 제작 스튜디오 모달 -->
+<!-- ========================================== -->
+<div id="modal-shorts-studio" onclick="if(event.target === this) closeShortsStudio()" style="cursor: pointer;" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+  <div onclick="event.stopPropagation()" style="cursor: default;" class="bg-slate-900 border border-pink-500/40 rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+    
+    <!-- Modal Header -->
+    <div class="bg-gradient-to-r from-purple-950 via-pink-950 to-slate-950 px-6 py-4 border-b border-pink-500/30 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-xl border border-pink-500/40 shadow-inner">
+          <i class="fa-solid fa-clapperboard animate-pulse"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="font-black text-base sm:text-lg text-white">🎬 AI 40초 숏폼 영상 제작 스튜디오</h3>
+            <span class="px-2 py-0.5 rounded-full text-[10px] bg-gradient-to-r from-pink-500 to-purple-500 text-white font-extrabold shadow-sm">YouTube Shorts &amp; Reels</span>
+          </div>
+          <p class="text-xs text-pink-200/80">배PD(비디오 디렉터) &amp; 신디자이너가 1080x1920 세로형 HD 비디오, AI 한국어 음성 더빙, 자막을 100% 무료 자동 생성합니다.</p>
+        </div>
+      </div>
+      <button onclick="closeShortsStudio()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-sm transition">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-5 sm:p-6 space-y-5 overflow-y-auto text-slate-200">
+      
+      <!-- Input Controls Section -->
+      <div class="bg-slate-950/60 rounded-2xl p-4 border border-slate-800 space-y-3">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div class="flex-1 space-y-1">
+            <label class="block text-xs font-bold text-pink-300">
+              <i class="fa-solid fa-heading mr-1"></i>숏폼 제작 주제 (블로그 포스팅 주제 연동)
+            </label>
+            <input id="shorts-input-topic" type="text" placeholder="예: 국민행복카드 바우처 혜택 총정리: 첫만남이용권 200만원 사용처" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white text-xs sm:text-sm font-medium outline-hidden transition">
+          </div>
+          <div class="sm:w-64 space-y-1">
+            <label class="block text-xs font-bold text-slate-400">
+              <i class="fa-solid fa-link mr-1"></i>유입용 티스토리 블로그 주소
+            </label>
+            <input id="shorts-input-blog" type="text" placeholder="https://your-blog.tistory.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white text-xs outline-hidden transition">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between flex-wrap gap-2 pt-1">
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold"><i class="fa-solid fa-check"></i> 비용 0원</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1 text-cyan-400 font-semibold"><i class="fa-solid fa-microphone"></i> MS Edge-TTS 인공지능 음성</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1 text-pink-400 font-semibold"><i class="fa-solid fa-mobile-screen"></i> 1080x1920 세로형 9:16</span>
+          </div>
+          <button id="btn-render-shorts" onclick="generateShortsVideo()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-500 hover:to-rose-400 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-pink-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+            <span>지금 40초 숏폼 즉시 제작</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Rendering Progress Box (Visible while generating) -->
+      <div id="shorts-rendering-box" class="hidden bg-purple-950/40 border border-purple-500/30 rounded-2xl p-4 text-center space-y-3">
+        <div class="flex items-center justify-center gap-3">
+          <i class="fa-solid fa-circle-notch fa-spin text-2xl text-pink-400"></i>
+          <span id="shorts-status-text" class="font-extrabold text-sm sm:text-base text-pink-200">배PD &amp; 신디자이너가 40초 숏폼 영상을 렌더링하고 있습니다...</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-[11px] font-mono">
+          <div id="step-script" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
+            <div>1. 5단계 대본</div>
+            <div class="font-bold text-pink-300 mt-0.5">작성 중...</div>
+          </div>
+          <div id="step-audio" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
+            <div>2. Edge-TTS 음성</div>
+            <div class="font-bold text-slate-500 mt-0.5">대기 중</div>
+          </div>
+          <div id="step-render" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
+            <div>3. FFmpeg 인코딩</div>
+            <div class="font-bold text-slate-500 mt-0.5">대기 중</div>
+          </div>
+          <div id="step-finish" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
+            <div>4. MP4 완성</div>
+            <div class="font-bold text-slate-500 mt-0.5">대기 중</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video & Distribution Hub Result (Visible when video is ready) -->
+      <div id="shorts-result-container" class="space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          
+          <!-- Left Column: 9:16 Video Player -->
+          <div class="lg:col-span-5 flex flex-col items-center gap-3 bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+            <div class="w-full flex items-center justify-between text-xs font-bold text-slate-400 pb-1 border-b border-slate-800">
+              <span class="flex items-center gap-1.5 text-pink-400">
+                <i class="fa-solid fa-play"></i> 실시간 비디오 프리뷰
+              </span>
+              <span id="shorts-meta-duration" class="px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 font-mono text-[10px]">48.2초</span>
+            </div>
+            
+            <div class="w-full relative flex items-center justify-center rounded-2xl overflow-hidden bg-black border-2 border-pink-500/40 shadow-2xl shadow-pink-900/30" style="aspect-ratio: 9/16; max-height: 440px;">
+              <video id="shorts-player" controls playsinline loop class="w-full h-full object-contain bg-black"></video>
+            </div>
+
+            <a id="shorts-btn-download" href="#" download="tistory_shorts.mp4" class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-600/30 transition active:scale-95">
+              <i class="fa-solid fa-cloud-arrow-down text-amber-300"></i>
+              <span>📥 40초 숏폼 MP4 다운로드</span>
+            </a>
+            <div id="shorts-file-stats" class="text-[11px] text-slate-400 font-mono text-center">
+              1080x1920 세로형 HD | libx264 + AAC 음성
+            </div>
+          </div>
+
+          <!-- Right Column: Metadata & One-Click Copy Hub -->
+          <div class="lg:col-span-7 flex flex-col gap-3">
+            
+            <!-- 1. YouTube & Reels Title Copy -->
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-pink-300 flex items-center gap-1">
+                  <i class="fa-brands fa-youtube text-red-500"></i> 유튜브 쇼츠 / 릴스 추천 제목
+                </span>
+                <button onclick="copyShortsField('shorts-meta-title', this, '제목')" class="px-2.5 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border border-pink-500/30 font-bold text-[11px] transition active:scale-95 cursor-pointer">
+                  <i class="fa-regular fa-copy"></i> 복사
+                </button>
+              </div>
+              <p id="shorts-meta-title" class="text-xs sm:text-sm font-bold text-white bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 break-keep select-all"></p>
+            </div>
+
+            <!-- 2. Optimized Tags Copy -->
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-cyan-300 flex items-center gap-1">
+                  <i class="fa-solid fa-hashtag text-cyan-400"></i> 바이럴 알고리즘 해시태그
+                </span>
+                <button onclick="copyShortsField('shorts-meta-tags', this, '태그')" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 font-bold text-[11px] transition active:scale-95 cursor-pointer">
+                  <i class="fa-regular fa-copy"></i> 복사
+                </button>
+              </div>
+              <p id="shorts-meta-tags" class="text-xs font-mono text-cyan-200 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 break-all select-all"></p>
+            </div>
+
+            <!-- 3. Pinned Comment for Blog Inflow Copy -->
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-300 flex items-center gap-1">
+                  <i class="fa-solid fa-thumbtack text-amber-400"></i> 블로그 유입용 고정 댓글 문구
+                </span>
+                <button onclick="copyShortsField('shorts-meta-comment', this, '댓글')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 font-bold text-[11px] transition active:scale-95 cursor-pointer">
+                  <i class="fa-regular fa-copy"></i> 복사
+                </button>
+              </div>
+              <p id="shorts-meta-comment" class="text-xs text-amber-100 bg-slate-900 px-3 py-2 rounded-lg border border-slate-800 leading-relaxed break-keep select-all"></p>
+            </div>
+
+            <!-- 4. Quick Outlink Channels -->
+            <div class="bg-gradient-to-r from-slate-950 to-slate-900 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between flex-wrap gap-2 text-xs">
+              <span class="text-slate-400 font-bold">🚀 완성 영상 즉시 업로드 채널:</span>
+              <div class="flex items-center gap-2">
+                <a href="https://studio.youtube.com" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/40 font-bold flex items-center gap-1 transition">
+                  <i class="fa-brands fa-youtube"></i> 유튜브 스튜디오
+                </a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg bg-pink-600/20 hover:bg-pink-600/30 text-pink-300 border border-pink-500/40 font-bold flex items-center gap-1 transition">
+                  <i class="fa-brands fa-instagram"></i> 인스타그램
+                </a>
+              </div>
+            </div>
+
+            <!-- 5. 5-Scene Script Timeline -->
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-list-ol text-purple-400"></i> 5단계 바이럴 대본 구성표
+              </div>
+              <div id="shorts-timeline-scenes" class="space-y-1.5 max-h-48 overflow-y-auto text-xs"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="bg-slate-950 px-6 py-3.5 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+      <span class="flex items-center gap-1.5">
+        <i class="fa-solid fa-sparkles text-pink-400"></i>
+        <span>Shorts &amp; Reels 알고리즘 바이럴 규격 (1080x1920 9:16, Edge-TTS 더빙, 중앙 집중 자막) 100% 준수</span>
+      </span>
+      <button onclick="closeShortsStudio()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition cursor-pointer">
+        닫기
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ==========================================
+// 🎬 40초 숏폼(YouTube Shorts & Reels) 스튜디오 제어 엔진
+// ==========================================
+(function() {
+  const $ = id => document.getElementById(id);
+  let latestShortsData = null;
+
+  // 로컬 스토리지에서 이전 생성 데이터 복원
+  try {
+    const saved = localStorage.getItem('tistory_latest_shorts');
+    if (saved) latestShortsData = JSON.parse(saved);
+  } catch(e) {}
+
+  window.openShortsStudio = function() {
+    const modal = $('modal-shorts-studio');
+    if (!modal) return;
+    
+    // 블로그 포스팅 주제가 설정되어 있다면 자동으로 숏폼 주제에 동기화
+    const topicInput = $('topic-input');
+    const shortsTopicInput = $('shorts-input-topic');
+    if (shortsTopicInput && (!shortsTopicInput.value || shortsTopicInput.value.trim() === '')) {
+      if (topicInput && topicInput.value.trim()) {
+        shortsTopicInput.value = topicInput.value.trim();
+      } else {
+        shortsTopicInput.value = "2026 정부 청년 지원금 및 혜택 신청 총정리";
+      }
+    }
+
+    // 블로그 URL 동기화
+    const blogInput = $('shorts-input-blog');
+    if (blogInput && !blogInput.value) {
+      try {
+        const savedUrl = localStorage.getItem('tistory_blog_url') || '';
+        blogInput.value = savedUrl || 'https://tistory-ai-corp.tistory.com';
+      } catch(e) {
+        blogInput.value = 'https://tistory-ai-corp.tistory.com';
+      }
+    }
+
+    // 이전 데이터가 있다면 렌더링
+    if (latestShortsData) {
+      renderShortsResult(latestShortsData);
+    } else {
+      // 기본 샘플 데이터 표시 (첫만남이용권)
+      renderShortsResult({
+        web_url: '/output/shorts/shorts_국민행복카드_바우처_혜택_총정리_첫만_1792860111.mp4',
+        filename: 'shorts_국민행복카드_바우처_혜택_총정리_첫만_1792860111.mp4',
+        duration: 48.2,
+        size_mb: 1.02,
+        title: '국민행복카드 바우처 혜택 총정리: 첫만남이용권 200만원 사용처 핵심 요약 #Shorts',
+        tags: '#국민행복카드 #바우처혜택 #첫만남이용권 #정부지원금 #Shorts #Reels',
+        pinned_comment: '📌 더 자세한 신청 방법과 꿀팁은 고정 댓글 링크(블로그)에서 확인하세요! 👉 https://tistory-ai-corp.tistory.com',
+        scenes: [
+          { badge: '🚨 충격 반전', narration: '국민행복카드 바우처 혜택 총정리, 아직도 제대로 모르고 계셨나요?' },
+          { badge: '💡 핵심 포인트', narration: '첫만남이용권 200만원 사용처의 가장 중요한 핵심은 바로 신청 기한과 지원 조건입니다.' },
+          { badge: '⚠️ 주의사항', narration: '단, 신청 기간이 지나면 소멸되므로 반드시 기한 내에 신청하셔야 합니다.' },
+          { badge: '🔑 시크릿 꿀팁', narration: '정부24 및 온라인 간편 신청을 통해 3분 만에 신청을 완료할 수 있습니다.' },
+          { badge: '👉 프로필 링크', narration: '더 상세한 신청 절차와 실시간 혜택은 프로필 링크 블로그 글에서 바로 확인하세요!' }
+        ]
+      });
+    }
+
+    modal.classList.remove('hidden');
+    try { if (window.sound && window.sound.playChime) sound.playChime(); } catch(e) {}
+  };
+
+  window.closeShortsStudio = function() {
+    const modal = $('modal-shorts-studio');
+    if (modal) modal.classList.add('hidden');
+    const player = $('shorts-player');
+    if (player) {
+      player.pause();
+    }
+  };
+
+  window.generateShortsVideo = async function() {
+    const topic = $('shorts-input-topic').value.trim() || '2026 정부 지원금 혜택 총정리';
+    const blogUrl = $('shorts-input-blog').value.trim() || '';
+    const btn = $('btn-render-shorts');
+    const renderBox = $('shorts-rendering-box');
+    const statusText = $('shorts-status-text');
+
+    btn.disabled = true;
+    btn.classList.add('opacity-50', 'cursor-not-allowed');
+    renderBox.classList.remove('hidden');
+    statusText.textContent = `🎬 배PD & 신디자이너가 '${topic}' 40초 숏폼 영상을 제작하고 있습니다...`;
+
+    // 스텝 표시 초기화
+    const updateStep = (id, text, isDone, isActive) => {
+      const el = $(id);
+      if (!el) return;
+      const sub = el.querySelector('div:last-child');
+      if (sub) sub.textContent = text;
+      el.className = isDone ? 'p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/50 text-emerald-300' :
+                     isActive ? 'p-2 rounded-lg bg-pink-950/60 border border-pink-500 text-pink-300 animate-pulse' :
+                     'p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400';
+    };
+
+    updateStep('step-script', '작성 중...', false, true);
+    updateStep('step-audio', '대기 중', false, false);
+    updateStep('step-render', '대기 중', false, false);
+    updateStep('step-finish', '대기 중', false, false);
+
+    const apiBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? '' : 'http://localhost:8080';
+
+    try {
+      // 10초 후 음성 더빙 단계로 시각적 전환
+      setTimeout(() => {
+        updateStep('step-script', '완료 ✔', true, false);
+        updateStep('step-audio', '합성 중 (Edge-TTS)...', false, true);
+      }, 3500);
+
+      // 20초 후 비디오 합성 단계로 전환
+      setTimeout(() => {
+        updateStep('step-audio', '완료 ✔', true, false);
+        updateStep('step-render', 'FFmpeg 인코딩 중...', false, true);
+      }, 8000);
+
+      const response = await fetch(`${apiBase}/api/shorts/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: topic, blog_url: blogUrl })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: 영상 제작 중 오류가 발생했습니다.`);
+      }
+
+      const data = await response.json();
+      if (!data.success && data.error) {
+        throw new Error(data.error);
+      }
+
+      updateStep('step-script', '완료 ✔', true, false);
+      updateStep('step-audio', '완료 ✔', true, false);
+      updateStep('step-render', '완료 ✔', true, false);
+      updateStep('step-finish', '제작 완료 🎉', true, false);
+
+      latestShortsData = data;
+      try { localStorage.setItem('tistory_latest_shorts', JSON.stringify(data)); } catch(e) {}
+
+      renderShortsResult(data);
+
+      try {
+        if (typeof addLog === 'function') {
+          addLog('배PD', `🎬 [40초 숏폼 제작 완료] '${topic}' 1080x1920 세로 영상 및 메타데이터를 성공적으로 생성했습니다!`, 'text-pink-400');
+        }
+        if (typeof showToast === 'function') {
+          showToast('🎬 40초 숏폼 영상 제작이 완료되었습니다!', 'success');
+        }
+      } catch(e) {}
+
+      statusText.textContent = `✅ 40초 숏폼 영상이 성공적으로 완성되었습니다!`;
+      setTimeout(() => {
+        renderBox.classList.add('hidden');
+      }, 2500);
+
+    } catch (err) {
+      console.error('Shorts generation error:', err);
+      statusText.textContent = `⚠️ 오류: ${err.message || '영상 생성에 실패했습니다.'}`;
+      try {
+        if (typeof showToast === 'function') showToast(`영상 생성 실패: ${err.message}`, 'error');
+        if (typeof addLog === 'function') addLog('배PD', `⚠️ 숏폼 제작 실패: ${err.message}`, 'text-rose-400');
+      } catch(e) {}
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+  };
+
+  function renderShortsResult(data) {
+    if (!data) return;
+    const player = $('shorts-player');
+    const dlLink = $('shorts-btn-download');
+    const metaTitle = $('shorts-meta-title');
+    const metaTags = $('shorts-meta-tags');
+    const metaComment = $('shorts-meta-comment');
+    const metaDur = $('shorts-meta-duration');
+    const fileStats = $('shorts-file-stats');
+    const timeline = $('shorts-timeline-scenes');
+
+    const videoSrc = data.web_url || (data.filename ? `/output/shorts/${data.filename}` : '');
+    if (player && videoSrc) {
+      player.src = videoSrc;
+      player.load();
+    }
+    if (dlLink && videoSrc) {
+      dlLink.href = videoSrc;
+      dlLink.download = data.filename || 'tistory_shorts_1080x1920.mp4';
+    }
+    if (metaTitle) metaTitle.textContent = data.title || '40초 숏폼 영상';
+    if (metaTags) metaTags.textContent = data.tags || '#Shorts #Reels';
+    if (metaComment) metaComment.textContent = data.pinned_comment || '더 자세한 내용은 프로필 링크 블로그에서 확인하세요!';
+    if (metaDur) metaDur.textContent = `${data.duration || 45}초 (${data.size_mb || 1.0}MB)`;
+    if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | ${data.size_mb || 1.0}MB | H.264 & AAC`;
+
+    if (timeline && data.scenes && Array.isArray(data.scenes)) {
+      timeline.innerHTML = '';
+      data.scenes.forEach((sc, idx) => {
+        const item = document.createElement('div');
+        item.className = 'p-2 rounded-lg bg-slate-900 border border-slate-800 flex items-start gap-2.5';
+        item.innerHTML = `
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 whitespace-nowrap">${sc.badge || `씬 ${idx+1}`}</span>
+          <span class="text-slate-300 text-[11px] leading-relaxed">${sc.narration || ''}</span>
+        `;
+        timeline.appendChild(item);
+      });
+    }
+  }
+
+  window.copyShortsField = function(elementId, btnElement, fieldName) {
+    const el = $(elementId);
+    if (!el) return;
+    const text = el.textContent || el.innerText || '';
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const origText = btnElement.innerHTML;
+      btnElement.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> 복사됨';
+      btnElement.classList.add('bg-emerald-500/30', 'text-emerald-300');
+      try {
+        if (typeof showToast === 'function') showToast(`[${fieldName}] 클립보드에 복사되었습니다!`, 'success');
+      } catch(e) {}
+      setTimeout(() => {
+        btnElement.innerHTML = origText;
+        btnElement.classList.remove('bg-emerald-500/30', 'text-emerald-300');
+      }, 1800);
+    }).catch(err => {
+      console.error('Copy failed:', err);
+      try { if (typeof showToast === 'function') showToast('복사에 실패했습니다.', 'error'); } catch(e) {}
+    });
+  };
+
+})();
+</script>
+
 </body></html>

@@ -1098,6 +1098,25 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 "success": True,
                 "gemini_api_key": gemini_key
             }).encode("utf-8"))
+        elif self.path.startswith("/output/"):
+            clean_path = self.path.split("?")[0].lstrip("/")
+            file_disk_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), clean_path)
+            if os.path.exists(file_disk_path) and os.path.isfile(file_disk_path):
+                self.send_response(200)
+                if file_disk_path.endswith(".mp4"):
+                    self.send_header("Content-Type", "video/mp4")
+                elif file_disk_path.endswith(".json"):
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                else:
+                    self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Length", str(os.path.getsize(file_disk_path)))
+                self._send_cors_headers()
+                self.end_headers()
+                with open(file_disk_path, "rb") as f:
+                    self.wfile.write(f.read())
+            else:
+                self.send_response(404)
+                self.end_headers()
         else:
             super().do_GET()
 
@@ -1119,6 +1138,33 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 "success": True,
                 "data": updated_state
             }, ensure_ascii=False).encode("utf-8"))
+            return
+
+        if self.path == "/api/shorts/generate":
+            content_length = int(self.headers.get("Content-Length", 0))
+            post_data = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            try:
+                payload = json.loads(post_data)
+            except Exception:
+                payload = {}
+            topic = payload.get("topic", "2026 정부 지원금 혜택 총정리")
+            blog_url = payload.get("blog_url", f"https://{self.app_instance.config.TISTORY_BLOG_NAME}.tistory.com/" if self.app_instance else "")
+            print(f"\n[웹 대시보드] 🎬 숏폼 영상 제작 요청 감지! 주제: '{topic}'")
+            try:
+                from shorts_pipeline import generate_shorts_pipeline
+                result = generate_shorts_pipeline(topic=topic, blog_url=blog_url)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self._send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(result, ensure_ascii=False).encode("utf-8"))
+            except Exception as e:
+                print(f"[숏폼 오류] {e}")
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self._send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False).encode("utf-8"))
             return
 
         if self.path == "/api/publish":

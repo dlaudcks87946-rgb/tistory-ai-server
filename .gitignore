@@ -20,3 +20,6 @@ chrome_session/
 # IDE
 .vscode/
 .idea/
+
+# Media & Render Outputs
+output/
