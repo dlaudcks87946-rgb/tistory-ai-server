@@ -4456,15 +4456,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 <p style="font-size:15px;margin-bottom:14px;line-height:1.85;">새로운 기술을 도입할 때 가장 경계해야 할 것은 '모든 도구를 한꺼번에 다 쓰려는 완벽주의'입니다. 오늘 소개해 드린 4대 핵심 도구 중 가장 마음에 드는 1가지를 골라, 내일 아침 출근 직후 이메일 초안 작성이나 회의록 요약부터 가볍게 시작해 보세요. 하루 1시간이 절약되고 저녁이 있는 삶이 시작됩니다!</p>
 
 
-        <div style="background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;padding:18px 20px;margin:28px 0;">
-          <h3 style="margin:0 0 10px 0;font-size:16px;font-weight:900;color:#1e293b;display:flex;align-items:center;gap:6px;">
-            <i class="fa-solid fa-bookmark text-indigo-600"></i> 함께 읽으면 유익한 연관 실전 가이드
-          </h3>
-          <ul style="margin:0;padding-left:20px;color:#475569;font-size:13.5px;line-height:1.85;">
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 심층 매뉴얼로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[다음 편] 2026 실전 핵심 매뉴얼: 실패 없는 3단계 심층 분석 ➔</a></li>
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 꿀팁으로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[심층 분석] 초보자가 가장 많이 하는 실수 3가지와 시간·비용 절약 꿀팁 ➔</a></li>
-          </ul>
-        </div>
+        
 </div>
 </div>
 
@@ -9520,17 +9512,7 @@ if __name__ == &quot;__main__&quot;:
       const P = (text) => `<p style="font-size:15px;margin-bottom:14px;line-height:1.85;">${text}</p>`;
 
       // [독자용 자연스러운 연관 추천 가이드 실로 링크]
-      const siloLinkBox = `
-        <div style="background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;padding:18px 20px;margin:28px 0;">
-          <h3 style="margin:0 0 10px 0;font-size:16px;font-weight:900;color:#1e293b;display:flex;align-items:center;gap:6px;">
-            <i class="fa-solid fa-bookmark text-indigo-600"></i> 함께 읽으면 유익한 연관 실전 가이드
-          </h3>
-          <ul style="margin:0;padding-left:20px;color:#475569;font-size:13.5px;line-height:1.85;">
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 심층 매뉴얼로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[다음 편] 2026 실전 핵심 매뉴얼: 실패 없는 3단계 심층 분석 ➔</a></li>
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 꿀팁으로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[심층 분석] 초보자가 가장 많이 하는 실수 3가지와 시간·비용 절약 꿀팁 ➔</a></li>
-          </ul>
-        </div>
-      `;
+      const siloLinkBox = "";
 
       // 1. IT / AI / 테크 & 생산성 전문 콘텐츠
       if (cat === 'tech_ai') {
@@ -10031,6 +10013,7 @@ ${siloLinkBox}
 
       renderComprehensiveMeetingMinutes(topic);
       try { injectLiveRndIntoArticle(null, true); } catch (e) { console.warn(e); }
+      try { injectMediaVisualBlocks(topic); } catch (e) { console.warn(e); }
       showToast("정부장이 5개 부서 종합 취합 결재 서류를 완성했습니다!", "success");
       if (typeof OfficePersistenceManager !== "undefined") OfficePersistenceManager.saveState();
     }
@@ -10252,7 +10235,8 @@ ${siloLinkBox}
           txt.includes('[R&D 솔직 단점 분석]') ||
           txt.includes('검색엔진 0순위 지식스니펫') ||
           txt.includes('신뢰도 500% 및 체류시간 3분 40초 방어 완료') ||
-          txt.includes('체류시간 3분 방어 완료')
+          txt.includes('체류시간 3분 방어 완료') ||
+          txt.includes('함께 읽으면 유익한 연관 실전 가이드')
         ) {
           if (el.tagName === 'DIV' || el.tagName === 'SECTION') {
             el.remove();
@@ -12969,36 +12953,250 @@ async function triggerRealPublish(payloadData = null) {
     window.ShortformVideoEngine = ShortformVideoEngine;
 
     // 미디어&비주얼팀 산출물을 블로그 본문에도 자동 삽입 (인터랙티브 9:16 숏폼 플레이어 포함)
+    function buildTopicVisualData(topic) {
+      const clean = (topic || "2026 핵심 트렌드 완벽 가이드").trim();
+      const esc = (str) => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+      // Split title into 2 readable lines for 16:9 thumbnail
+      let line1 = clean;
+      let line2 = "핵심 기준 정리 & 누구나 따라하는 실전 가이드";
+      if (clean.includes(':')) {
+        const parts = clean.split(':');
+        line1 = parts[0].trim();
+        line2 = parts.slice(1).join(':').trim();
+      } else if (clean.length > 20) {
+        const words = clean.split(' ');
+        const mid = Math.ceil(words.length / 2);
+        line1 = words.slice(0, mid).join(' ');
+        line2 = words.slice(mid).join(' ');
+      }
+      if (line1.length > 26) line1 = line1.slice(0, 25) + '…';
+      if (line2.length > 30) line2 = line2.slice(0, 29) + '…';
+
+      const isPension = /기초연금|소득인정액|노령연금|국민연금|단독가구|부부가구|재산|연금/i.test(clean);
+      const isPolicy = !isPension && /청년|지원금|환급금|보조금|수당|복지|정책|장려금|연말정산|세금|도약계좌|패스/i.test(clean);
+      const isShop = /청소기|쿠팡|가성비|추천|비교|로켓배송|핫딜|단점|솔직후기|의자|텐트|모니터|헤드폰|에어프라이어|머신|워치|체어|자전거|키보드|식기세척기/i.test(clean);
+
+      let theme = {
+        bgStart: "#0f172a",
+        bgEnd: "#1e3a8a",
+        accent: "#38bdf8",
+        badgeBg: "#0284c7",
+        badgeText: "2026 핵심 트렌드 & 실전 가이드",
+        pills: ["핵심 도구·기능 비교", "3단계 실전 적용법", "초보자 체크리스트"],
+        chartTitle: "핵심 영역별 도입 효과 & 업무 효율 비교 데이터 시각화",
+        chartSub: "실전 적용 전·후 시간 단축 및 핵심 성과 지표 비교",
+        bars: [
+          { label: "초안 작성·요약 속도", val: "82% 향상", pct: 82, color: "#0284c7", desc: "반복 문서·자료 정리 시간 대폭 단축" },
+          { label: "데이터 분석·정리 정확도", val: "88% 향상", pct: 88, color: "#2563eb", desc: "핵심 수치 요약 및 비교표 자동 구조화" },
+          { label: "일정·업무 루틴 자동화", val: "76% 향상", pct: 76, color: "#4f46e5", desc: "일일 체크리스트 및 알림 자동 연동" },
+          { label: "전체 실무 체감 생산성", val: "300% 달성", pct: 94, color: "#0d9488", desc: "3단계 실전 루틴 정착 시 종합 효과" }
+        ],
+        summaryCards: [
+          { step: "STEP 01", title: "핵심 도구·기준 선정", body: "내 목적에 맞는 1순위 기준 확인" },
+          { step: "STEP 02", title: "맞춤 수치·설정 입력", body: "표준 템플릿·모의 기준표 대입" },
+          { step: "STEP 03", title: "실전 적용 & 최종 점검", body: "체크리스트 기반 누락 항목 방지" }
+        ]
+      };
+
+      if (isPension) {
+        theme = {
+          bgStart: "#064e3b",
+          bgEnd: "#0f766e",
+          accent: "#34d399",
+          badgeBg: "#059669",
+          badgeText: "2026 보건복지 기준 · 기초연금 모의계산 가이드",
+          pills: ["65세 이상 단독가구 기준", "재산·금융 공제 반영", "소득인정액 3단계 계산"],
+          chartTitle: "65세 이상 단독가구 기초연금 소득인정액 산정 구조 & 핵심 공제 데이터 시각화",
+          chartSub: "소득인정액 = ① 소득평가액 + ② 재산의 소득환산액 (선정기준액 이하 시 수급 대상)",
+          bars: [
+            { label: "근로소득 기본공제 (상시근로)", val: "112만 원 공제 후 30% 추가감액", pct: 85, color: "#059669", desc: "일용근로·공공일자리·자활근로 소득은 전액 비포함(0원)" },
+            { label: "일반재산 기본재산액 공제", val: "지역별 5,300만~1억 3,500만 차감", pct: 78, color: "#0d9488", desc: "대도시 1억3,500만 / 중소도시 8,500만 / 농어촌 7,250만 원(기준 확인)" },
+            { label: "금융재산 기본공제 혜택", val: "가구당 2,000만 원 기본 차감", pct: 72, color: "#0284c7", desc: "예금·적금·주식 등 합산액에서 2,000만 원 공제 후 산정" },
+            { label: "재산의 월 소득환산율", val: "연 4% ÷ 12개월 (월 0.33%)", pct: 64, color: "#4f46e5", desc: "(일반+금융재산 - 기본공제 - 부채) × 4% ÷ 12개월로 환산" }
+          ],
+          summaryCards: [
+            { step: "공식 01 · 소득평가액", title: "근로·기타소득 공제", body: "근로소득 기본공제 차감 후 70%만 반영 + 기타소득 합산" },
+            { step: "공식 02 · 재산환산액", title: "지역별·금융재산 공제", body: "일반재산 지역별 공제 + 금융 2,000만 원 공제 + 부채 차감" },
+            { step: "공식 03 · 최종 판정", title: "단독가구 선정기준 비교", body: "소득평가액+재산환산액 합계가 선정기준액 이하 시 수급" }
+          ]
+        };
+      } else if (isPolicy) {
+        theme = {
+          bgStart: "#1e1b4b",
+          bgEnd: "#0369a1",
+          accent: "#38bdf8",
+          badgeBg: "#0284c7",
+          badgeText: "2026 정부지원·민생정책 핵심 요약 가이드",
+          pills: ["수급자격 자가진단", "소득·재산 기준 정리", "온라인 신청 3단계"],
+          chartTitle: "지원금·정책 혜택 수급자격 심사 비중 & 신청 체크포인트 시각화",
+          chartSub: "반려 없이 한 번에 통과하기 위한 핵심 요건별 중요도 비교",
+          bars: [
+            { label: "가구 소득·재산 기준 충족도", val: "심사 비중 95%", pct: 95, color: "#0284c7", desc: "건강보험료·중위소득 및 재산 공제 기준 사전 확인 필수" },
+            { label: "연령·거주지·세대주 요건", val: "심사 비중 85%", pct: 85, color: "#2563eb", desc: "주민등록등본 기준 단독·세대분리 여부 및 연령 확인" },
+            { label: "필수 구비서류 정확도", val: "심사 비중 80%", pct: 80, color: "#0d9488", desc: "온라인 마이데이터 연동 시 서류 누락 위험 대폭 감소" },
+            { label: "신청 기간·지급 계좌 검증", val: "심사 비중 90%", pct: 90, color: "#4f46e5", desc: "본인 명의 정상 입출금 계좌 및 신청 마감일 준수" }
+          ],
+          summaryCards: [
+            { step: "STEP 01", title: "대상 자격 모의계산", body: "연령·소득·재산 공제액 기준 충족 여부 1분 진단" },
+            { step: "STEP 02", title: "필수 서류·인증 준비", body: "신분증·통장사본 및 간편인증(금융인증서) 준비" },
+            { step: "STEP 03", title: "온라인·방문 접수", body: "복지로·정부24 또는 주소지 행정복지센터 신청" }
+          ]
+        };
+      } else if (isShop) {
+        theme = {
+          bgStart: "#451a03",
+          bgEnd: "#b45309",
+          accent: "#fbbf24",
+          badgeBg: "#d97706",
+          badgeText: "2026 실사용 스펙 & 가성비 비교 리포트",
+          pills: ["핵심 스펙 비교", "실구매 장단점 분석", "예산별 추천 가이드"],
+          chartTitle: "체급별 핵심 구매 지표 & 실사용자 만족도 데이터 시각화",
+          chartSub: "가성비·핵심 성능·내구성·유지관리 편의성 4대 지표 종합 비교",
+          bars: [
+            { label: "가격 대비 성능 (가성비 지수)", val: "95점 / 100", pct: 95, color: "#d97706", desc: "불필요한 부가기능을 줄이고 핵심 스펙에 집중한 실속형 강세" },
+            { label: "체감 핵심 성능 만족도", val: "92점 / 100", pct: 92, color: "#0284c7", desc: "일상 환경에서 가장 체감이 큰 모터·디스플레이·출력 지표" },
+            { label: "사후관리(A/S) 및 내구성", val: "89점 / 100", pct: 89, color: "#059669", desc: "국내 정식 A/S 지원 여부 및 소모품 교체 주기 편의성" },
+            { label: "재구매 및 지인 추천 의향", val: "94점 / 100", pct: 94, color: "#4f46e5", desc: "초기 세팅 편의성과 장기 사용 만족도 종합 평가" }
+          ],
+          summaryCards: [
+            { step: "POINT 01", title: "핵심 스펙 1순위 체크", body: "화려한 광고 문구보다 실제 출력·용량·무게 확인" },
+            { step: "POINT 02", title: "유지비·소모품 점검", body: "필터·배터리 교체 주기 및 국내 A/S 망 유무 체크" },
+            { step: "POINT 03", title: "사용 환경 맞춤 선택", body: "1인 가구 실속형 vs 다인가구 프리미엄 체급 구분" }
+          ]
+        };
+      }
+
+      // Build 16:9 Representative Thumbnail SVG Data URI (1200 x 630)
+      const thumbSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="100%" height="auto">
+        <defs>
+          <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="${theme.bgStart}" />
+            <stop offset="100%" stop-color="${theme.bgEnd}" />
+          </linearGradient>
+          <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14" />
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05" />
+          </linearGradient>
+        </defs>
+        <rect width="1200" height="630" rx="24" fill="url(#bgGrad)" />
+        <circle cx="1080" cy="110" r="210" fill="${theme.accent}" fill-opacity="0.12" />
+        <circle cx="140" cy="540" r="180" fill="${theme.accent}" fill-opacity="0.10" />
+        <rect x="60" y="54" width="1080" height="522" rx="20" fill="url(#cardGrad)" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2" />
+        <rect x="105" y="102" width="490" height="46" rx="23" fill="${theme.badgeBg}" />
+        <text x="350" y="132" text-anchor="middle" fill="#ffffff" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="21" font-weight="800">${esc(theme.badgeText)}</text>
+        <text x="105" y="242" fill="#ffffff" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="52" font-weight="900" letter-spacing="-1">${esc(line1)}</text>
+        <text x="105" y="318" fill="${theme.accent}" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="44" font-weight="800" letter-spacing="-0.5">${esc(line2)}</text>
+        <line x1="105" y1="368" x2="1095" y2="368" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2" />
+        <g transform="translate(105, 405)">
+          <rect x="0" y="0" width="310" height="110" rx="14" fill="#0f172a" fill-opacity="0.45" stroke="${theme.accent}" stroke-opacity="0.5" stroke-width="1.5" />
+          <text x="24" y="42" fill="${theme.accent}" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="18" font-weight="800">CHECK POINT 01</text>
+          <text x="24" y="80" fill="#ffffff" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="24" font-weight="800">${esc(theme.pills[0])}</text>
+
+          <rect x="340" y="0" width="310" height="110" rx="14" fill="#0f172a" fill-opacity="0.45" stroke="${theme.accent}" stroke-opacity="0.5" stroke-width="1.5" />
+          <text x="364" y="42" fill="${theme.accent}" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="18" font-weight="800">CHECK POINT 02</text>
+          <text x="364" y="80" fill="#ffffff" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="24" font-weight="800">${esc(theme.pills[1])}</text>
+
+          <rect x="680" y="0" width="310" height="110" rx="14" fill="#0f172a" fill-opacity="0.45" stroke="${theme.accent}" stroke-opacity="0.5" stroke-width="1.5" />
+          <text x="704" y="42" fill="${theme.accent}" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="18" font-weight="800">CHECK POINT 03</text>
+          <text x="704" y="80" fill="#ffffff" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="24" font-weight="800">${esc(theme.pills[2])}</text>
+        </g>
+      </svg>`;
+
+      // Build Data Visualization Infographic SVG Data URI (1200 x 680)
+      const barsSvg = theme.bars.map((b, idx) => {
+        const y = 150 + idx * 92;
+        const barW = Math.round((b.pct / 100) * 520);
+        return `
+          <g transform="translate(60, ${y})">
+            <rect x="0" y="0" width="1080" height="76" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" />
+            <text x="24" y="32" fill="#0f172a" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="20" font-weight="800">${esc(b.label)}</text>
+            <text x="24" y="58" fill="#64748b" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="15" font-weight="600">${esc(b.desc)}</text>
+            <rect x="520" y="18" width="520" height="22" rx="11" fill="#e2e8f0" />
+            <rect x="520" y="18" width="${barW}" height="22" rx="11" fill="${b.color}" />
+            <text x="1040" y="62" text-anchor="end" fill="${b.color}" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="17" font-weight="900">${esc(b.val)}</text>
+          </g>
+        `;
+      }).join('');
+
+      const cardsSvg = theme.summaryCards.map((c, idx) => {
+        const x = 60 + idx * 365;
+        return `
+          <g transform="translate(${x}, 530)">
+            <rect x="0" y="0" width="350" height="110" rx="14" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5" />
+            <text x="22" y="34" fill="#059669" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="15" font-weight="900">${esc(c.step)}</text>
+            <text x="22" y="62" fill="#0f172a" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="20" font-weight="800">${esc(c.title)}</text>
+            <text x="22" y="88" fill="#475569" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="14" font-weight="600">${esc(c.body)}</text>
+          </g>
+        `;
+      }).join('');
+
+      const chartSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="auto">
+        <rect width="1200" height="675" rx="22" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" />
+        <rect x="0" y="0" width="1200" height="122" rx="22" fill="#0f172a" />
+        <rect x="0" y="95" width="1200" height="27" fill="#0f172a" />
+        <text x="60" y="54" fill="#38bdf8" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="25" font-weight="900">📊 ${esc(theme.chartTitle)}</text>
+        <text x="60" y="92" fill="#cbd5e1" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-size="17" font-weight="600">${esc(theme.chartSub)}</text>
+        ${barsSvg}
+        ${cardsSvg}
+      </svg>`;
+
+      const thumbDataUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(thumbSvg);
+      const chartDataUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(chartSvg);
+      return { thumbDataUri, chartDataUri, theme, clean };
+    }
+
     function injectMediaVisualBlocks(topic) {
       const body = elements.previewBody;
       if (!body) return;
-      const existing = body.querySelector('[data-media-injected]');
-      if (existing) existing.remove();
+      body.querySelectorAll('[data-media-injected]').forEach(el => el.remove());
 
-      const plan = buildShortformPlan(topic);
-      const box = document.createElement('div');
-      box.setAttribute('data-media-injected', '1');
-      box.className = "chat-highlight-active";
-      box.innerHTML = `
-        <!-- [인포그래픽 요약 블록] -->
-        <div style="margin:24px 0;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);border:2px solid #2dd4bf;box-shadow:0 4px 14px rgba(45, 212, 191, 0.15);">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1.5px solid #99f6e4;padding-bottom:8px;">
-            <h3 style="margin:0;font-size:16.5px;font-weight:900;color:#0f766e;display:flex;align-items:center;gap:6px;">
-              <i class="fa-solid fa-image text-teal-600"></i> 🖼️ 한눈에 보는 핵심 요약 (신디자이너 인포그래픽)
-            </h3>
-            <span style="font-size:10px;font-weight:bold;background:#14b8a6;color:#ffffff;padding:2px 8px;border-radius:6px;">CTR 500% 규격</span>
-          </div>
-          <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#ffffff;border-radius:10px;overflow:hidden;">
-            <tr><td style="padding:8px 12px;border:1px solid #99f6e4;width:28%;background:#f0fdfa;font-weight:bold;color:#0f766e;">주제</td><td style="padding:8px 12px;border:1px solid #99f6e4;color:#1e293b;font-weight:bold;">${topic}</td></tr>
-            <tr><td style="padding:8px 12px;border:1px solid #99f6e4;background:#f0fdfa;font-weight:bold;color:#0f766e;">대표 썸네일</td><td style="padding:8px 12px;border:1px solid #99f6e4;color:#0369a1;">16:9 규격(1200px) 호기심 후킹 + 가독성 헤드라인 (구글 디스커버 최적화)</td></tr>
-            <tr><td style="padding:8px 12px;border:1px solid #99f6e4;background:#f0fdfa;font-weight:bold;color:#0f766e;">데이터 시각화</td><td style="padding:8px 12px;border:1px solid #99f6e4;color:#b45309;">본문 핵심 포인트 및 데이터 시각화 블록 연동</td></tr>
-          </table>
-        </div>
+      const curTopic = (topic || (elements.inputTopic && elements.inputTopic.value.trim()) || state.topic || "2026 핵심 트렌드 가이드").trim();
+      const v = buildTopicVisualData(curTopic);
+
+      // 1. 대표 썸네일 이미지 블록 (본문 상단에 삽입)
+      const thumbBox = document.createElement('figure');
+      thumbBox.setAttribute('data-media-injected', 'thumb');
+      thumbBox.style.cssText = "margin:20px 0 26px 0;padding:0;text-align:center;";
+      thumbBox.innerHTML = `
+        <img src="${v.thumbDataUri}" alt="${curTopic} 대표 썸네일" style="width:100%;max-width:100%;height:auto;border-radius:16px;box-shadow:0 8px 24px rgba(15,23,42,0.12);display:block;margin:0 auto;" />
+        <figcaption style="margin-top:8px;font-size:13px;color:#64748b;font-weight:600;">▲ ${curTopic} 핵심 요약 대표 이미지</figcaption>
       `;
 
-      body.appendChild(box);
-      addLog("신디자이너", "🎨 [비주얼 완성] 썸네일·인포그래픽 요약 블록을 블로그 본문에 삽입했습니다.", "text-pink-400");
+      // 2. 핵심 요약 & 데이터 시각화 인포그래픽 이미지 블록 (본문 중간/하단에 삽입)
+      const chartBox = document.createElement('div');
+      chartBox.setAttribute('data-media-injected', 'chart');
+      chartBox.style.cssText = "margin:28px 0;padding:18px 20px;border-radius:16px;background:#f8fafc;border:1.5px solid #cbd5e1;box-shadow:0 4px 14px rgba(15,23,42,0.05);";
+      chartBox.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1.5px solid #e2e8f0;padding-bottom:8px;">
+          <h3 style="margin:0;font-size:17px;font-weight:900;color:#0f172a;display:flex;align-items:center;gap:6px;">
+            📊 한눈에 보는 핵심 요약 &amp; 데이터 시각화 인포그래픽
+          </h3>
+        </div>
+        <figure style="margin:0;padding:0;text-align:center;">
+          <img src="${v.chartDataUri}" alt="${curTopic} 데이터 시각화 인포그래픽" style="width:100%;max-width:100%;height:auto;border-radius:12px;border:1px solid #e2e8f0;display:block;margin:0 auto;" />
+          <figcaption style="margin-top:8px;font-size:13px;color:#475569;font-weight:600;">▲ ${curTopic} 핵심 기준 및 데이터 시각화 요약표</figcaption>
+        </figure>
+      `;
+
+      const wrapper = body.querySelector('.tistory-content-wrapper') || body;
+      const firstH2 = wrapper.querySelector('h2');
+      if (firstH2 && firstH2.parentNode) {
+        firstH2.parentNode.insertBefore(thumbBox, firstH2);
+      } else {
+        wrapper.insertBefore(thumbBox, wrapper.firstChild);
+      }
+
+      const liveRnd = body.querySelector('#live-rnd-article-section');
+      if (liveRnd && liveRnd.parentNode) {
+        liveRnd.parentNode.insertBefore(chartBox, liveRnd);
+      } else {
+        wrapper.appendChild(chartBox);
+      }
+
+      addLog("신디자이너", "🎨 [비주얼 생성 완료] 주제 맞춤형 16:9 대표 썸네일 이미지와 데이터 시각화 인포그래픽 이미지를 본문에 삽입했습니다.", "text-pink-400");
     }
+    window.buildTopicVisualData = buildTopicVisualData;
     window.applyShortformPlaybook = applyShortformPlaybook;
     window.injectMediaVisualBlocks = injectMediaVisualBlocks;
 
@@ -13934,22 +14132,33 @@ function closeAllModals() {
       }
 
       liveBox.style.cssText = 'background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;padding:20px;margin:28px 0;box-shadow:0 2px 8px rgba(15,23,42,0.04);';
+      const isPensionQ = /기초연금|소득인정액|노령연금|단독가구|부부가구|재산/i.test(curTopic);
+      const q1Title = isPensionQ
+        ? `Q1. ${curTopic} 산정 시 가장 먼저 확인해야 할 공제 항목은 무엇인가요?`
+        : `Q1. ${curTopic} 시작할 때 가장 먼저 챙겨야 할 핵심 기준은 무엇인가요?`;
+      const q1Ans = isPensionQ
+        ? `거주 지역별 기본재산액 공제(대도시·중소도시·농어촌 차등)와 금융재산 2,000만 원 기본공제, 그리고 상시근로소득 기본공제(112만 원 공제 후 30% 추가 감액)가 적용되는지 순서대로 확인한 뒤 소득평가액과 재산의 소득환산액을 합산하시는 것이 가장 정확합니다.`
+        : `본인의 목적과 환경에 가장 잘 맞는 핵심 도구(또는 지원 항목) 1가지를 먼저 선정한 뒤, 본문 상단 핵심 요약 박스와 데이터 시각화 비교표를 기준으로 단계별 적용하시는 것이 가장 빠르고 정확합니다.`;
+      const q2Title = isPensionQ
+        ? `Q2. 혼자서 소득인정액을 가장 간편하게 모의계산하고 신청하는 방법은 무엇인가요?`
+        : `Q2. 시행착오 없이 실전에 바로 정착시키는 핵심 팁이 있나요?`;
+      const q2Ans = isPensionQ
+        ? `복지로(bokjiro.go.kr) 홈페이지나 모바일 앱의 '기초연금 모의계산' 메뉴에 소득·일반재산·금융재산·부채를 입력하면 1분 만에 예상 수급 여부를 확인할 수 있으며, 주소지 관할 행정복지센터나 국민연금공단 지사에서 무료 대면 상담도 가능합니다.`
+        : `처음부터 모든 기능을 한 번에 바꾸려 하기보다, 본문에서 제공해 드린 3단계 실천 로드맵과 체크리스트를 바탕으로 하루 10분씩 루틴화하면 체감 효율을 3배 이상 높일 수 있습니다.`;
+
       liveBox.innerHTML = `
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-bottom:10px;margin-bottom:14px;border-bottom:2px solid #0284c7;">
           <h2 style="font-size:19px;font-weight:800;color:#0f172a;margin:0;">
             💡 ${curTopic} 자주 묻는 핵심 질문 (실시간 Q&amp;A 요약)
           </h2>
-          <span style="background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;">
-            실시간 트렌드 반영 (${nowStr} 갱신)
-          </span>
         </div>
         <div style="margin-bottom:12px;">
-          <p style="margin:0 0 4px 0;font-weight:800;color:#0369a1;font-size:15px;">Q1. ${curTopic} 시작할 때 가장 먼저 챙겨야 할 핵심 기준은 무엇인가요?</p>
-          <p style="margin:0;color:#334155;font-size:14px;line-height:1.75;">본인의 목적과 환경에 가장 잘 맞는 핵심 도구(또는 지원 항목) 1가지를 먼저 선정한 뒤, 본문 상단 3줄 요약 박스와 비교표를 기준으로 단계별 적용하시는 것이 가장 빠르고 정확합니다.</p>
+          <p style="margin:0 0 4px 0;font-weight:800;color:#0369a1;font-size:15px;">${q1Title}</p>
+          <p style="margin:0;color:#334155;font-size:14px;line-height:1.75;">${q1Ans}</p>
         </div>
         <div style="margin-bottom:14px;">
-          <p style="margin:0 0 4px 0;font-weight:800;color:#0369a1;font-size:15px;">Q2. 시행착오 없이 실전에 바로 정착시키는 팁이 있나요?</p>
-          <p style="margin:0;color:#334155;font-size:14px;line-height:1.75;">처음부터 모든 기능을 한 번에 바꾸려 하기보다, 본문에서 제공해 드린 3단계 실천 로드맵과 템플릿을 복사해 하루 10분씩 루틴화하면 체감 효율을 3배 이상 높일 수 있습니다. (${p.benefit})</p>
+          <p style="margin:0 0 4px 0;font-weight:800;color:#0369a1;font-size:15px;">${q2Title}</p>
+          <p style="margin:0;color:#334155;font-size:14px;line-height:1.75;">${q2Ans}</p>
         </div>
         <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:13px;color:#475569;line-height:1.7;">
           <strong style="color:#0f172a;">🔍 실시간 포털 연관 검색 키워드:</strong>
