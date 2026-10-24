@@ -14187,28 +14187,17 @@ async function triggerRealPublish(payloadData = null) {
           ctx.fill();
         }
 
-        // 4. 상단 헤더 뱃지
-        // 좌측 뱃지 (신디자이너 인포그래픽)
-        drawPill(60, 48, 300, 38, 19, 'rgba(15, 118, 110, 0.9)');
+        // 4. 상단 헤더 뱃지 (정중앙 단정하게 배치)
+        drawPill(440, 48, 320, 38, 19, 'rgba(15, 118, 110, 0.9)');
         ctx.strokeStyle = '#2dd4bf';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🎨 신디자이너 핵심 요약 인포그래픽', 80, 67);
-
-        // 우측 뱃지 (CTR 500% 규격)
-        drawPill(890, 48, 250, 38, 19, 'rgba(30, 41, 59, 0.9)');
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('CTR 500% 규격 (1200×675 HD)', 1015, 67);
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🎨 신디자이너 핵심 요약 인포그래픽', 600, 67);
 
         // 5. 중앙 메인 타이틀 (호기심 후킹 + 가독성 헤드라인)
         ctx.textAlign = 'center';
@@ -14348,7 +14337,7 @@ async function triggerRealPublish(payloadData = null) {
         ctx.textBaseline = 'middle';
         ctx.fillStyle = 'rgba(148, 163, 184, 0.85)';
         ctx.font = '13px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
-        ctx.fillText('🛡️ VERIFIED BY 신디자이너 R&D OFFICE  |  GOOGLE DISCOVER & TISTORY SEO OPTIMIZED  |  1200×675 HD', 600, 620);
+        ctx.fillText('🛡️ 2026 OFFICIAL SUMMARY INFOGRAPHIC  |  SHIN DESIGNER VISUAL STUDIO', 600, 620);
 
         return canvas.toDataURL('image/png');
       } catch (err) {
@@ -14387,8 +14376,15 @@ async function triggerRealPublish(payloadData = null) {
         ` : ''}
       `;
 
-      body.appendChild(box);
-      addLog("신디자이너", "🎨 [비주얼 완성] 16:9 인포그래픽 썸네일 실물 이미지를 블로그 본문에 성공적으로 삽입했습니다.", "text-pink-400");
+      // 블로그 대표 썸네일 & 독자 체류시간 극대화 황금 위치: 
+      // 도입부(서론) 직후, 본문 첫 번째 H2 소제목 바로 앞에 삽입 (없으면 최상단)
+      const firstH2 = body.querySelector('h2');
+      if (firstH2) {
+        firstH2.before(box);
+      } else {
+        body.prepend(box);
+      }
+      addLog("신디자이너", "🎨 [비주얼 완성] 16:9 인포그래픽 썸네일 실물 이미지를 본문 상단(도입부 직후)에 배치했습니다.", "text-pink-400");
     }
     window.applyShortformPlaybook = applyShortformPlaybook;
     window.injectMediaVisualBlocks = injectMediaVisualBlocks;
