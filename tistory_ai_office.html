@@ -14203,10 +14203,250 @@ async function triggerRealPublish(payloadData = null) {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // 서브 후킹 태그
+        // 5. 카테고리별 맞춤형 서브 태그 및 카드 데이터 동적 매핑
+        const t = (topic || '').toLowerCase();
+        let subTag = '⚡ 2026 공식 핵심 총정리 가이드';
+        let cards = [];
+
+        // 1) 정부지원 / 복지
+        if (t.includes('청년') || t.includes('지원금') || t.includes('복지') || t.includes('혜택') || t.includes('도약계좌') || t.includes('월세') || t.includes('보조금') || t.includes('k-패스')) {
+          subTag = '⚡ 2026 정부 & 지자체 복지 혜택 가이드';
+          cards = [
+            {
+              num: 'STEP 01',
+              title: '🎯 지원 대상 & 자격',
+              desc1: '소득 기준 및 연령 요건 적합도 판별',
+              desc2: '놓치면 손해보는 필수 체크리스트 완비',
+              badge: '지원 적합도 99% 매칭 확인',
+              color: '#2dd4bf',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(45, 212, 191, 0.55)',
+              progress: 0.95
+            },
+            {
+              num: 'STEP 02',
+              title: '📋 신청 경로 & 서류',
+              desc1: '복지로·정부24 온라인 간편 접수',
+              desc2: '필수 구비서류 자동 검증 및 반려 예방',
+              badge: '간편 서류 준비율 100%',
+              color: '#38bdf8',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(56, 189, 248, 0.55)',
+              progress: 1.0
+            },
+            {
+              num: 'STEP 03',
+              title: '💎 최대 수혜 & 지원금',
+              desc1: '정부 기여금 + 비과세 우대 혜택 적용',
+              desc2: '매월 실질 지원금 수령 및 목돈 마련',
+              badge: '최대 수혜율 100% 달성',
+              color: '#fbbf24',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(251, 191, 36, 0.55)',
+              progress: 0.98
+            }
+          ];
+        } 
+        // 2) IT / AI / 테크 / 생산성
+        else if (t.includes('ai') || t.includes('인공지능') || t.includes('에이전트') || t.includes('생산성') || t.includes('tech') || t.includes('챗gpt') || t.includes('gpt') || t.includes('제미나이') || t.includes('클로드') || t.includes('llm') || t.includes('모델') || t.includes('n8n') || t.includes('cursor')) {
+          subTag = '⚡ 2026 차세대 AI 도구 & 실무 생산성 혁신';
+          cards = [
+            {
+              num: 'STEP 01',
+              title: '🎯 핵심 도구 비교 & 선정',
+              desc1: 'ChatGPT · Claude · Gemini 특장점 분석',
+              desc2: '내 업무에 딱 맞는 최적 AI 모델 매칭',
+              badge: '도구 매칭 적합도 99%',
+              color: '#2dd4bf',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(45, 212, 191, 0.55)',
+              progress: 0.96
+            },
+            {
+              num: 'STEP 02',
+              title: '⚡ 실무 프롬프트 & 세팅',
+              desc1: '반복 업무 0시간 프롬프트 템플릿',
+              desc2: 'AI 에이전트 자동화 워크플로우 구축',
+              badge: '작업 시간 80% 단축',
+              color: '#38bdf8',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(56, 189, 248, 0.55)',
+              progress: 1.0
+            },
+            {
+              num: 'STEP 03',
+              title: '🚀 생산성 300% 극대화',
+              desc1: '기획서·보고서 작성 3배 고속화 달성',
+              desc2: '직장인 실전 노하우 및 적용 가이드',
+              badge: '생산성 300% 향상 달성',
+              color: '#fbbf24',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(251, 191, 36, 0.55)',
+              progress: 0.98
+            }
+          ];
+        } 
+        // 3) 블로그 & 애드센스 & 수익화
+        else if (t.includes('애드센스') || t.includes('cpc') || t.includes('고단가') || t.includes('블로그수익')) {
+          subTag = '⚡ 2026 티스토리 애드센스 고수익 전략';
+          cards = [
+            {
+              num: 'STEP 01',
+              title: '🎯 황금 키워드 발굴',
+              desc1: 'CPC 단가 높은 고단가 키워드 선정',
+              desc2: '검색량 대비 경쟁도 분석 완벽 가이드',
+              badge: '키워드 적합도 98%',
+              color: '#2dd4bf',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(45, 212, 191, 0.55)',
+              progress: 0.94
+            },
+            {
+              num: 'STEP 02',
+              title: '📋 SEO 최적화 포스팅',
+              desc1: '구글 디스커버 & H태그 체계적 구조화',
+              desc2: '독자 체류시간을 극대화하는 서론 작성법',
+              badge: 'SEO 최적화 100점 달성',
+              color: '#38bdf8',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(56, 189, 248, 0.55)',
+              progress: 1.0
+            },
+            {
+              num: 'STEP 03',
+              title: '💰 수익 전환 & 트래픽',
+              desc1: '광고 배치 최적화 및 CTR 극대화 기법',
+              desc2: '지속 가능한 일일 방문자 파이프라인',
+              badge: '수익 전환율 300% 달성',
+              color: '#fbbf24',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(251, 191, 36, 0.55)',
+              progress: 0.99
+            }
+          ];
+        } 
+        // 4) 코딩 & 자동화 부업
+        else if (t.includes('파이썬') || t.includes('부업') || t.includes('자동화') || t.includes('코딩')) {
+          subTag = '⚡ 2026 직장인 자동화 부업 실전 가이드';
+          cards = [
+            {
+              num: 'STEP 01',
+              title: '🎯 부업 파이프라인 기획',
+              desc1: '비전공자도 당일 시작하는 프로젝트',
+              desc2: '파이썬 기반 자동화 수익 모델 선정',
+              badge: '초보자 진입장벽 0%',
+              color: '#2dd4bf',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(45, 212, 191, 0.55)',
+              progress: 0.92
+            },
+            {
+              num: 'STEP 02',
+              title: '⚙️ 3단계 자동화 구축',
+              desc1: '셀레니움/API 기반 실시간 데이터 수집',
+              desc2: '스케줄러로 퇴근 후 24시간 자동 실행',
+              badge: '구축 난이도 쉬움(초급)',
+              color: '#38bdf8',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(56, 189, 248, 0.55)',
+              progress: 1.0
+            },
+            {
+              num: 'STEP 03',
+              title: '💵 안정적 월 부수입',
+              desc1: '데이터 가공 및 제휴 수익 자동화',
+              desc2: '시간 투자 대비 높은 가성비 파이프라인',
+              badge: '월 부수입 파이프라인 완성',
+              color: '#fbbf24',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(251, 191, 36, 0.55)',
+              progress: 0.98
+            }
+          ];
+        } 
+        // 5) 쇼핑 / 제품 비교 / 리뷰
+        else if (/청소기|의자|노트북|모니터|폰|이어폰|커피머신|스마트워치|패드|키보드|식기세척기|안마|가습기|공기청정기|로봇|헤어드라이|화장품|블랙박스|골프|자전거/i.test(t)) {
+          subTag = '⚡ 2026 실구매자 추천 & 가성비 완벽 비교';
+          cards = [
+            {
+              num: 'STEP 01',
+              title: '🎯 추천 모델 스펙 비교',
+              desc1: '가성비 탑티어 모델 집중 스펙 비교',
+              desc2: '실구매자 평점 및 실사용 만족도 체크',
+              badge: '가성비 만족도 99%',
+              color: '#2dd4bf',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(45, 212, 191, 0.55)',
+              progress: 0.95
+            },
+            {
+              num: 'STEP 02',
+              title: '📋 핵심 장단점 실사용기',
+              desc1: '구매 전 반드시 알아야 할 주의사항',
+              desc2: '실제 내돈내산 장단점 및 유지비 분석',
+              badge: '후회 없는 선택 100%',
+              color: '#38bdf8',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(56, 189, 248, 0.55)',
+              progress: 1.0
+            },
+            {
+              num: 'STEP 03',
+              title: '🎁 최저가 & 할인 혜택',
+              desc1: '로켓배송 특가 및 카드 즉시할인 적용',
+              desc2: '가장 저렴하게 구매하는 황금 타이밍',
+              badge: '최저가 할인 혜택 확인',
+              color: '#fbbf24',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(251, 191, 36, 0.55)',
+              progress: 0.98
+            }
+          ];
+        }
+        // 6) 기본 일반 / 생활 / 트렌드 가이드
+        else {
+          subTag = '⚡ 2026 공식 핵심 총정리 가이드';
+          cards = [
+            {
+              num: 'STEP 01',
+              title: '🎯 핵심 개요 & 추천 대상',
+              desc1: '놓치지 말아야 할 필수 핵심 요약 총정리',
+              desc2: '상황별 맞춤 추천 및 필수 조건 분석',
+              badge: '필수 정보 일치율 99%',
+              color: '#2dd4bf',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(45, 212, 191, 0.55)',
+              progress: 0.94
+            },
+            {
+              num: 'STEP 02',
+              title: '📋 3단계 실천 가이드',
+              desc1: '누구나 바로 따라하는 단계별 실전 매뉴얼',
+              desc2: '실패 없는 핵심 노하우 및 실전 꿀팁',
+              badge: '실행 준비율 100%',
+              color: '#38bdf8',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(56, 189, 248, 0.55)',
+              progress: 1.0
+            },
+            {
+              num: 'STEP 03',
+              title: '💎 기대 효과 & 핵심 가치',
+              desc1: '적용 즉시 체감하는 확실한 변화와 혜택',
+              desc2: '시간 절약 및 실질 만족도 극대화',
+              badge: '만족도 99.8% 달성',
+              color: '#fbbf24',
+              bg: 'rgba(15, 23, 42, 0.85)',
+              border: 'rgba(251, 191, 36, 0.55)',
+              progress: 0.98
+            }
+          ];
+        }
+
+        // 서브 후킹 태그 렌더링
         ctx.fillStyle = '#fbbf24';
         ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Pretendard", sans-serif';
-        ctx.fillText('⚡ 2026 공식 핵심 총정리 가이드', 600, 126);
+        ctx.fillText(subTag, 600, 126);
 
         // 주제명 줄바꿈 처리
         const rawTitle = (topic || "2026 핵심 정보 가이드").trim();
@@ -14232,48 +14472,12 @@ async function triggerRealPublish(payloadData = null) {
           ctx.fillText(lines[1], 600, 210);
         }
 
-        // 6. 3단 데이터 시각화 카드 (주제 핵심 타깃 / 대표 절차 및 신청 / 데이터 시각화 혜택)
+        // 6. 3단 데이터 시각화 카드 렌더링
         const cardY = 265;
         const cardH = 305;
         const cardW = 345;
         const cardSpacing = 22;
         const startX = 60;
-
-        const cards = [
-          {
-            num: 'STEP 01',
-            title: '🎯 주제 핵심 타깃',
-            desc1: '지원 대상 및 핵심 조건 완벽 매칭',
-            desc2: '누구나 3분 만에 끝내는 필수 체크리스트',
-            badge: '적합도 99% 매칭 확인',
-            color: '#2dd4bf',
-            bg: 'rgba(15, 23, 42, 0.85)',
-            border: 'rgba(45, 212, 191, 0.55)',
-            progress: 0.94
-          },
-          {
-            num: 'STEP 02',
-            title: '📋 대표 절차 & 신청',
-            desc1: '정부24 및 공식 온라인 포털 간편 접수',
-            desc2: '필수 구비서류 자동 검증 및 반려 예방',
-            badge: '간편 서류 준비율 100%',
-            color: '#38bdf8',
-            bg: 'rgba(15, 23, 42, 0.85)',
-            border: 'rgba(56, 189, 248, 0.55)',
-            progress: 1.0
-          },
-          {
-            num: 'STEP 03',
-            title: '💎 데이터 시각화 & 혜택',
-            desc1: '최대 수혜 지원금 및 독점 우대 혜택',
-            desc2: '업무 생산성 300% 극대화 실전 적용',
-            badge: '만족도 99.8% 달성',
-            color: '#fbbf24',
-            bg: 'rgba(15, 23, 42, 0.85)',
-            border: 'rgba(251, 191, 36, 0.55)',
-            progress: 0.98
-          }
-        ];
 
         cards.forEach((c, idx) => {
           const cx = startX + idx * (cardW + cardSpacing);
