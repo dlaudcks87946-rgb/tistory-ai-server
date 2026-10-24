@@ -10846,7 +10846,7 @@ ${P(`오늘 정리해 드린 <strong>${cleanMain}</strong> 완벽 가이드가 �
    - 표(table)나 불렛포인트(ul/ol)를 적극 활용해 가독성을 높이세요.
 5. 오직 <div class="tistory-content-wrapper">...</div> 형태의 순수 HTML 본문 코드만 출력하세요. 마크다운 백틱(\`\`\`html)이나 인사말 등 부가 설명은 일체 배제하세요.`;
 
-      const models = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+      const models = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-1.5-flash'];
       for (const model of models) {
         try {
           const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -12898,10 +12898,22 @@ async function triggerRealPublish(payloadData = null) {
         showToast("설정이 브라우저에 안전하게 저장되었습니다.", "success");
       }
     });
-    // Load saved gemini key on page load
-    setTimeout(() => {
-      const savedGKey = localStorage.getItem('gemini_api_key');
+    // Load saved gemini key on page load (from localStorage or local bot server /api/config)
+    setTimeout(async () => {
+      let savedGKey = localStorage.getItem('gemini_api_key');
       const gInput = document.getElementById('setting-gemini-key');
+      if (!savedGKey) {
+        try {
+          const res = await fetch('/api/config');
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.gemini_api_key) {
+              savedGKey = data.gemini_api_key;
+              localStorage.setItem('gemini_api_key', savedGKey);
+            }
+          }
+        } catch(e) {}
+      }
       if (savedGKey && gInput) gInput.value = savedGKey;
     }, 500);
 

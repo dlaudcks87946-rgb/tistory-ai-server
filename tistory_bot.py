@@ -1021,6 +1021,27 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 "success": True,
                 "data": rnd_state
             }, ensure_ascii=False).encode("utf-8"))
+        elif self.path.startswith("/api/config"):
+            gemini_key = os.getenv("GEMINI_API_KEY", "")
+            if not gemini_key:
+                env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+                if os.path.exists(env_path):
+                    try:
+                        with open(env_path, "r", encoding="utf-8") as f:
+                            for line in f:
+                                if line.strip().startswith("GEMINI_API_KEY="):
+                                    gemini_key = line.split("=", 1)[1].strip().strip('"').strip("'")
+                                    break
+                    except Exception:
+                        pass
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self._send_cors_headers()
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "success": True,
+                "gemini_api_key": gemini_key
+            }).encode("utf-8"))
         else:
             super().do_GET()
 
