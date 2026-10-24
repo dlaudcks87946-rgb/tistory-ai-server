@@ -17913,18 +17913,81 @@ function closeAllModals() {
     <!-- Modal Body -->
     <div class="p-5 sm:p-6 space-y-5 overflow-y-auto text-slate-200">
       
+      <!-- 🎭 유튜브 썰 쇼츠 4종 카테고리 선택기 -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="block text-xs font-bold text-pink-300">
+            <i class="fa-solid fa-fire text-amber-400 mr-1"></i>유튜브 썰 쇼츠 &amp; 바이럴 카테고리 선택 (4종)
+          </label>
+          <span class="text-[11px] text-slate-400">사연 테마를 클릭하면 추천 레전드 대본이 즉시 로드됩니다</span>
+        </div>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <!-- 카테고리 1: 직장 사이다 썰 -->
+          <button type="button" onclick="selectStoryCategory('workplace')" id="btn-cat-workplace" class="story-cat-btn p-3 rounded-2xl bg-slate-900 border-2 border-pink-500 bg-pink-950/30 text-left transition hover:scale-[1.02] cursor-pointer flex flex-col justify-between shadow-md">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">🔥</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-pink-500/20 text-pink-300 font-bold border border-pink-500/30">인기 1위</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">직장 상사 참교육</div>
+            <div class="text-[11px] text-slate-400 truncate">꼰대/빌런 사이다 복수극</div>
+          </button>
+
+          <!-- 카테고리 2: 소개팅 빌런 썰 -->
+          <button type="button" onclick="selectStoryCategory('blind_date')" id="btn-cat-blind_date" class="story-cat-btn p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 text-left transition hover:scale-[1.02] hover:border-pink-500/50 cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">💔</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30">도파민</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">소개팅 역대급 빌런</div>
+            <div class="text-[11px] text-slate-400 truncate">더치페이/먹튀 레전드</div>
+          </button>
+
+          <!-- 카테고리 3: 소름 미스터리 썰 -->
+          <button type="button" onclick="selectStoryCategory('mystery')" id="btn-cat-mystery" class="story-cat-btn p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 text-left transition hover:scale-[1.02] hover:border-purple-500/50 cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">😱</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">소름실화</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">현실 미스터리 반전</div>
+            <div class="text-[11px] text-slate-400 truncate">자취방 도어락/심야 소름</div>
+          </button>
+
+          <!-- 카테고리 4: 배달 황당 썰 -->
+          <button type="button" onclick="selectStoryCategory('delivery')" id="btn-cat-delivery" class="story-cat-btn p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 text-left transition hover:scale-[1.02] hover:border-emerald-500/50 cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">🤣</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">꿀잼보장</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">자취방 배달 황당 썰</div>
+            <div class="text-[11px] text-slate-400 truncate">치킨 쪽지/오배송 대참사</div>
+          </button>
+        </div>
+
+        <!-- 추천 에피소드 원클릭 선택 버튼 바 -->
+        <div class="space-y-1">
+          <div class="text-[11px] text-pink-300 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+            <span>추천 레전드 에피소드 (클릭 시 자동 입력):</span>
+          </div>
+          <div id="story-quick-episodes" class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <!-- JavaScript selectStoryCategory 에 의해 렌더링 -->
+          </div>
+        </div>
+      </div>
+
       <!-- Input Controls Section -->
       <div class="bg-slate-950/60 rounded-2xl p-4 border border-slate-800 space-y-3">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <div class="flex-1 space-y-1">
             <label class="block text-xs font-bold text-pink-300">
-              <i class="fa-solid fa-heading mr-1"></i>숏폼 제작 주제 (블로그 포스팅 주제 연동)
+              <i class="fa-solid fa-pen-nib mr-1"></i>선택된 쇼츠 영상 제목/주제 (직접 수정 가능)
             </label>
-            <input id="shorts-input-topic" type="text" placeholder="예: 국민행복카드 바우처 혜택 총정리: 첫만남이용권 200만원 사용처" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white text-xs sm:text-sm font-medium outline-hidden transition">
+            <input id="shorts-input-topic" type="text" placeholder="예: 내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white text-xs sm:text-sm font-medium outline-hidden transition">
           </div>
           <div class="sm:w-64 space-y-1">
             <label class="block text-xs font-bold text-slate-400">
-              <i class="fa-solid fa-link mr-1"></i>유입용 티스토리 블로그 주소
+              <i class="fa-solid fa-link mr-1"></i>댓글 연동 링크 (블로그/제휴/채널)
             </label>
             <input id="shorts-input-blog" type="text" placeholder="https://your-blog.tistory.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white text-xs outline-hidden transition">
           </div>
@@ -17932,18 +17995,21 @@ function closeAllModals() {
 
         <div class="flex items-center justify-between flex-wrap gap-2 pt-1">
           <div class="flex items-center gap-2 text-xs text-slate-400">
-            <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold"><i class="fa-solid fa-check"></i> 비용 0원</span>
+            <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold"><i class="fa-solid fa-check"></i> 100% 무료</span>
             <span>•</span>
-            <span class="inline-flex items-center gap-1 text-cyan-400 font-semibold"><i class="fa-solid fa-music"></i> Chill Lo-Fi 비트 자동 믹싱</span>
+            <span class="inline-flex items-center gap-1 text-cyan-400 font-semibold"><i class="fa-solid fa-video"></i> 실사 B-roll 무빙 영상 루프</span>
             <span>•</span>
-            <span class="inline-flex items-center gap-1 text-pink-400 font-semibold"><i class="fa-solid fa-mobile-screen"></i> 1080x1920 세로형 9:16</span>
+            <span class="inline-flex items-center gap-1 text-pink-400 font-semibold"><i class="fa-solid fa-bolt"></i> 키네틱 팝업 자막</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1 text-amber-400 font-semibold"><i class="fa-solid fa-music"></i> Lo-Fi BGM</span>
           </div>
           <button id="btn-render-shorts" onclick="generateShortsVideo()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-500 hover:to-rose-400 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-pink-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
             <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
-            <span>🔥 20초 감성 바이럴 릴스 즉시 제작</span>
+            <span>🎬 유튜브 썰 쇼츠 즉시 제작하기</span>
           </button>
         </div>
       </div>
+
 
       <!-- Rendering Progress Box (Visible while generating) -->
       <div id="shorts-rendering-box" class="hidden bg-purple-950/40 border border-purple-500/30 rounded-2xl p-4 text-center space-y-3">
@@ -18120,9 +18186,119 @@ function closeAllModals() {
     return tags ? `${tags} #Shorts #Reels` : '#Shorts #Reels #핵심요약';
   }
 
+  // ==========================================
+  // 🎭 썰 쇼츠 4종 카테고리 & 레전드 사연 데이터
+  // ==========================================
+  let currentStoryCategory = 'workplace';
+  const storyCategories = {
+    workplace: {
+      key: 'workplace',
+      name: '직장 상사 참교육 사이다 썰',
+      icon: '🔥',
+      badge: '인기 1위',
+      color: 'pink',
+      episodes: [
+        '내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰',
+        '신입사원이 부장님 법카로 회식 긁고 퇴사한 결말',
+        '연차 쓰려는데 이유 꼬치꼬치 캐묻는 상사 입막음 퇴치법',
+        '주말 출근 강요하던 꼰대 팀장 노동청에 찌른 최후'
+      ]
+    },
+    blind_date: {
+      key: 'blind_date',
+      name: '소개팅 역대급 레전드 빌런 썰',
+      icon: '💔',
+      badge: '도파민',
+      color: 'rose',
+      episodes: [
+        '첫 만남에 호텔 뷔페 데려가더니 화장실로 튄 소개팅남',
+        '더치페이 하자더니 100원 단위까지 송금 요구한 소개팅녀',
+        '카톡 프사 도용하고 나온 10년 전 동창 소개팅 빌런',
+        '식사 도중에 전 애인 부른 소개팅 상대 참교육한 썰'
+      ]
+    },
+    mystery: {
+      key: 'mystery',
+      name: '소름돋는 현실 미스터리/반전 썰',
+      icon: '😱',
+      badge: '소름실화',
+      color: 'purple',
+      episodes: [
+        '새벽 3시마다 도어락 번호 누르고 사라지던 사람의 정체',
+        '중고 거래로 산 거울 뒤에서 발견된 의문의 쪽지',
+        '자취방 천장에서 매일 밤 들리던 소리의 진실',
+        '새벽에 잘못 배달된 택배 상자 열었다가 경찰 출동한 썰'
+      ]
+    },
+    delivery: {
+      key: 'delivery',
+      name: '자취방 배달 레전드 황당 썰',
+      icon: '🤣',
+      badge: '꿀잼보장',
+      color: 'emerald',
+      episodes: [
+        '치킨 시켰는데 닭다리 하나 먹고 쪽지 남긴 배달원 레전드',
+        '새벽에 오배송된 음식 잘못 먹었다가 벌어진 대참사',
+        '배민 요청사항에 벨 누르면 짖음 적었더니 일어난 일',
+        '자취방 옆집에서 매일 밤 들리던 이상한 주문 소리'
+      ]
+    }
+  };
+
+  window.selectStoryCategory = function(catKey, selectedEpisode = null) {
+    if (!storyCategories[catKey]) catKey = 'workplace';
+    currentStoryCategory = catKey;
+    const cat = storyCategories[catKey];
+
+    // 4개 카테고리 버튼 선택 스타일 갱신
+    Object.keys(storyCategories).forEach(k => {
+      const btn = $(`btn-cat-${k}`);
+      if (!btn) return;
+      if (k === catKey) {
+        btn.className = `story-cat-btn p-3 rounded-2xl bg-slate-900 border-2 border-pink-500 bg-pink-950/30 text-left transition scale-[1.02] cursor-pointer flex flex-col justify-between shadow-lg shadow-pink-500/20`;
+      } else {
+        btn.className = `story-cat-btn p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 text-left transition hover:scale-[1.01] hover:border-slate-700 cursor-pointer flex flex-col justify-between opacity-75 hover:opacity-100`;
+      }
+    });
+
+    // 추천 에피소드 칩 렌더링
+    const chipsContainer = $('story-quick-episodes');
+    if (chipsContainer) {
+      chipsContainer.innerHTML = '';
+      cat.episodes.forEach((ep, idx) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'px-3 py-1.5 rounded-full bg-slate-800 hover:bg-pink-600/30 hover:border-pink-500 border border-slate-700 text-slate-300 hover:text-white font-medium text-xs whitespace-nowrap transition cursor-pointer active:scale-95 flex items-center gap-1.5';
+        chip.innerHTML = `<span>${cat.icon}</span><span>${ep}</span>`;
+        chip.onclick = () => {
+          const input = $('shorts-input-topic');
+          if (input) input.value = ep;
+          updateTopicMetadataPreview(ep);
+          // 칩 활성화 효과
+          Array.from(chipsContainer.children).forEach(c => c.classList.remove('bg-pink-600', 'text-white', 'border-pink-400'));
+          chip.classList.add('bg-pink-600', 'text-white', 'border-pink-400');
+        };
+        chipsContainer.appendChild(chip);
+      });
+    }
+
+    // 주제 입력창에 에피소드 설정
+    const epToSet = selectedEpisode || cat.episodes[0];
+    const input = $('shorts-input-topic');
+    if (input) {
+      input.value = epToSet;
+    }
+    updateTopicMetadataPreview(epToSet);
+
+    // 첫 번째 칩 선택 표시
+    if (chipsContainer && chipsContainer.firstElementChild && !selectedEpisode) {
+      chipsContainer.firstElementChild.classList.add('bg-pink-600', 'text-white', 'border-pink-400');
+    }
+  };
+
   // 키워드에 따라 숏폼 프리뷰 메타데이터 및 대본 실시간 동기화
   window.updateTopicMetadataPreview = function(topic) {
-    const t = (topic && topic.trim()) ? topic.trim() : '2026 AI 트렌드와 직장인 업무 생산성을 300% 높이는 핵심 도구 가이드';
+    const t = (topic && topic.trim()) ? topic.trim() : '내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰';
     const blogUrl = ($('shorts-input-blog') && $('shorts-input-blog').value.trim()) || 'https://tistory-ai-corp.tistory.com';
     
     // 만약 방금 완성된 영상의 주제와 동일하다면 완성 데이터 렌더링
@@ -18131,7 +18307,7 @@ function closeAllModals() {
       return;
     }
 
-    // 새로운 주제에 맞게 제목, 해시태그, 고정댓글, 5단계 대본 즉시 생성
+    // 새로운 주제에 맞게 제목, 해시태그, 고정댓글, 3단계 대본 즉시 생성
     const metaTitle = $('shorts-meta-title');
     const metaTags = $('shorts-meta-tags');
     const metaComment = $('shorts-meta-comment');
@@ -18140,11 +18316,12 @@ function closeAllModals() {
     const timeline = $('shorts-timeline-scenes');
     const dlLink = $('shorts-btn-download');
 
-    if (metaTitle) metaTitle.textContent = `${t} 20초 시크릿 요약 #Shorts`;
-    if (metaTags) metaTags.textContent = generateSmartTags(t);
-    if (metaComment) metaComment.textContent = `📌 [더 알아보기] '${t}' 상세 가이드와 실시간 꿀팁은 고정 댓글 블로그에서 확인하세요! 👉 ${blogUrl}`;
-    if (metaDur) metaDur.textContent = `대기 중 (~20초)`;
-    if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | 새 키워드 제작 대기 중`;
+    const cat = storyCategories[currentStoryCategory] || storyCategories.workplace;
+    if (metaTitle) metaTitle.textContent = `${cat.icon} [썰쇼츠] ${t} #Shorts`;
+    if (metaTags) metaTags.textContent = generateSmartTags(t) + ' #썰쇼츠 #사연';
+    if (metaComment) metaComment.textContent = `📌 여러분의 생각이나 겪었던 레전드 썰을 댓글로 남겨주세요! (채널 구독 & 좋아요는 큰 힘이 됩니다 ❤️)`;
+    if (metaDur) metaDur.textContent = `대기 중 (~25초)`;
+    if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | 실사 B-roll + 키네틱 자막`;
 
     if (dlLink) {
       if (latestShortsData && latestShortsData.web_url) {
@@ -18154,9 +18331,9 @@ function closeAllModals() {
 
     if (timeline) {
       const dynamicScenes = [
-        { badge: '🔥 충격 후킹 (0~7초)', text: `솔직히 아직도 이거 모르셨나요? 남들은 '${t}' 하나로 조용히 앞서가고 있습니다!` },
-        { badge: '💡 핵심 비법 (8~16초)', text: `딱 2가지만 기억하세요. 레드오션에서 힘 빼지 마시고 0원으로 바로 세팅해 두면 끝납니다.` },
-        { badge: '👉 프로필 링크 유입 (17~24초)', text: `더 늦기 전에 확인하세요! 100% 무료 상세 가이드와 바로가기 링크는 프로필 고정 댓글에 모두 남겨뒀습니다!` }
+        { badge: '🔥 1. 충격 사연 도입 (0~8초)', text: `참다못해 결단을 내렸습니다: '${t}' 사연의 충격적인 발단이 시작됩니다!` },
+        { badge: '⚡ 2. 갈등/위기 폭발 (9~17초)', text: `예상치 못한 사건 전개와 긴장감 넘치는 사건 발생!` },
+        { badge: '💬 3. 사이다 결말 & 댓글 유도 (18~25초)', text: `속 시원한 결말과 함께 시청자들의 폭발적인 댓글 토론을 유도합니다.` }
       ];
       timeline.innerHTML = '';
       dynamicScenes.forEach((sc, idx) => {
@@ -18186,17 +18363,8 @@ function closeAllModals() {
     const modal = $('modal-shorts-studio');
     if (!modal) return;
     
-    // 현재 메인 대시보드에서 선택되거나 입력된 실시간 키워드 읽기
-    const mainInput = $('input-topic');
-    const curTopic = (mainInput && mainInput.value.trim()) || 
-                     (window.state && window.state.topic) || 
-                     (elements && elements.inputTopic && elements.inputTopic.value.trim()) ||
-                     "2026 AI 트렌드와 직장인 업무 생산성을 300% 높이는 핵심 도구 가이드";
-
-    const shortsTopicInput = $('shorts-input-topic');
-    if (shortsTopicInput) {
-      shortsTopicInput.value = curTopic;
-    }
+    // 카테고리 기본 선택 및 추천 에피소드 초기화
+    selectStoryCategory(currentStoryCategory || 'workplace');
 
     // 블로그 URL 동기화
     const blogInput = $('shorts-input-blog');
@@ -18208,9 +18376,6 @@ function closeAllModals() {
         blogInput.value = 'https://tistory-ai-corp.tistory.com';
       }
     }
-
-    // 선택된 키워드에 맞게 실시간 메타데이터 & 대본 갱신
-    updateTopicMetadataPreview(curTopic);
 
     // 이전 생성 영상이 있다면 비디오 플레이어에 로드
     if (latestShortsData && latestShortsData.web_url) {
@@ -18235,7 +18400,7 @@ function closeAllModals() {
 
   window.generateShortsVideo = async function() {
     const topic = ($('shorts-input-topic') ? $('shorts-input-topic').value.trim() : '') || 
-                  ($('input-topic') ? $('input-topic').value.trim() : '2026 정부 지원금 혜택 총정리');
+                  '내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰';
     const blogUrl = ($('shorts-input-blog') ? $('shorts-input-blog').value.trim() : '') || 'https://tistory-ai-corp.tistory.com';
     const btn = $('btn-render-shorts');
     const renderBox = $('shorts-rendering-box');
@@ -18244,7 +18409,7 @@ function closeAllModals() {
     btn.disabled = true;
     btn.classList.add('opacity-50', 'cursor-not-allowed');
     renderBox.classList.remove('hidden');
-    statusText.textContent = `🎬 배PD & 신디자이너가 '${topic}' 20초 감성 바이럴 릴스를 렌더링하고 있습니다...`;
+    statusText.textContent = `🎬 배PD & 신디자이너가 썰 쇼츠 '${topic}' 영상을 렌더링하고 있습니다...`;
 
     const updateStep = (id, text, isDone, isActive) => {
       const el = $(id);
@@ -18278,8 +18443,13 @@ function closeAllModals() {
       const response = await fetch(`${apiBase}/api/shorts/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: topic, blog_url: blogUrl })
+        body: JSON.stringify({ 
+          topic: topic, 
+          blog_url: blogUrl,
+          category: currentStoryCategory || 'workplace'
+        })
       });
+
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: 서버에서 숏폼 제작을 처리하지 못했습니다. (서버 상태 확인 필요)`);

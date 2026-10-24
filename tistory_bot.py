@@ -1150,14 +1150,15 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 payload = json.loads(post_data)
             except Exception:
                 payload = {}
-            topic = payload.get("topic", "2026 정부 지원금 혜택 총정리")
+            topic = payload.get("topic", "내 도시락 맨날 훔쳐먹던 꼰대 상사 참교육한 썰")
             blog_url = payload.get("blog_url", f"https://{self.app_instance.config.TISTORY_BLOG_NAME}.tistory.com/" if self.app_instance else "")
-            print(f"\n[웹 대시보드] 🎬 숏폼 영상 제작 요청 감지! 주제: '{topic}'")
+            category = payload.get("category", "auto")
+            print(f"\n[웹 대시보드] 🎬 숏폼 영상 제작 요청 감지! 카테고리: '{category}', 주제: '{topic}'")
             try:
                 import importlib
                 import shorts_pipeline
                 importlib.reload(shorts_pipeline)
-                result = shorts_pipeline.generate_shorts_pipeline(topic=topic, blog_url=blog_url)
+                result = shorts_pipeline.generate_shorts_pipeline(topic=topic, blog_url=blog_url, category=category)
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json; charset=utf-8")
                 self._send_cors_headers()

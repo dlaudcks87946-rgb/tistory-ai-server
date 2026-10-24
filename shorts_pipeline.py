@@ -34,22 +34,186 @@ if sys.platform.startswith("win"):
 
 
 class ShortsScriptGenerator:
-    """주제를 20~25초 분량의 바이럴 3단계(후킹-핵심비법-프로필유입) 스토리텔링 대본으로 변환"""
+    """주제를 20~25초 분량의 바이럴 3단계(후킹-갈등/전개-사이다/반전/댓글유도) 스토리텔링 대본으로 변환"""
 
     @staticmethod
-    def generate_script(topic: str, blog_url: str = "") -> Dict:
-        clean_topic = topic.strip() or "2026 부업 수익화 비밀 꿀팁"
+    def generate_script(topic: str, blog_url: str = "", category: str = "auto") -> Dict:
+        clean_topic = topic.strip() or "내 도시락 맨날 훔쳐먹던 꼰대 상사 참교육한 썰"
         clean_url = blog_url.strip() or "https://tistory-ai-corp.tistory.com"
 
-        # 1. 정부 지원금 / 바우처 / 청년 / 환수 테마
+        # ==========================================
+        # [썰 쇼츠 1] 직장 상사 참교육 사이다 썰
+        # ==========================================
+        if category in ["workplace", "직장사이다", "직장"] or (
+            category == "auto" and any(k in clean_topic for k in ["직장", "상사", "꼰대", "회사", "과장", "부장", "월급", "퇴사", "사이다", "참교육", "법카", "도시락"])
+        ):
+            return {
+                "title": f"🔥 [사이다] {clean_topic[:24]} #Shorts #사이다썰",
+                "tags": ["직장인사이다", "회사썰", "상사참교육", "사이다", "Shorts", "Reels"],
+                "pinned_comment": "📌 여러분도 직장에서 겪어본 최악의 빌런이 있나요? 댓글로 사연을 남겨주세요! (채널 구독 & 좋아요는 큰 힘이 됩니다 ❤️)",
+                "broll_pref": "norm_broll_typing.mp4",
+                "cta_text": "[댓글] 여러분의 생각은? 댓글로 남겨주세요!",
+                "scenes": [
+                    {
+                        "badge": "[HOT] 직장 사이다 썰",
+                        "badge_color": (239, 68, 68),
+                        "hero_line1": "내 도시락 훔쳐먹던",
+                        "hero_line2": "꼰대 과장 참교육!",
+                        "accent": "꼰대 과장 참교육!",
+                        "speech": f"회사에서 제 도시락을 매일 한두 입씩 뺏어먹던 꼰대 과장님, 참다못해 제가 결단을 내렸습니다."
+                    },
+                    {
+                        "badge": "[TIP] 은밀한 작전 개시",
+                        "badge_color": (245, 158, 11),
+                        "hero_line1": "초강력 캡사이신을",
+                        "hero_line2": "듬뿍 뿌려뒀더니?",
+                        "accent": "듬뿍 뿌려뒀더니?",
+                        "speech": "점심시간 직전에 세상에서 가장 매운 불마왕 캡사이신 소스를 듬뿍 뿌려두고 모른 척 자리를 비웠습니다."
+                    },
+                    {
+                        "badge": "[GO!] 통쾌한 결말",
+                        "badge_color": (168, 85, 247),
+                        "hero_line1": "탕비실 비명 폭발!",
+                        "hero_line2": "여러분 생각은?",
+                        "accent": "여러분 생각은?",
+                        "speech": "잠시 후 탕비실에서 비명이 터지더니 우유 찾고 난리가 났더라고요. 여러분이라면 이 상황에서 어떻게 하셨을 것 같나요?"
+                    }
+                ]
+            }
+
+        # ==========================================
+        # [썰 쇼츠 2] 소개팅 역대급 레전드 빌런 썰
+        # ==========================================
+        if category in ["blind_date", "소개팅빌런", "소개팅"] or (
+            category == "auto" and any(k in clean_topic for k in ["소개팅", "데이트", "연애", "빌런", "뷔페", "더치페이", "남친", "여친", "카톡", "바람", "결혼"])
+        ):
+            return {
+                "title": f"💔 [소개팅 썰] {clean_topic[:24]} #Shorts #레전드썰",
+                "tags": ["소개팅썰", "연애빌런", "레전드썰", "더치페이", "Shorts", "Reels"],
+                "pinned_comment": "📌 여러분이 겪었던 가장 황당했던 소개팅은 무엇인가요? 댓글로 공유해 주세요! 💬",
+                "broll_pref": "norm_broll_coffee.mp4",
+                "cta_text": "[댓글] 이런 사람 만나보셨나요? 댓글 공유!",
+                "scenes": [
+                    {
+                        "badge": "[HOT] 소개팅 레전드 썰",
+                        "badge_color": (244, 63, 94),
+                        "hero_line1": "소개팅 첫 만남에",
+                        "hero_line2": "화장실로 튄 소개팅남",
+                        "accent": "화장실로 튄 소개팅남",
+                        "speech": "주말에 소개팅을 나갔는데, 첫 만남부터 비싼 호텔 뷔페를 가자더니 계산할 때 지갑을 안 가져왔다는 겁니다."
+                    },
+                    {
+                        "badge": "[주의] 위기 발생",
+                        "badge_color": (245, 158, 11),
+                        "hero_line1": "30분째 감감무소식",
+                        "hero_line2": "황당한 카톡 한 통",
+                        "accent": "황당한 카톡 한 통",
+                        "speech": "화장실 다녀온다더니 30분째 안 오길래 전화했더니, 급한 일 생겨서 차 타고 먼저 갔다며 톡이 오더라고요."
+                    },
+                    {
+                        "badge": "[GO!] 사이다 결말",
+                        "badge_color": (16, 185, 129),
+                        "hero_line1": "경찰 신고하니까",
+                        "hero_line2": "1분 만에 칼송금!",
+                        "accent": "1분 만에 칼송금!",
+                        "speech": "매니저님 불러서 CCTV 확인하고 무전취식으로 경찰 신고 접수하자마자, 1분 만에 바로 전액 송금하더라고요. 진짜 여러분은 이런 빌런 만나본 적 있으신가요?"
+                    }
+                ]
+            }
+
+        # ==========================================
+        # [썰 쇼츠 3] 소름돋는 현실 미스터리/반전 썰
+        # ==========================================
+        if category in ["mystery", "소름미스터리", "미스터리"] or (
+            category == "auto" and any(k in clean_topic for k in ["소름", "미스터리", "도어락", "새벽", "원룸", "공포", "실화", "자취방", "쪽지", "비밀번호", "귀신"])
+        ):
+            return {
+                "title": f"😱 [소름 실화] {clean_topic[:24]} #Shorts #소름실화",
+                "tags": ["소름실화", "미스터리", "자취방썰", "충격반전", "Shorts", "Reels"],
+                "pinned_comment": "📌 혼자 자취하시는 분들은 꼭 이중 잠금장치 하세요! 여러분이 겪은 소름돋는 경험담도 댓글로 알려주세요.",
+                "broll_pref": "norm_broll_city.mp4",
+                "cta_text": "[구독] 더 소름돋는 실화는 채널 구독!",
+                "scenes": [
+                    {
+                        "badge": "[소름] 미스터리 실화",
+                        "badge_color": (139, 92, 246),
+                        "hero_line1": "새벽 3시마다 울리는",
+                        "hero_line2": "우리 집 도어락 소리",
+                        "accent": "우리 집 도어락 소리",
+                        "speech": "자취방으로 이사 온 첫날부터, 매일 새벽 3시만 되면 도어락 번호 누르는 소리가 삐빅거리며 들렸습니다."
+                    },
+                    {
+                        "badge": "[추적] 숨막히는 추적",
+                        "badge_color": (239, 68, 68),
+                        "hero_line1": "문 앞 스마트폰에",
+                        "hero_line2": "촬영된 충격적 정체",
+                        "accent": "촬영된 충격적 정체",
+                        "speech": "너무 무서워서 다음 날 현관문 틈 사이에 스마트폰 카메라를 켜두고 몰래 잠들었는데, 아침에 영상을 돌려보고 얼어붙었습니다."
+                    },
+                    {
+                        "badge": "[반전] 충격적인 반전",
+                        "badge_color": (245, 158, 11),
+                        "hero_line1": "온몸에 소름이...",
+                        "hero_line2": "문단속 꼭 하세요!",
+                        "accent": "문단속 꼭 하세요!",
+                        "speech": "알고 보니 윗집 사람이 술에 취해 층수를 헷갈려 매일 우리 집 비밀번호를 눌렀던 거였습니다. 진짜 여러분도 자취방 문단속 꼭 철저히 하세요!"
+                    }
+                ]
+            }
+
+        # ==========================================
+        # [썰 쇼츠 4] 자취방 배달 레전드 황당 썰
+        # ==========================================
+        if category in ["delivery", "배달황당", "배달"] or (
+            category == "auto" and any(k in clean_topic for k in ["배달", "치킨", "라이더", "황당", "음식", "배민", "식당", "포장", "쿠폰", "오배송", "피자"])
+        ):
+            return {
+                "title": f"🤣 [황당 실화] {clean_topic[:24]} #Shorts #황당썰",
+                "tags": ["배달썰", "황당실화", "자취방썰", "웃긴썰", "Shorts", "Reels"],
+                "pinned_comment": "📌 여러분이라면 배달원이 닭다리 하나 먹고 쪽지 남겼을 때 용서 가능하신가요? 댓글 투표! 🍗",
+                "broll_pref": "norm_broll_coffee.mp4",
+                "cta_text": "[댓글] 여러분이라면 용서 가능? 댓글 투표!",
+                "scenes": [
+                    {
+                        "badge": "[HOT] 황당 배달 실화",
+                        "badge_color": (16, 185, 129),
+                        "hero_line1": "야식으로 치킨 시켰더니",
+                        "hero_line2": "봉투 속 의문의 쪽지?",
+                        "accent": "봉투 속 의문의 쪽지?",
+                        "speech": "야식으로 치킨 한 마리를 시켰는데, 배달 봉투 안쪽에 웬 작은 포스트잇 쪽지가 하나 붙어있는 겁니다."
+                    },
+                    {
+                        "badge": "[고백] 황당한 고백",
+                        "badge_color": (245, 158, 11),
+                        "hero_line1": "냄새가 너무 좋아서",
+                        "hero_line2": "닭다리 하나 먹었습니다",
+                        "accent": "닭다리 하나 먹었습니다",
+                        "speech": "쪽지를 펴보니까, '냄새가 너무 맛있어 보여서 참지 못하고 닭다리 하나 먹었습니다. 죄송합니다'라고 적혀있더라고요."
+                    },
+                    {
+                        "badge": "[결말] 레전드 결말",
+                        "badge_color": (244, 63, 94),
+                        "hero_line1": "전액 환불 + 쿠폰!",
+                        "hero_line2": "여러분은 용서 가능?",
+                        "accent": "여러분은 용서 가능?",
+                        "speech": "어이가 없어서 고객센터에 문의했더니 치킨 전액 환불에 3만 원 상품권까지 보내줬습니다. 여러분이라면 닭다리 하나 용서 가능하신가요?"
+                    }
+                ]
+            }
+
+        # ==========================================
+        # [정보성 1] 정부 지원금 / 바우처 / 청년 테마
+        # ==========================================
         if any(k in clean_topic for k in ["바우처", "첫만남", "지원금", "청년", "환수", "소멸", "국민행복카드", "정부"]):
             return {
                 "title": f"🚨 {clean_topic[:26]} 기한 지나면 전액 소멸?! #Shorts",
                 "tags": ["정부지원금", "바우처혜택", "생활꿀팁", "Shorts", "Reels"],
                 "pinned_comment": f"📌 [1초 잔액 조회 & 제휴처 전체 리스트] 지금 바로 프로필 고정 댓글 블로그에서 확인하세요! 👉 {clean_url}",
+                "broll_pref": "norm_broll_city.mp4",
+                "cta_text": "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!",
                 "scenes": [
                     {
-                        "badge": "🚨 긴급 경고 | 기한 엄수",
+                        "badge": "[경고] 긴급 기한 엄수",
                         "badge_color": (239, 68, 68),
                         "hero_line1": "기한 지나면",
                         "hero_line2": "전액 국고 환수?!",
@@ -57,7 +221,7 @@ class ShortsScriptGenerator:
                         "speech": f"혹시 {clean_topic[:18]} 지원금 받아두고 그냥 까먹고 계신가요? 정해진 기한 넘기면 남은 잔액이 전부 자동 소멸됩니다!"
                     },
                     {
-                        "badge": "💡 현금처럼 긁는 꿀팁",
+                        "badge": "[꿀팁] 현금처럼 결제",
                         "badge_color": (245, 158, 11),
                         "hero_line1": "마트·약국·배민까지",
                         "hero_line2": "전부 결제 가능합니다!",
@@ -65,7 +229,7 @@ class ShortsScriptGenerator:
                         "speech": "병원과 약국은 물론이고 이마트, 백화점, 심지어 쿠팡이나 배달의민족 앱에서도 간편결제 등록해서 현금처럼 쓸 수 있습니다."
                     },
                     {
-                        "badge": "👉 프로필 링크 확인",
+                        "badge": "[확인] 프로필 링크 확인",
                         "badge_color": (168, 85, 247),
                         "hero_line1": "내 잔액 1초 조회",
                         "hero_line2": "지금 바로 확인하세요!",
@@ -75,15 +239,19 @@ class ShortsScriptGenerator:
                 ]
             }
 
-        # 2. 블로그 / 부업 / 수익화 / 네이버 / 애드센스 / 재테크 테마
+        # ==========================================
+        # [정보성 2] 블로그 / 부업 / 수익화 테마
+        # ==========================================
         if any(k in clean_topic for k in ["수익", "부업", "블로그", "네이버", "구독", "애드센스", "돈", "머니", "월", "쿠팡"]):
             return {
                 "title": f"🔥 {clean_topic[:26]} 솔직히 나만 몰랐던 수익화 비법 #Shorts",
                 "tags": ["부업추천", "수익화", "직장인부업", "Shorts", "Reels"],
                 "pinned_comment": f"📌 [100% 무료 가이드] 상세한 0원 시작 세팅법과 꿀팁은 고정 댓글 블로그에서 확인하세요! 👉 {clean_url}",
+                "broll_pref": "norm_broll_typing.mp4",
+                "cta_text": "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!",
                 "scenes": [
                     {
-                        "badge": "🔥 솔직히 나만 몰랐던 비법",
+                        "badge": "[HOT] 나만 몰랐던 비법",
                         "badge_color": (239, 68, 68),
                         "hero_line1": "아직도 하루 몇 백원에",
                         "hero_line2": "현타 오고 계신가요?",
@@ -91,7 +259,7 @@ class ShortsScriptGenerator:
                         "speech": f"솔직히 블로그 하루 종일 써서 몇 백원 벌면 현타 오죠? 남들은 지금 {clean_topic[:18]} 이거 하나로 월 150씩 조용히 챙겨가고 있습니다."
                     },
                     {
-                        "badge": "💡 0원으로 시작하는 꿀팁",
+                        "badge": "[꿀팁] 0원 시작 가이드",
                         "badge_color": (245, 158, 11),
                         "hero_line1": "딱 2가지만",
                         "hero_line2": "세팅해 두면 끝납니다!",
@@ -99,7 +267,7 @@ class ShortsScriptGenerator:
                         "speech": "딱 2가지만 기억하세요. 남들 다 쓰는 레드오션 키워드는 버리고, 3분 만에 0원으로 채널을 열어두면 자는 동안에도 수익이 들어옵니다."
                     },
                     {
-                        "badge": "👉 프로필 링크 확인",
+                        "badge": "[확인] 프로필 링크 확인",
                         "badge_color": (168, 85, 247),
                         "hero_line1": "100% 무료 가이드",
                         "hero_line2": "지금 바로 확인하세요!",
@@ -109,14 +277,18 @@ class ShortsScriptGenerator:
                 ]
             }
 
-        # 3. AI / 테크 / 생산성 / 일반 생활 꿀팁 테마
+        # ==========================================
+        # [기본 테마] 일반 생활 꿀팁 / AI 테크
+        # ==========================================
         return {
             "title": f"⚡ {clean_topic[:26]} 20초 만에 끝내는 시크릿 꿀팁 #Shorts",
             "tags": ["생활꿀팁", "인생꿀팁", "핵심요약", "Shorts", "Reels"],
-            "pinned_comment": f"📌 [상세 가이드 & 바로가기] 고정 댓글 블로그 링크에서 1초 만에 확인하세요! 👉 {clean_url}",
+            "pinned_comment": f"📌 [상세 가이드 & 바로가기] 고정 댓글 링크에서 1초 만에 확인하세요! 👉 {clean_url}",
+            "broll_pref": "norm_broll_typing.mp4",
+            "cta_text": "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!",
             "scenes": [
                 {
-                    "badge": "⚡ 3초 시선 집중",
+                    "badge": "[속보] 3초 시선 집중",
                     "badge_color": (239, 68, 68),
                     "hero_line1": "이거 아직도 모르면",
                     "hero_line2": "매달 30만원씩 손해!",
@@ -124,7 +296,7 @@ class ShortsScriptGenerator:
                     "speech": f"아직도 {clean_topic[:20]}에 대해 제대로 모르고 계셨나요? 이거 하나만 알아도 남들보다 3배 이상 앞서갈 수 있습니다."
                 },
                 {
-                    "badge": "💡 1%만 아는 핵심 비법",
+                    "badge": "[TIP] 1%만 아는 비법",
                     "badge_color": (245, 158, 11),
                     "hero_line1": "복잡한 절차 없이",
                     "hero_line2": "딱 3분 만에 해결!",
@@ -132,12 +304,12 @@ class ShortsScriptGenerator:
                     "speech": "핵심은 간단합니다. 뻔한 방식으로 시간 낭비하지 마시고, 전문가들이 검증한 이 지름길 공식 하나만 그대로 따라 해 보세요."
                 },
                 {
-                    "badge": "👉 프로필 링크 확인",
+                    "badge": "[확인] 프로필 링크 확인",
                     "badge_color": (168, 85, 247),
                     "hero_line1": "상세 가이드 배포 중",
                     "hero_line2": "고정 댓글 링크 클릭!",
                     "accent": "고정 댓글 링크 클릭!",
-                    "speech": "초보자도 1분 만에 따라 할 수 있는 상세 실행 매뉴얼은, 아래 고정 댓글 블로그 링크에 전부 정리해 뒀으니 지금 확인하세요!"
+                    "speech": "초보자도 1분 만에 따라 할 수 있는 상세 실행 매뉴얼은, 아래 고정 댓글 링크에 전부 정리해 뒀으니 지금 확인하세요!"
                 }
             ]
         }
@@ -307,9 +479,13 @@ class ShortsVideoRenderer:
                 if (f.startswith("norm_") or f.startswith("broll_")) and f.endswith(".mp4")
             ]
             if candidates:
-                # norm_ 우선 선택
-                norm_candidates = [c for c in candidates if "norm_" in os.path.basename(c)]
-                broll_video = norm_candidates[0] if norm_candidates else candidates[0]
+                pref_name = script_data.get("broll_pref")
+                pref_path = os.path.join(broll_dir, pref_name) if pref_name else None
+                if pref_path and os.path.exists(pref_path):
+                    broll_video = pref_path
+                else:
+                    norm_candidates = [c for c in candidates if "norm_" in os.path.basename(c)]
+                    broll_video = norm_candidates[0] if norm_candidates else candidates[0]
 
         # 4. 각 씬별 키네틱 자막 청크 사전 계산
         scene_kinetic_chunks = []
@@ -408,9 +584,11 @@ class ShortsVideoRenderer:
             # 프레임 오버레이 렌더링
             img = self._render_frame(
                 scene, progress, current_time, scene_time,
-                active_chunk, time_in_chunk, has_broll=bool(broll_video)
+                active_chunk, time_in_chunk, has_broll=bool(broll_video),
+                global_cta=script_data.get("cta_text")
             )
             proc.stdin.write(img.tobytes())
+
 
         proc.stdin.close()
         proc.wait()
@@ -440,7 +618,8 @@ class ShortsVideoRenderer:
 
     def _render_frame(
         self, scene: Dict, progress: float, current_time: float, scene_time: float,
-        active_chunk: Dict, time_in_chunk: float, has_broll: bool
+        active_chunk: Dict, time_in_chunk: float, has_broll: bool,
+        global_cta: Optional[str] = None
     ) -> Image.Image:
         """PPT 느낌을 100% 제거한 감성 바이럴 오버레이 렌더러 (실사 영상 + 팝업 바운스 자막)"""
         if has_broll:
@@ -521,15 +700,17 @@ class ShortsVideoRenderer:
             draw.text((self.WIDTH // 2, sub_y), sub_text, fill=text_color, font=self.font_sub, anchor="mm")
 
         # 5. 최하단 고정 CTA 배너 (Floating Pill)
+        cta = scene.get("cta_text") or global_cta or "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!"
+        cta_text = self._clean_text_for_font(cta)
         draw.rounded_rectangle([140, 1720, 940, 1820], radius=30, fill=(225, 29, 72, 230), outline=(255, 255, 255, 180), width=2)
-        draw.text((self.WIDTH // 2, 1770), "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!", fill=(255, 255, 255), font=self.font_cta, anchor="mm")
+        draw.text((self.WIDTH // 2, 1770), cta_text, fill=(255, 255, 255), font=self.font_cta, anchor="mm")
 
         return img
 
 
-def generate_shorts_pipeline(topic: str, blog_url: str = "") -> Dict:
-    """단일 진입점: 주제를 받아 20초 바이럴 릴스 MP4 영상과 메타데이터를 일괄 생성"""
-    clean_topic = topic.strip() or "2026 정부 지원금 혜택 총정리"
+def generate_shorts_pipeline(topic: str, blog_url: str = "", category: str = "auto") -> Dict:
+    """단일 진입점: 주제와 카테고리를 받아 20~25초 바이럴 릴스/쇼츠 MP4 영상과 메타데이터를 일괄 생성"""
+    clean_topic = topic.strip() or "내 도시락 맨날 훔쳐먹던 꼰대 상사 참교육한 썰"
     output_dir = os.path.join(os.getcwd(), "output", "shorts")
     os.makedirs(output_dir, exist_ok=True)
 
@@ -538,9 +719,9 @@ def generate_shorts_pipeline(topic: str, blog_url: str = "") -> Dict:
     output_filename = f"shorts_{safe_topic}_{timestamp}.mp4"
     output_filepath = os.path.join(output_dir, output_filename)
 
-    # 1. 바이럴 스크립트 작성
+    # 1. 바이럴 스크립트 작성 (썰 카테고리 지원)
     script_gen = ShortsScriptGenerator()
-    script_data = script_gen.generate_script(clean_topic, blog_url)
+    script_data = script_gen.generate_script(clean_topic, blog_url, category=category)
 
     # 2. 비디오 렌더링
     renderer = ShortsVideoRenderer()
@@ -555,6 +736,7 @@ def generate_shorts_pipeline(topic: str, blog_url: str = "") -> Dict:
     result["web_url"] = f"/output/shorts/{output_filename}"
 
     return result
+
 
 
 if __name__ == "__main__":
