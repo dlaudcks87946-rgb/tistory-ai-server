@@ -2657,8 +2657,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
               </div>
             </div>
 
-            <!-- Virtual Office Visual Stage (Wide Cinematic Canvas: min-w 1150px, height 720px) -->
-            <div id="office-stage-wrapper" class="w-full overflow-hidden relative bg-slate-950 flex justify-center items-start">
+            <!-- Virtual Office Visual Stage (Wide Cinematic Canvas: 1620px x 860px) -->
+            <div id="office-stage-wrapper" class="w-full overflow-hidden relative bg-slate-950 block">
               <!-- Floating Exit Fullscreen Button -->
               <button id="btn-exit-fullscreen-floating" onclick="exitFullscreenStage()" class="hidden fixed top-4 right-4 z-50 px-4 py-2 rounded-xl bg-slate-900/90 hover:bg-black text-white font-bold text-xs border border-orange-400 shadow-2xl flex items-center gap-2 cursor-pointer transition active:scale-95">
                 <i class="fa-solid fa-compress text-orange-400"></i>
@@ -11731,21 +11731,32 @@ async function triggerRealPublish(payloadData = null) {
     }
 
 
-    // ===== [수정] 무대 자동 맞춤 (창 최대화 시 100% 꽉 차도록 완벽 확장) =====
+    // ===== [수정] 무대 자동 맞춤 (창 최대화 시 회의실까지 100% 한눈에 보이도록 완벽 맞춤) =====
     window.STAGE_SCALE = 1;
     function fitStageToWrapper() {
       const wrapper = document.getElementById('office-stage-wrapper');
       const stage = document.getElementById('office-stage-container');
       if (!wrapper || !stage) return;
       const baseW = 1620, baseH = 860;           // 와이드 뷰 기준 캔버스 (모든 이동 경로의 기준)
-      const availW = wrapper.clientWidth || wrapper.parentElement.clientWidth || window.innerWidth;
-      const scale = Math.max(availW / baseW, 0.45); // 창 최대화 시에도 오른쪽 여백 없이 100% 꽉 채움!
+      
+      // wrapper 부모의 정확한 실제 가로폭 측정
+      const pRect = wrapper.parentElement ? wrapper.parentElement.getBoundingClientRect() : null;
+      const availW = (pRect && pRect.width > 0) ? pRect.width : (wrapper.clientWidth || window.innerWidth);
+      
+      // 회의실(우측 1604px)까지 100% 완벽하게 화면 안에 다 보이도록 스케일 계산
+      const scale = availW / baseW;
       window.STAGE_SCALE = scale;
+
       stage.style.width = baseW + 'px';
       stage.style.height = baseH + 'px';
-      stage.style.transformOrigin = 'top left';
+      stage.style.transformOrigin = '0 0';
       stage.style.transform = `scale(${scale})`;
       stage.style.position = 'relative';
+      stage.style.margin = '0';
+      stage.style.left = '0px';
+      stage.style.top = '0px';
+
+      wrapper.style.display = 'block';
       wrapper.style.height = Math.round(baseH * scale) + 'px';
       wrapper.style.overflow = 'hidden';
     }
