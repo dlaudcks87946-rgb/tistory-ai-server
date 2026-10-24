@@ -1170,6 +1170,21 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False).encode("utf-8"))
             return
 
+        if self.path == "/api/shorts/open_folder":
+            folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", "shorts")
+            os.makedirs(folder_path, exist_ok=True)
+            try:
+                if sys.platform.startswith("win"):
+                    os.startfile(folder_path)
+            except Exception as e:
+                print(f"[폴더 열기 오류] {e}")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self._send_cors_headers()
+            self.end_headers()
+            self.wfile.write(json.dumps({"success": True, "path": folder_path}, ensure_ascii=False).encode("utf-8"))
+            return
+
         if self.path == "/api/publish":
             content_length = int(self.headers.get("Content-Length", 0))
             post_data = self.rfile.read(content_length).decode("utf-8")
