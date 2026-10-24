@@ -144,7 +144,7 @@ class ShortsScriptGenerator:
 
 
 class ShortsVideoRenderer:
-    """1080x1920 세로형 감성 무빙 캔버스 + 키네틱 타이포그래피 + Lo-Fi BGM 믹싱 렌더러"""
+    """1080x1920 세로형 9:16 바이럴 비디오 렌더러 (실사 B-Roll 비디오 루프 + 키네틱 팝업 자막 + Lo-Fi BGM)"""
 
     WIDTH = 1080
     HEIGHT = 1920
@@ -168,10 +168,10 @@ class ShortsVideoRenderer:
                 break
 
         if font_file:
-            self.font_badge = ImageFont.truetype(font_file, 38)
-            self.font_hero = ImageFont.truetype(font_file, 68)
-            self.font_accent = ImageFont.truetype(font_file, 74)
-            self.font_sub = ImageFont.truetype(font_file, 44)
+            self.font_badge = ImageFont.truetype(font_file, 36)
+            self.font_hero = ImageFont.truetype(font_file, 66)
+            self.font_accent = ImageFont.truetype(font_file, 76)
+            self.font_sub = ImageFont.truetype(font_file, 62)
             self.font_cta = ImageFont.truetype(font_file, 34)
         else:
             self.font_badge = ImageFont.load_default()
@@ -179,6 +179,59 @@ class ShortsVideoRenderer:
             self.font_accent = ImageFont.load_default()
             self.font_sub = ImageFont.load_default()
             self.font_cta = ImageFont.load_default()
+
+    @staticmethod
+    def _clean_text_for_font(text: str) -> str:
+        """한글 폰트(malgunbd.ttf)에서 지원하지 않는 이모지로 인한 두부(□) 현상 방지"""
+        if not text:
+            return ""
+        replacements = {
+            "🔥": "[HOT]",
+            "📌": "▶",
+            "⚡": "[속보]",
+            "💡": "[TIP]",
+            "🚀": "[GO!]",
+            "⚠️": "[필독]",
+            "💰": "[수익]",
+            "👉": "▶",
+            "✅": "✓",
+            "🕒": "[NOW]",
+            "🎯": "[핵심]",
+            "👑": "[TOP]",
+        }
+        for emo, sym in replacements.items():
+            text = text.replace(emo, sym)
+        # 4바이트 유니코드 이모지 제거
+        text = re.sub(r'[\U00010000-\U0010ffff]', '', text).strip()
+        return text
+
+    def _calculate_kinetic_chunks(self, speech: str, duration: float) -> List[Dict]:
+        """나레이션 대본을 2~3단어 단위의 다이내믹 키네틱 팝업 자막 청크로 분할 (체류시간 극대화)"""
+        words = speech.split()
+        if not words:
+            return [{"text": "", "start": 0.0, "end": duration}]
+
+        chunks = []
+        curr = []
+        for w in words:
+            curr.append(w)
+            # 2~3단어 또는 8~11글자 단위로 짧게 분절하여 화면에 빠른 템포로 팝업
+            if len(" ".join(curr)) >= 8 or len(curr) >= 3:
+                chunks.append(" ".join(curr))
+                curr = []
+        if curr:
+            chunks.append(" ".join(curr))
+
+        num_chunks = max(1, len(chunks))
+        chunk_dur = duration / num_chunks
+        result = []
+        for idx, text in enumerate(chunks):
+            result.append({
+                "text": text,
+                "start": idx * chunk_dur,
+                "end": (idx + 1) * chunk_dur
+            })
+        return result
 
     async def render_shorts(self, script_data: Dict, output_filepath: str) -> Dict:
         temp_dir = os.path.join(os.path.dirname(output_filepath), f"temp_{int(time.time()*1000)}")
@@ -245,30 +298,81 @@ class ShortsVideoRenderer:
         total_duration = sum(scene_durations)
         total_frames = int(total_duration * self.FPS)
 
-        # 3. 비디오 렌더링 파이프라인
-        ffmpeg_cmd = [
-            self.ffmpeg_exe, "-y",
-            "-f", "rawvideo",
-            "-vcodec", "rawvideo",
-            "-s", f"{self.WIDTH}x{self.HEIGHT}",
-            "-pix_fmt", "rgb24",
-            "-r", str(self.FPS),
-            "-i", "-",
-            "-i", final_audio_path,
-            "-c:v", "libx264",
-            "-preset", "veryfast",
-            "-pix_fmt", "yuv420p",
-            "-c:a", "aac",
-            "-b:a", "192k",
-            "-shortest",
-            output_filepath
-        ]
+        # 3. 실사 B-roll 세로 영상 탐색
+        broll_dir = os.path.join(base_dir, "assets", "broll")
+        broll_video = None
+        if os.path.exists(broll_dir):
+            candidates = [
+                os.path.join(broll_dir, f) for f in os.listdir(broll_dir)
+                if (f.startswith("norm_") or f.startswith("broll_")) and f.endswith(".mp4")
+            ]
+            if candidates:
+                # norm_ 우선 선택
+                norm_candidates = [c for c in candidates if "norm_" in os.path.basename(c)]
+                broll_video = norm_candidates[0] if norm_candidates else candidates[0]
 
-        proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # 4. 각 씬별 키네틱 자막 청크 사전 계산
+        scene_kinetic_chunks = []
+        for s_idx, scene in enumerate(script_data["scenes"]):
+            dur = scene_durations[s_idx]
+            chunks = self._calculate_kinetic_chunks(scene.get("speech", ""), dur)
+            scene_kinetic_chunks.append(chunks)
+
+        # 5. FFmpeg 비디오 렌더링 파이프라인 구성
+        if broll_video:
+            ffmpeg_cmd = [
+                self.ffmpeg_exe, "-y",
+                "-stream_loop", "-1",
+                "-i", broll_video,
+                "-f", "rawvideo",
+                "-vcodec", "rawvideo",
+                "-s", f"{self.WIDTH}x{self.HEIGHT}",
+                "-pix_fmt", "rgba",
+                "-r", str(self.FPS),
+                "-i", "-",
+                "-i", final_audio_path,
+                "-filter_complex", (
+                    "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,"
+                    "crop=1080:1920,setsar=1,"
+                    "eq=brightness=-0.18:contrast=1.10:saturation=1.15[bg];"
+                    "[bg][1:v]overlay=0:0[vout]"
+                ),
+                "-map", "[vout]",
+                "-map", "2:a",
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest",
+                output_filepath
+            ]
+        else:
+            ffmpeg_cmd = [
+                self.ffmpeg_exe, "-y",
+                "-f", "rawvideo",
+                "-vcodec", "rawvideo",
+                "-s", f"{self.WIDTH}x{self.HEIGHT}",
+                "-pix_fmt", "rgb24",
+                "-r", str(self.FPS),
+                "-i", "-",
+                "-i", final_audio_path,
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest",
+                output_filepath
+            ]
+
+        proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         acc = 0
         cumulative_durations = []
+        scene_start_times = []
         for d in scene_durations:
+            scene_start_times.append(acc)
             acc += d
             cumulative_durations.append(acc)
 
@@ -286,15 +390,32 @@ class ShortsVideoRenderer:
                 current_scene_idx = len(script_data["scenes"]) - 1
 
             scene = script_data["scenes"][current_scene_idx]
+            scene_start = scene_start_times[current_scene_idx]
+            scene_time = current_time - scene_start
 
-            # 캔버스 렌더링
-            img = self._render_frame(scene, progress, current_time, current_scene_idx, len(script_data["scenes"]))
+            # 현재 씬에서 활성화된 키네틱 자막 청크 찾기
+            chunks = scene_kinetic_chunks[current_scene_idx]
+            active_chunk = chunks[0]
+            for c in chunks:
+                if c["start"] <= scene_time < c["end"]:
+                    active_chunk = c
+                    break
+            else:
+                active_chunk = chunks[-1]
+
+            time_in_chunk = scene_time - active_chunk["start"]
+
+            # 프레임 오버레이 렌더링
+            img = self._render_frame(
+                scene, progress, current_time, scene_time,
+                active_chunk, time_in_chunk, has_broll=bool(broll_video)
+            )
             proc.stdin.write(img.tobytes())
 
         proc.stdin.close()
-        proc.communicate()
+        proc.wait()
 
-        # 임시 정리
+        # 임시 파일 정리
         try:
             for f in os.listdir(temp_dir):
                 os.remove(os.path.join(temp_dir, f))
@@ -303,7 +424,7 @@ class ShortsVideoRenderer:
             pass
 
         file_size_mb = os.path.getsize(output_filepath) / (1024 * 1024)
-        print(f"✅ [감성 릴스 파이프라인] 1080x1920 MP4 영상 렌더링 완성! ({file_size_mb:.2f} MB, {total_duration:.1f}초)")
+        print(f"✅ [실사 B-roll + 키네틱 쇼츠 파이프라인] 1080x1920 MP4 영상 렌더링 완성! ({file_size_mb:.2f} MB, {total_duration:.1f}초)")
 
         return {
             "success": True,
@@ -317,74 +438,91 @@ class ShortsVideoRenderer:
             "scenes": script_data.get("scenes", [])
         }
 
-    def _render_frame(self, scene: Dict, progress: float, time_in_sec: float, scene_idx: int, total_scenes: int) -> Image.Image:
-        # 1. 딥 앰비언트 다크 캔버스
-        img = Image.new("RGB", (self.WIDTH, self.HEIGHT), color=(15, 17, 26))
-        draw = ImageDraw.Draw(img)
+    def _render_frame(
+        self, scene: Dict, progress: float, current_time: float, scene_time: float,
+        active_chunk: Dict, time_in_chunk: float, has_broll: bool
+    ) -> Image.Image:
+        """PPT 느낌을 100% 제거한 감성 바이럴 오버레이 렌더러 (실사 영상 + 팝업 바운스 자막)"""
+        if has_broll:
+            img = Image.new("RGBA", (self.WIDTH, self.HEIGHT), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
 
-        # 부드럽게 움직이는 앰비언트 글로우 오브 (시각적 생동감)
-        glow_x = int(540 + 180 * math.sin(time_in_sec * 0.8))
-        glow_y = int(700 + 120 * math.cos(time_in_sec * 0.9))
-        draw.ellipse([glow_x - 450, glow_y - 450, glow_x + 450, glow_y + 450], fill=(28, 25, 56))
+            # 상단 & 하단 시네마틱 딥 그라데이션 (자막 및 헤드라인 시인성 극대화)
+            for y in range(320):
+                a = int(175 * (1 - y / 320))
+                draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
+            for y in range(1420, self.HEIGHT):
+                a = int(215 * ((y - 1420) / 500))
+                draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
+        else:
+            img = Image.new("RGB", (self.WIDTH, self.HEIGHT), color=(15, 17, 26))
+            draw = ImageDraw.Draw(img)
+            # 앰비언트 글로우 오브
+            glow_x = int(540 + 180 * math.sin(current_time * 0.8))
+            glow_y = int(700 + 120 * math.cos(current_time * 0.9))
+            draw.ellipse([glow_x - 450, glow_y - 450, glow_x + 450, glow_y + 450], fill=(28, 25, 56))
 
-        glow2_x = int(540 - 200 * math.cos(time_in_sec * 0.7))
-        glow2_y = int(1200 + 100 * math.sin(time_in_sec * 0.6))
-        draw.ellipse([glow2_x - 400, glow2_y - 400, glow2_x + 400, glow2_y + 400], fill=(20, 35, 60))
+        # 1. 상단 네온 프로그레스 바 (0~100%)
+        prog_w = int(60 + (self.WIDTH - 120) * progress)
+        draw.rounded_rectangle([60, 40, self.WIDTH - 60, 56], radius=8, fill=(255, 255, 255, 40) if has_broll else (50, 50, 70))
+        draw.rounded_rectangle([60, 40, prog_w, 56], radius=8, fill=(244, 63, 94, 255) if has_broll else (244, 63, 94))
 
-        # 2. 상단 네온 프로그레스 바 (0~100%)
-        prog_w = int(self.WIDTH * progress)
-        draw.rectangle([0, 0, prog_w, 10], fill=(244, 63, 94))
-
-        # 3. 상단 바이럴 뱃지 (Pill Capsule)
+        # 2. 상단 카테고리 바이럴 뱃지 (Pill Capsule)
         badge_color = scene.get("badge_color", (239, 68, 68))
-        draw.rounded_rectangle([140, 240, 940, 330], radius=24, fill=(24, 24, 38), outline=badge_color, width=3)
-        draw.text((self.WIDTH // 2, 285), scene.get("badge", ""), fill=(255, 255, 255), font=self.font_badge, anchor="mm")
+        badge_text = self._clean_text_for_font(scene.get("badge", "[HOT] 핵심 꿀팁 공개"))
+        draw.rounded_rectangle([180, 180, 900, 270], radius=45, fill=(15, 23, 42, 220) if has_broll else (24, 24, 38), outline=badge_color, width=3)
+        draw.text((self.WIDTH // 2, 225), badge_text, fill=(255, 255, 255), font=self.font_badge, anchor="mm")
 
-        # 4. 중앙 무대: 시선 강탈 대형 히어로 텍스트 (Center Kinetic Hook)
-        hero_y1 = 580
-        hero_y2 = 680
-        line1 = scene.get("hero_line1", "")
-        line2 = scene.get("hero_line2", "")
-        accent = scene.get("accent", "")
+        # 3. 중앙 상단 시선 강탈 헤드라인 (Upper Center Hero Hook)
+        hook_y1 = 440
+        hook_y2 = 540
+        line1 = self._clean_text_for_font(scene.get("hero_line1", ""))
+        line2 = self._clean_text_for_font(scene.get("hero_line2", ""))
+        accent = self._clean_text_for_font(scene.get("accent", ""))
 
-        # 그림자 효과
+        # 텍스트 깊이감 그림자 효과
         for ox, oy in [(-3, -3), (3, -3), (-3, 3), (3, 3), (0, 5)]:
-            draw.text((self.WIDTH // 2 + ox, hero_y1 + oy), line1, fill=(0, 0, 0), font=self.font_hero, anchor="mm")
-            draw.text((self.WIDTH // 2 + ox, hero_y2 + oy), line2, fill=(0, 0, 0), font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
+            draw.text((self.WIDTH // 2 + ox, hook_y1 + oy), line1, fill=(0, 0, 0, 255), font=self.font_hero, anchor="mm")
+            draw.text((self.WIDTH // 2 + ox, hook_y2 + oy), line2, fill=(0, 0, 0, 255), font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
 
-        # 본문 텍스트 (강조 단어는 옐로우/사이언)
-        draw.text((self.WIDTH // 2, hero_y1), line1, fill=(255, 255, 255), font=self.font_hero, anchor="mm")
+        draw.text((self.WIDTH // 2, hook_y1), line1, fill=(255, 255, 255), font=self.font_hero, anchor="mm")
         accent_color = (250, 204, 21) if line2 == accent else (255, 255, 255)
-        draw.text((self.WIDTH // 2, hero_y2), line2, fill=accent_color, font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
+        draw.text((self.WIDTH // 2, hook_y2), line2, fill=accent_color, font=self.font_accent if line2 == accent else self.font_hero, anchor="mm")
 
-        # 5. 하단 나레이션 자막 글래스 카드 (Clean Modern Glassmorphism Card)
-        card_top = 1120
-        card_bottom = 1480
-        draw.rounded_rectangle([80, card_top, 1000, card_bottom], radius=36, fill=(18, 22, 36), outline=(99, 102, 241), width=3)
+        # 4. 하단 키네틱 다이내믹 팝업 자막 (Kinetic Pop-Up Subtitle)
+        # 지루한 PPT 텍스트 박스를 완전히 없애고, 1초마다 통통 튀며 바뀌는 숏폼 특화 자막
+        sub_text = self._clean_text_for_font(active_chunk.get("text", ""))
+        if sub_text:
+            sub_y = 1260
+            is_pop = time_in_chunk < 0.22  # 단어가 처음 등장할 때 0.22초간 시각적 팝업 바운스 강조
 
-        speech = scene.get("speech", "")
-        words = speech.split()
-        lines = []
-        curr = ""
-        for w in words:
-            if len(curr) + len(w) + 1 <= 15:
-                curr = (curr + " " + w).strip()
-            else:
-                lines.append(curr)
-                curr = w
-        if curr:
-            lines.append(curr)
-        lines = lines[:4]
+            bbox = draw.textbbox((self.WIDTH // 2, sub_y), sub_text, font=self.font_sub, anchor="mm")
+            pad_x = 45 + (12 if is_pop else 0)
+            pad_y = 22 + (4 if is_pop else 0)
 
-        line_h = 70
-        start_y = card_top + (card_bottom - card_top - len(lines) * line_h) // 2 + 35
-        for l_idx, line in enumerate(lines):
-            ly = start_y + l_idx * line_h
-            draw.text((self.WIDTH // 2, ly), line, fill=(241, 245, 249), font=self.font_sub, anchor="mm")
+            pill_outline = (255, 255, 255, 255) if is_pop else (250, 204, 21, 240)
+            pill_width = 5 if is_pop else 3
 
-        # 6. 최하단 고정 CTA 배너 (Floating Pill)
-        draw.rounded_rectangle([120, 1660, 960, 1760], radius=28, fill=(225, 29, 72), outline=(254, 205, 211), width=2)
-        draw.text((self.WIDTH // 2, 1710), "📌 100% 무료 가이드는 프로필 링크 클릭!", fill=(255, 255, 255), font=self.font_cta, anchor="mm")
+            # 세련된 다크 글래스 필 캡슐
+            draw.rounded_rectangle(
+                [bbox[0] - pad_x, bbox[1] - pad_y, bbox[2] + pad_x, bbox[3] + pad_y],
+                radius=32,
+                fill=(0, 0, 0, 220) if has_broll else (18, 22, 36),
+                outline=pill_outline,
+                width=pill_width
+            )
+
+            # 자막 외곽선 그림자
+            for ox, oy in [(-3, -3), (3, -3), (-3, 3), (3, 3), (0, 4)]:
+                draw.text((self.WIDTH // 2 + ox, sub_y + oy), sub_text, fill=(0, 0, 0, 255), font=self.font_sub, anchor="mm")
+
+            # 팝업 상태에 따라 네온 옐로우 / 화이트 텍스트
+            text_color = (255, 240, 80) if is_pop else (255, 255, 255)
+            draw.text((self.WIDTH // 2, sub_y), sub_text, fill=text_color, font=self.font_sub, anchor="mm")
+
+        # 5. 최하단 고정 CTA 배너 (Floating Pill)
+        draw.rounded_rectangle([140, 1720, 940, 1820], radius=30, fill=(225, 29, 72, 230), outline=(255, 255, 255, 180), width=2)
+        draw.text((self.WIDTH // 2, 1770), "[TIP] 무료 꿀팁 가이드북은 프로필 링크 클릭!", fill=(255, 255, 255), font=self.font_cta, anchor="mm")
 
         return img
 
