@@ -11084,31 +11084,43 @@ ${P(`오늘 살펴본 <strong>${cleanMain}</strong>의 모든 핵심 내용을 �
    - 표(table)와 불렛포인트(ul/ol)를 풍성하게 사용하여 스마트폰에서도 읽기 편하게 구성하세요.
 5. 오직 <div class="tistory-content-wrapper">...</div> 형태의 순수 HTML 본문 코드만 출력하세요. 마크다운 백틱(\`\`\`html)이나 부가 설명은 일체 배제하세요.`;
 
-      const models = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-1.5-flash'];
+      const models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-3.8-flash'];
       for (const model of models) {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 6000);
           const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
           const res = await fetch(url, {
             method: 'POST',
+            signal: controller.signal,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.7, maxOutputTokens: 4096 }
+              generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
             })
           });
+          clearTimeout(timeoutId);
 
           if (res.ok) {
             const data = await res.json();
-            let text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            const candidate = data?.candidates?.[0];
+            const finishReason = candidate?.finishReason;
+            if (finishReason === 'MAX_TOKENS') {
+              console.warn(`Gemini model ${model} was truncated due to MAX_TOKENS. Discarding partial output.`);
+              continue;
+            }
+            let text = candidate?.content?.parts?.[0]?.text;
             if (text) {
               text = text.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
-              if (text.includes('<div') || text.includes('<h2')) {
+              const hasEnding = text.endsWith('</div>') || text.endsWith('</p>');
+              const hasSections = text.includes('<h2') && (text.includes('총정리') || text.includes('마치며') || text.includes('FAQ') || text.includes('질문') || text.includes('주의사항'));
+              if (hasEnding && hasSections && text.length > 800) {
                 return text;
               }
             }
           }
         } catch (e) {
-          console.warn(`Gemini model ${model} fetch failed:`, e);
+          console.warn(`Gemini model ${model} fetch skipped/timeout:`, e);
         }
       }
       return null;
@@ -11116,9 +11128,6 @@ ${P(`오늘 살펴본 <strong>${cleanMain}</strong>의 모든 핵심 내용을 �
     window.generateArticleWithGeminiAI = generateArticleWithGeminiAI;
 
     async function generateFinalReport(topic) {
-      let aiGeneratedHtml = null;
-      try { aiGeneratedHtml = await generateArticleWithGeminiAI(topic); } catch(e) { console.warn(e); }
-
       const data = getArticleData(topic);
       elements.reportTitleHeading.textContent = `[결재 서류] ${data.title}`;
       elements.previewTitle.textContent = data.title;
@@ -11126,29 +11135,27 @@ ${P(`오늘 살펴본 <strong>${cleanMain}</strong>의 모든 핵심 내용을 �
       elements.previewTagsList.innerHTML = data.tags.map(k => 
         `<span class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium cursor-pointer transition">#${k}</span>`
       ).join('');
-      if (aiGeneratedHtml) {
-        elements.previewBody.innerHTML = aiGeneratedHtml;
-        showToast("✨ Google Gemini AI가 100% 맞춤형 실전 원고를 자율 집필했습니다!", "success");
-        addLog("이과장", "✨ [Gemini AI 실전 원고 집필 완료] 키워드 의도를 정밀 분석하여 실제 신청경로와 구비서류를 완벽 작성했습니다.", "text-emerald-400");
-      } else {
-        elements.previewBody.innerHTML = data.html;
-        const hasKey = localStorage.getItem('gemini_api_key');
-        if (!hasKey) {
-          showToast("💡 [설정] 탭에 무료 Gemini API 키를 등록하시면 AI가 무제한 실전 원고를 씁니다!", "info");
-        }
-      }
 
-      const textOnly = elements.previewBody.innerText.trim();
-      const charCount = textOnly.length;
-      const scoreWordCount = document.getElementById('score-word-count');
-      if (scoreWordCount) {
-        scoreWordCount.textContent = `약 ${charCount.toLocaleString()}자 (공백 포함)`;
-        scoreWordCount.className = "font-bold text-emerald-600";
-      }
-
+      // 1. [0초 즉각 렌더링] 기다림 없이 완결형 기승전결 원고를 즉시 100% 온전하게 출력
+      elements.previewBody.innerHTML = data.html;
+      updateArticleWordCount();
       renderComprehensiveMeetingMinutes(topic);
-      showToast("정부장이 5개 부서 종합 취합 결재 서류를 완성했습니다!", "success");
+      showToast("정부장이 5개 부서 종합 취합 결재 서류를 즉시 완성했습니다!", "success");
       if (typeof OfficePersistenceManager !== "undefined") OfficePersistenceManager.saveState();
+
+      // 2. [백그라운드 비동기 고도화] 화면 블로킹 없이 Gemini AI 정밀 원고 비동기 반영
+      const apiKey = localStorage.getItem('gemini_api_key');
+      if (apiKey) {
+        generateArticleWithGeminiAI(topic).then(aiGeneratedHtml => {
+          if (aiGeneratedHtml && elements.previewBody) {
+            elements.previewBody.innerHTML = aiGeneratedHtml;
+            updateArticleWordCount();
+            showToast("✨ Google Gemini AI 맞춤형 원고로 실시간 업그레이드되었습니다!", "success");
+            addLog("이과장", "✨ [Gemini AI 실전 원고 완결] 키워드 의도를 정밀 분석하여 실제 신청경로와 구비서류를 완벽 작성했습니다.", "text-emerald-400");
+            if (typeof OfficePersistenceManager !== "undefined") OfficePersistenceManager.saveState();
+          }
+        }).catch(e => console.warn(e));
+      }
     }
 
     // ========================================================
