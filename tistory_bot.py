@@ -235,387 +235,80 @@ class AgentKimPlanner:
 # 4. 사내 에이전트 2: 이과장 (주제별 지능형 전문 원고 집필)
 # ==========================================
 class AgentLeeWriter:
-    """기획안의 카테고리와 주제에 맞춰 진짜 실용적인 고품질 서식 원고 작성"""
-    def write(self, plan: Dict) -> str:
+    """기획안의 카테고리와 주제에 맞춰 키워드 100% 밀착 전문 칼럼 서식 원고 작성"""
+    def write(self, plan: dict) -> str:
         category = plan.get("category", "general")
         title = plan["title"]
         raw_topic = plan.get("raw_topic", title)
+        clean_topic = re.sub(r'^(202[0-9]|완벽|총정리|비교|추천|분석|가이드|꿀팁|법|정리|\s)+', '', raw_topic).strip()
+        if not clean_topic:
+            clean_topic = raw_topic
 
-        print(f"\n[이과장 (작가)] ✍️ '{category}' 분야에 맞춘 전문 스토리텔링 원고 집필 중...")
+        print(f"\n[이과장 (작가)] ✍️ '{clean_topic}' 키워드에 100% 밀착된 맞춤형 전문 원고 집필 중...")
 
-        time.sleep(1.2)
-
-        # 1. 정부 청년 지원금 및 복지 혜택 전문 원고
-        if category == "policy_youth":
-            html_content = f"""
+        html_content = f"""
 <div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 2026년을 맞아 정부와 지자체에서 청년들의 경제적 자립과 주거 안정을 돕기 위해 다양한 청년 복지 지원 사업을 대폭 개편하여 시행하고 있습니다. 오늘은 많은 청년분들이 놓치지 말아야 할 <strong>{title}</strong>에 대해 자격 조건부터 신청 꿀팁까지 핵심만 꼼꼼히 정리해 드립니다.</p>
+    <p style="font-size: 16px;">안녕하세요! 오늘은 많은 분들이 궁금해하시고 검색하고 계시는 <strong>{title}</strong>에 대해 실생활과 업무에 꼭 필요한 핵심 정보만 엄선하여 알기 쉽게 정리해 드립니다.</p>
     
     <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #15803d; font-size: 16px;">📌 2026 청년 지원금 핵심 3줄 요약</p>
+        <p style="margin: 0 0 8px 0; font-weight: bold; color: #15803d; font-size: 16px;">📌 {clean_topic} 핵심 3줄 요약</p>
         <ul style="margin: 0; padding-left: 20px; color: #166534; font-size: 14px;">
-            <li><strong>목돈 마련 지원:</strong> '청년도약계좌' 정부 매칭 기여금 확대로 5년간 최대 5,000만 원 안팎의 자산 형성 지원</li>
-            <li><strong>주거비 경감:</strong> '청년월세 한시 특별지원' 무주택 청년 대상 월 최대 20만 원(최장 12개월~24개월) 지원</li>
-            <li><strong>교통비 환급:</strong> 'K-패스' 및 청년 대중교통비 지원 연계로 매달 대중교통비 최대 30% 사후 환급</li>
+            <li><strong>핵심 가치:</strong> {clean_topic}의 필수 정보와 핵심 기준을 사전 점검하여 최적의 선택을 돕습니다.</li>
+            <li><strong>실전 활용:</strong> 불필요한 시행착오를 줄이고 오늘부터 즉시 적용할 수 있는 단계별 실천 팁을 제공합니다.</li>
+            <li><strong>주의사항:</strong> 신청 및 활용 전 반드시 확인해야 할 유의사항과 체크포인트를 알기 쉽게 짚어드립니다.</li>
         </ul>
     </div>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        1. 2026년 반드시 신청해야 할 청년 3대 핵심 지원금
+        1. {clean_topic}이란? 핵심 개념 및 최신 동향
     </h2>
-    <p>고물가와 취업난 속에서 정부의 복지 지원 제도를 적극 활용하는 것은 가장 확실하고 안전한 재테크입니다. 올해 가장 주목받는 3대 핵심 지원 사업은 다음과 같습니다.</p>
+    <p>정보가 넘쳐나는 환경에서 <strong>{clean_topic}</strong>의 본질과 핵심 기준을 명확히 파악하는 것은 시간과 비용을 아끼는 가장 확실한 방법입니다. 최근 관련 제도와 트렌드가 빠르게 변화하고 있는 만큼, 최신 가이드라인에 맞춘 올바른 접근이 필요합니다.</p>
     
     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #0f172a; margin-top: 0;">① 청년도약계좌 (청년 자산형성 대표 상품)</h3>
-        <p style="margin-bottom: 6px;">매월 최대 70만 원 한도 내에서 5년간 자유롭게 적립하면, 정부가 월 최대 3만 3천 원의 기여금을 매칭 지원하며 이자소득에 전액 비과세 혜택이 주어집니다. 만기 시 원금과 이자, 정부 기여금을 합쳐 <strong>최대 5,000만 원 안팎의 목돈</strong>을 안정적으로 마련할 수 있습니다.</p>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #0f172a; margin-top: 0;">② 청년월세 한시 특별지원 (주거비 부담 완화)</h3>
-        <p style="margin-bottom: 6px;">부모와 별도로 거주하는 무주택 청년(만 19~34세)에게 <strong>실제 납부하는 월세를 월 최대 20만 원씩 최대 12~24개월 동안 분할 지원</strong>합니다. 보증금 5,000만 원 이하 및 월세 70만 원 이하 주택에 거주하는 청년이라면 누구나 대상 여부를 확인해 볼 가치가 있습니다.</p>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #0f172a; margin-top: 0;">③ K-패스 &amp; 청년 대중교통비 환급</h3>
-        <p style="margin-bottom: 6px;">월 15회 이상 대중교통을 정기적으로 이용하는 청년에게 <strong>이용 금액의 30%를 사후 환급</strong>해 줍니다. 연간 환급액만 20~30만 원 상당에 달해 통학 및 출퇴근 청년들의 고정 지출을 획기적으로 줄여줍니다.</p>
+        <h3 style="font-size: 16px; font-weight: bold; color: #0f172a; margin-top: 0;">💡 {clean_topic} 핵심 체크포인트</h3>
+        <p style="margin-bottom: 6px;">공신력 있는 기준과 실제 검증된 사례를 바탕으로 내 상황에 가장 유리한 조건을 확인하세요. 사소한 차이가 최종 결과에서 큰 차이를 만듭니다.</p>
     </div>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        2. 신청 자격 요건 및 소득 기준 총정리
+        2. {clean_topic} 주요 특징 및 실패 없는 선택 기준
     </h2>
-    <p>지원금마다 세부 조건이 조금씩 다르므로, 신청 전 본인의 해당 여부를 먼저 확인해야 서류 반려 없이 원활하게 승인받을 수 있습니다.</p>
+    <p>개인마다 처한 환경과 목적이 다르기 때문에, 천편일률적인 기준 대신 나에게 꼭 맞는 최적의 기준표를 세워야 합니다.</p>
     
     <ul style="padding-left: 20px; margin-bottom: 20px;">
-        <li style="margin-bottom: 10px;"><strong>연령 기준:</strong> 기본 만 19세 ~ 만 34세 청년 (군 복무를 마친 경우 복무 기간만큼 최대 만 40세까지 연장 인정)</li>
-        <li style="margin-bottom: 10px;"><strong>소득 요건:</strong> 가구 기준 중위소득 100%~140% 이하 (청년도약계좌의 경우 개인소득 7,500만 원 이하 및 가구 중위소득 250% 이하 적용)</li>
-        <li style="margin-bottom: 10px;"><strong>주택 소유 여부:</strong> 월세 지원의 경우 본인 명의 주택이 없는 무주택자 필수</li>
+        <li style="margin-bottom: 10px;"><strong>자격 및 스펙 요건:</strong> 필수 기준과 사전 준비물을 철저히 대조 점검하세요.</li>
+        <li style="margin-bottom: 10px;"><strong>가성비 및 효율성:</strong> 들이는 시간과 비용 대비 얻을 수 있는 실질적인 혜택을 꼼꼼히 비교하세요.</li>
+        <li style="margin-bottom: 10px;"><strong>지속 가능성:</strong> 단발성 시도에 그치지 않고 지속적으로 효과를 볼 수 있는지 확인하세요.</li>
     </ul>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        3. 누구나 쉽게 따라하는 온라인 신청 3단계 로드맵
+        3. 누구나 쉽게 따라하는 {clean_topic} 3단계 실천 로드맵
     </h2>
-    <p>주민센터를 직접 찾아갈 필요 없이 스마트폰이나 PC로 10분 만에 신청을 마칠 수 있습니다.</p>
+    <p>복잡하게 생각할 필요 없이 다음 3단계 순서에 따라 차근차근 진행하시면 누구나 쉽게 원하는 결과를 얻으실 수 있습니다.</p>
     
     <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (자가진단):</strong> '온통청년(youthcenter.go.kr)' 또는 '복지로(bokjiro.go.kr)'에 접속해 [청년정책 자가진단]으로 지원 대상 여부 확인</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (서류 구비):</strong> 주민등록등본, 소득금액증명원, 임대차계약서(월세 신청 시), 통장사본 등 필수 증빙 서류를 PDF 또는 사진으로 준비</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (온라인 접수):</strong> 복지로 및 정부24 포털에서 대상 사업을 검색하고 신청서 작성 후 서류를 첨부하여 제출</li>
+        <li style="margin-bottom: 10px;"><strong>1단계 (사전 점검):</strong> 공식 포털 또는 신뢰할 수 있는 소스에서 최신 기준표와 대상 여부를 확인합니다.</li>
+        <li style="margin-bottom: 10px;"><strong>2단계 (자료 준비):</strong> 필요한 서류 및 준비물을 누락 없이 구비하여 접수 준비를 마칩니다.</li>
+        <li style="margin-bottom: 10px;"><strong>3단계 (실행 및 피드백):</strong> 온라인으로 신청을 완료하고, 진행 상황을 주기적으로 모니터링합니다.</li>
     </ol>
-
-    <blockquote style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #166534;">
-        "정부 지원금은 '몰라서 못 받는 돈'이 가장 많습니다. 신청 자격을 꼼꼼히 체크하여 당당하게 내 몫의 혜택을 챙기세요!"
-    </blockquote>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        4. 마치며: 놓치지 말고 지금 바로 신청하세요!
+        4. 진행 시 반드시 주의해야 할 사항
     </h2>
-    <p>대부분의 정부 지원 사업은 연초에 예산이 배정되어 <strong>예산 소진 시 조기 마감</strong>되는 경우가 많습니다. 공고가 떴을 때 미루지 말고 미리 서류를 준비해 두시기를 권장합니다.</p>
-    <p>오늘 정리해 드린 정보가 청년 여러분의 경제적 부담을 덜고 든든한 디딤돌이 되었기를 바랍니다. 도움이 되셨다면 공감과 댓글 부탁드립니다!</p>
-</div>
-"""
-        # 2. AI 에이전트 & 실무 생산성 도구 전문 원고
-        elif category == "tech_ai":
-            html_content = f"""
-<div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 인공지능 기술이 단순한 챗봇 문답 단계를 넘어 스스로 도구를 사용하고 복잡한 업무를 자율적으로 완수하는 <strong>자율 에이전트(Autonomous Agent)</strong> 시대로 진입했습니다. 오늘은 직장인의 실무 생산성을 300% 이상 끌어올리는 <strong>{title}</strong>에 대해 실무에서 가장 검증된 <strong>4대 핵심 도구(ChatGPT-4o, Claude 3.5 Sonnet, Gemini 2.5, n8n)</strong>의 세부 스펙과 실제 복사해 바로 써먹는 <strong>실전 프롬프트 및 업무별 활용법</strong>을 총정리해 드립니다.</p>
+    <p>사소한 실수로 불이익을 받거나 기회를 놓치지 않도록 아래 주의사항을 최종적으로 점검해 주세요.</p>
     
-    <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #1d4ed8; font-size: 16px;">📌 2026 AI 실무 생산성 핵심 3줄 요약</p>
-        <ul style="margin: 0; padding-left: 20px; color: #1e40af; font-size: 14px; line-height: 1.8;">
-            <li><strong>패러다임 대전환:</strong> 단순 질문 대답형 AI에서 벗어나 기획·원고·교열·배포를 분담하는 'AI 에이전트 다중 협업 체제' 구축이 필수입니다.</li>
-            <li><strong>실무 4대 핵심 도구:</strong> 기획·데이터 분석의 <strong>ChatGPT-4o</strong>, 자연스러운 한국어 장문 보고서의 <strong>Claude 3.5 Sonnet</strong>, 100만 토큰 대용량 PDF 분석의 <strong>Gemini 2.5</strong>, 반복 업무 자동화의 <strong>n8n</strong>을 업무 목적별로 조합합니다.</li>
-            <li><strong>일일 2시간 단축:</strong> 이메일 초안 작성 3분, 엑셀 데이터 시각화 1분, 대용량 PDF 핵심 조항 추출 10초로 일일 루틴 업무 시간을 획기적으로 줄일 수 있습니다.</li>
-        </ul>
+    <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; margin: 20px 0; border-radius: 6px;">
+        <p style="margin: 0; color: #92400e; font-size: 14px;"><strong>⚠️ 필수 체크:</strong> 부정확한 정보 입력이나 마감 기한 경과는 반려의 주요 원인이 됩니다. 제출 전 항목을 면밀히 재검토하세요.</p>
     </div>
 
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; margin-top: 36px; color: #1d4ed8;">
-        1. 2026 AI 트렌드의 3대 변화: 왜 지금 도구를 바꿔야 하는가?
+    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
+        5. 마치며: {clean_topic} 최종 요약
     </h2>
-    <p>과거의 생성형 AI가 사용자가 던지는 질문에 수동적으로 답변하는 단편적인 도구였다면, 2026년 현재는 각기 다른 전문성을 지닌 복수의 AI 에이전트가 팀을 이루어 작업을 자율 분담하는 체제로 발전했습니다. 목표만 지정해 주면 자료 수집, 표 가공, 보고서 초안 작성, 교열까지 연속적으로 수행하므로, 툴을 파이프라인으로 연결한 직장인과 그렇지 않은 직장인의 생산성 격차는 3배 이상 벌어집니다.</p>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; margin-top: 36px; color: #1d4ed8;">
-        2. 직장인 실무 생산성을 300% 높이는 4대 핵심 AI 도구 집중 분석
-    </h2>
-    <p>수많은 AI 서비스 중 실제 현업 직장인들이 가장 많이 쓰고 체감 생산성이 높은 4대 핵심 도구를 엄선했습니다.</p>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #0284c7; margin-top: 0;">① ChatGPT-4o (OpenAI): 멀티모달 기획 및 비즈니스 데이터 시각화</h3>
-        <p style="margin-bottom: 6px;">복잡한 엑셀 파일이나 영수증, 차트 이미지를 업로드하면 즉시 핵심 수치를 분석하고 파이썬 기반 데이터 시각화 그래프를 그려줍니다. 회의 안건 기획 및 비즈니스 아이디어 브레인스토밍에 최적의 파트너입니다.</p>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #4f46e5; margin-top: 0;">② Claude 3.5 Sonnet (Anthropic): 고품질 장문 보고서 집필 및 프로그래밍</h3>
-        <p style="margin-bottom: 6px;">기계 번역투가 없는 매끄럽고 자연스러운 한국어 문장 구사력이 독보적입니다. 수십 페이지 분량의 기획서, 논문 초안, 공문서 작성뿐만 아니라 파이썬 매크로 및 웹 코드 생성에서 가장 낮은 오류율을 자랑합니다.</p>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #16a34a; margin-top: 0;">③ Google Gemini 2.5: 100만 토큰 대용량 PDF 문서 분석 및 최신 웹 리서치</h3>
-        <p style="margin-bottom: 6px;">최대 100만~200만 토큰에 달하는 방대한 컨텍스트 창을 지원하여 수백 페이지짜리 법률 공고, 정부 정책 자료, 기술 매뉴얼을 통째로 넣고 원하는 조항을 1초 만에 찾아냅니다. 구글 검색 엔진과의 실시간 연동으로 최신 시사 정보 리서치에 강점이 있습니다.</p>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 17px; font-weight: bold; color: #ea580c; margin-top: 0;">④ n8n & Perplexity AI: 반복 업무 무인화 및 신뢰성 팩트체크</h3>
-        <p style="margin-bottom: 6px;">n8n은 코딩 없이 노드로 연결하는 오픈소스 자동화 툴이며, Perplexity는 모든 답변에 실시간 출처 링크(Citation)를 달아 할루시네이션(환각)을 원천 차단합니다. 일일 뉴스 클리핑 자동 수집 및 학술 통계 팩트체크에 필수적입니다.</p>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; margin-top: 36px; color: #1d4ed8;">
-        3. [실전편] 내일부터 당장 써먹는 업무별 활용법 & 복사 가능한 프롬프트 템플릿
-    </h2>
-    <p>도구를 아는 것보다 중요한 것은 <strong>'어떻게 명령해야 내가 원하는 결과가 1번에 나오는가'</strong>입니다. 실무에서 바로 복사해 붙여넣을 수 있는 검증된 프롬프트 3가지를 공개합니다.</p>
-
-    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 16px; font-weight: bold; color: #0f172a; margin-top: 0;">실전 ①: 난잡한 회의 메모 ➔ 3분 정식 회의록 변환 (Claude 3.5 권장)</h3>
-        <pre style="background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">[역할]: 10년 차 대기업 전략기획 수석 비서
-[지시]: 아래 제공된 회의 메모를 읽고, 임원진이 10초 만에 파악할 수 있는 [정식 회의록]으로 재구성해 주세요.
-1. 회의 안건 및 핵심 결론 (3줄 요약)
-2. 주요 논의 쟁점별 세부 내용 (불렛포인트)
-3. 액션 아이템 테이블: [담당자 | 실행 과제 | 마감 기한]
-[회의 메모]: (여기에 메모 붙여넣기)</pre>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 16px; font-weight: bold; color: #0f172a; margin-top: 0;">실전 ②: 1만 줄 엑셀 매출 데이터 ➔ 핵심 차트 & 인사이트 도출 (ChatGPT-4o 권장)</h3>
-        <pre style="background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">[역할]: 전문 비즈니스 데이터 애널리스트
-[지시]: 첨부된 엑셀 파일의 데이터를 파이썬으로 분석하고 경영진 보고용 인사이트를 도출해 주세요.
-1. 결측치나 오류 데이터가 있는지 먼저 검증하고 기초 통계량을 보여주세요.
-2. 지난 분기 대비 매출 성장률 상위 20% 제품군과 하위 20% 제품군을 분류하세요.
-3. 월별 매출 추세를 한눈에 볼 수 있는 깔끔한 꺾은선 그래프를 그려서 이미지로 내려주세요.</pre>
-    </div>
-
-    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin: 16px 0;">
-        <h3 style="font-size: 16px; font-weight: bold; color: #0f172a; margin-top: 0;">실전 ③: 100페이지 지원 공고문/매뉴얼 ➔ 핵심 조항 10초 추출 (Gemini 2.5 권장)</h3>
-        <pre style="background: #1e293b; color: #e2e8f0; padding: 14px; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">[지시]: 업로드한 100페이지 입찰 공고문 PDF 전체를 정밀 스캔하여 아래 핵심 질문에 정확한 페이지 번호와 함께 답해 주세요.
-1. 지원 자격 요건 중 '신청 제외 대상' 결격 사유 3가지는 무엇인가? (해당 페이지 명시)
-2. 총 지원 예산 한도와 자부담 비율은 몇 %인가?
-3. 필수 제출 서류 목록을 체크리스트 표 형태로 정리해 주세요.</pre>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; margin-top: 36px; color: #1d4ed8;">
-        4. 누구나 내일부터 바로 따라하는 성공 정착 3단계 로드맵
-    </h2>
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (루틴 업무 모듈화):</strong> 하루 중 30분 이상 걸리는 반복 작업(이메일, 뉴스 조사, 엑셀 취합) 3가지를 먼저 선정</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (최적 1대 도구 집중):</strong> 글쓰기는 Claude, 데이터는 ChatGPT, 문서는 Gemini 중 1개만 골라 위에 제공된 프롬프트를 메모장에 저장해 두고 바로 적용</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (에이전트 결합 & 자동화):</strong> 손에 익은 후 n8n이나 파이썬 스크립트를 연결하여 매일 아침 자동으로 데이터가 수집·정리되는 시스템 구축</li>
-    </ol>
-
-    <div style="background: #fff7ed; border-left: 4px solid #ea580c; padding: 14px 18px; margin: 24px 0; color: #9a3412;">
-        <strong>⚠️ 직장인 사내 AI 사용 필수 주의사항 (기업 보안):</strong><br>
-        사내 기밀 데이터, 고객 개인정보(주민번호, 연락처), 미공개 재무 자료는 절대 AI 프롬프트에 입력하지 마세요. 설정 메뉴에서 '모델 학습에 내 데이터 사용 안 함(Data Training Opt-out)' 옵션을 반드시 활성화해야 안전합니다.
-    </div>
-
-    <blockquote style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #1e40af;">
-        "인공지능 도구를 단순히 아는 것과, 내 일상 업무에 실전 파이프라인으로 장착하는 것의 차이가 곧 업무 경쟁력의 3배 차이를 만듭니다."
-    </blockquote>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; margin-top: 36px; color: #1d4ed8;">
-        5. 마치며: 내일 출근길, 1가지 도구부터 시작해 보세요
-    </h2>
-    <p>오늘 소개해 드린 4대 핵심 도구 중 가장 마음에 드는 1가지를 골라, 내일 아침 출근 직후 이메일 초안 작성이나 회의록 요약부터 가볍게 시작해 보세요. 하루 1시간이 절약되고 저녁이 있는 삶이 시작됩니다!</p>
+    <p>오늘 정리해 드린 <strong>{clean_topic}</strong> 완벽 가이드가 여러분의 궁금증을 해소하고 현명한 결정을 내리는 데 큰 도움이 되었기를 바랍니다. 실천이 곧 가장 빠른 지름길입니다!</p>
 </div>
 """
-        # 3. 애드센스 고수익 & 블로그 운영 전문 원고
-        elif category == "blog_adsense":
-            html_content = f"""
-<div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 많은 블로거분들이 디지털 노마드와 패시브 인컴을 꿈꾸며 블로그를 시작하지만, 낮은 수익과 승인 거절로 어려움을 겪곤 합니다. 오늘은 클릭당 단가(CPC)를 높이고 방문자를 사로잡는 <strong>{title}</strong>를 아낌없이 공개합니다.</p>
-    
-    <div style="background-color: #fefce8; border-left: 4px solid #eab308; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #a16207; font-size: 16px;">📌 오늘의 핵심 3줄 요약</p>
-        <ul style="margin: 0; padding-left: 20px; color: #854d0e; font-size: 14px;">
-            <li>단순 방문자 수보다 구매 의도가 담긴 고단가(금융, 정부지원, 테크) 키워드 선정이 수익을 결정합니다.</li>
-            <li>H2/H3 태그 계층 구조와 최소 1,500자 이상의 완결성 있는 정보 배치가 검색엔진 상위 노출의 핵심입니다.</li>
-            <li>모바일 최적화 레이아웃과 이탈률을 낮추는 체류 시간 확보 전략으로 수익률을 극대화하세요.</li>
-        </ul>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #eab308; padding-bottom: 8px; margin-top: 36px; color: #a16207;">
-        1. 애드센스 승인을 부르는 3대 핵심 글쓰기 원칙
-    </h2>
-    <p>구글 검색엔진은 독자에게 실질적인 가치를 제공하는 '전문성(EEAT)' 있는 글을 높게 평가합니다. 단락마다 명확한 소제목(H2 태그)을 두고, 독자가 궁금해하는 질문에 즉시 답을 주는 구조를 만드세요.</p>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #eab308; padding-bottom: 8px; margin-top: 36px; color: #a16207;">
-        2. 고수익 블로거가 실천하는 3단계 로드맵
-    </h2>
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (황금 키워드 발굴):</strong> 경쟁 강도는 낮고 클릭 단가가 높은 틈새 검색어 선정</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (가독성 서식 디자인):</strong> 요약 박스, 불렛 포인트, 인용구를 배치해 체류 시간 늘리기</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (데이터 피드백):</strong> 구글 서치콘솔과 통계를 분석하여 유입량이 높은 글 지속 보완</li>
-    </ol>
-
-    <blockquote style="background: #fefce8; border-left: 4px solid #eab308; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #854d0e;">
-        "수익형 블로그의 본질은 정보 전달입니다. 독자의 문제를 해결해주면 수익은 자연히 따라옵니다."
-    </blockquote>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #eab308; padding-bottom: 8px; margin-top: 36px; color: #a16207;">
-        3. 마치며: 꾸준한 발행이 만드는 기적
-    </h2>
-    <p>오늘 전해드린 노하우를 바탕으로 여러분만의 든든한 파이프라인을 구축해 보시길 응원합니다!</p>
-</div>
-"""
-        # 4. 파이썬 부업 & 자동화 전문 원고
-        elif category == "coding_side":
-            html_content = f"""
-<div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 퇴근 후 남는 시간을 활용해 추가 수익을 만들고 싶지만 무엇부터 시작해야 할지 막막하셨다면, 오늘 전해드리는 <strong>{title}</strong>에 주목해 보세요.</p>
-    
-    <div style="background-color: #faf5ff; border-left: 4px solid #a855f7; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #7e22ce; font-size: 16px;">📌 오늘의 핵심 3줄 요약</p>
-        <ul style="margin: 0; padding-left: 20px; color: #6b21a8; font-size: 14px;">
-            <li>비전공자도 셀레니움(Selenium)과 오픈소스를 활용하면 매일 반복되는 웹 작업을 쉽게 자동화할 수 있습니다.</li>
-            <li>한 번 짜둔 스크립트는 24시간 쉬지 않고 일하며 콘텐츠 생산과 데이터 수집 시간을 획기적으로 줄여줍니다.</li>
-            <li>작은 자동화부터 시작해 점진적으로 나만의 디지털 자산 파이프라인을 확장해 나가세요.</li>
-        </ul>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #a855f7; padding-bottom: 8px; margin-top: 36px; color: #7e22ce;">
-        1. 직장인에게 왜 파이썬 자동화가 최고의 부업인가?
-    </h2>
-    <p>시간을 직접 투입하는 노동형 부업과 달리, 코드 기반의 자동화는 레버리지를 일으킬 수 있습니다. 매일 블로그에 글을 쓰고 데이터를 긁어오는 작업을 프로그램에 위임함으로써 본업과 휴식의 질을 모두 높일 수 있습니다.</p>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #a855f7; padding-bottom: 8px; margin-top: 36px; color: #7e22ce;">
-        2. 퇴근 후 실천하는 파이썬 부업 3단계 로드맵
-    </h2>
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (환경 구축):</strong> 파이썬과 VS Code, 셀레니움 라이브러리 기초 설치</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (단순 매크로 실습):</strong> 로그인 자동화, 웹 페이지 스크래핑 등 작은 성공 경험 만들기</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (파이프라인 결합):</strong> 키워드 분석 + 글 작성 + 자동 포스팅을 하나의 루틴으로 연동</li>
-    </ol>
-
-    <blockquote style="background: #faf5ff; border-left: 4px solid #a855f7; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #6b21a8;">
-        "시작하지 않으면 아무것도 변하지 않습니다. 하루 30분의 작은 자동화 코드가 미래를 바꿉니다."
-    </blockquote>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #a855f7; padding-bottom: 8px; margin-top: 36px; color: #7e22ce;">
-        3. 마치며: 꾸준함이 차이를 만듭니다
-    </h2>
-    <p>오늘 정리해 드린 내용을 바탕으로 여러분만의 스마트한 부업 루틴을 만들어 보세요. 도움이 되셨다면 공감과 댓글 부탁드립니다!</p>
-</div>
-"""
-        # 5. 홈카페 머신 & 원두 추천 전문 원고
-        elif category == "home_cafe":
-            html_content = f"""
-<div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 매일 아침 테이크아웃 커피값으로 나가는 비용이 부담스러우셨다면, 이제 집에서 전문점 못지않은 향긋한 커피를 직접 내려보세요. 오늘은 초보자를 위한 <strong>{title}</strong>를 준비했습니다.</p>
-    
-    <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #b45309; font-size: 16px;">📌 오늘의 핵심 3줄 요약</p>
-        <ul style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px;">
-            <li>10만~20만 원대 가성비 에스프레소 머신으로도 충분히 카페 퀄리티의 크레마를 추출할 수 있습니다.</li>
-            <li>커피 맛의 80%는 신선한 원두와 그라인더의 분쇄 균일도가 결정합니다.</li>
-            <li>취향에 맞는 원두 선택법과 머신 관리 노하우로 매일 아침 홈카페의 여유를 즐겨보세요.</li>
-        </ul>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #f59e0b; padding-bottom: 8px; margin-top: 36px; color: #b45309;">
-        1. 실패 없는 초보자용 가성비 머신 선택 기준
-    </h2>
-    <p>처음부터 수백만 원짜리 상업용 머신을 살 필요가 없습니다. 15바 이상의 펌프 압력, 빠른 예열 기능, 그리고 스팀 노즐이 갖춰진 갓성비 입문 머신을 고르는 팁을 전해드립니다.</p>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #f59e0b; padding-bottom: 8px; margin-top: 36px; color: #b45309;">
-        2. 나만의 홈카페를 완성하는 3단계 실천법
-    </h2>
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (원두 고르기):</strong> 로스팅한 지 2주 이내의 신선한 블렌드 원두 선택</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (분쇄도 조절):</strong> 에스프레소 추출 시간에 맞춰 고운 입자로 그라인딩</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (추출 및 위생):</strong> 25~30초 황금 추출 시간 준수 및 사용 후 즉시 포터필터 세척</li>
-    </ol>
-
-    <blockquote style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #92400e;">
-        "집 안 가득 퍼지는 커피 향기는 하루를 시작하는 가장 완벽한 힐링입니다."
-    </blockquote>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #f59e0b; padding-bottom: 8px; margin-top: 36px; color: #b45309;">
-        3. 마치며: 당신만의 홈바리스타 라이프를 응원합니다
-    </h2>
-    <p>오늘 정리해 드린 머신과 원두 가이드로 매일 풍성한 커피 타임을 만끽해 보세요!</p>
-</div>
-"""
-        # 6. 여행 & 주말 힐링 전문 원고
-        elif category == "travel_healing":
-            html_content = f"""
-<div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 복잡한 도심과 분주한 일상을 잠시 벗어나 온전한 쉼과 계절의 정취를 느끼고 싶으신가요? 오늘은 주말에 가볍게 떠나기 좋은 <strong>{title}</strong>를 소개해 드립니다.</p>
-    
-    <div style="background-color: #fff7ed; border-left: 4px solid #ea580c; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #c2410c; font-size: 16px;">📌 오늘의 핵심 3줄 요약</p>
-        <ul style="margin: 0; padding-left: 20px; color: #9a3412; font-size: 14px;">
-            <li>인파로 붐비지 않고 자연 속에서 고즈넉한 힐링을 만끽할 수 있는 숨은 명소들을 엄선했습니다.</li>
-            <li>당일치기 또는 1박 2일로 여유롭게 다녀올 수 있는 드라이브 코스와 주변 맛집 동선을 담았습니다.</li>
-            <li>인생샷을 남길 수 있는 최고의 포토존과 꿀팁으로 소중한 추억을 만들어 보세요.</li>
-        </ul>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #ea580c; padding-bottom: 8px; margin-top: 36px; color: #c2410c;">
-        1. 가을 정취를 온전히 느끼는 감성 힐링 여행지 베스트
-    </h2>
-    <p>울긋불긋 물든 단풍과 은빛 억새가 반기는 자연 속에서 산책하며 일상의 스트레스를 날려보세요. 맑은 공기와 아름다운 풍경이 지친 마음에 따뜻한 위로를 건네줍니다.</p>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #ea580c; padding-bottom: 8px; margin-top: 36px; color: #c2410c;">
-        2. 실패 없는 주말 힐링 여행 3단계 팁
-    </h2>
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (이른 출발):</strong> 주말 고속도로 정체를 피해 오전 일찍 여유롭게 출발하기</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (동선 최소화):</strong> 관광지를 무리하게 돌기보다 한두 곳에 머물며 온전히 쉬어가기</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (로컬 미식):</strong> 그 지역에서만 맛볼 수 있는 제철 특산물 요리로 든든한 식사 즐기기</li>
-    </ol>
-
-    <blockquote style="background: #fff7ed; border-left: 4px solid #ea580c; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #9a3412;">
-        "진정한 여행이란 새로운 풍경을 보는 것이 아니라, 새로운 시야를 갖는 것입니다."
-    </blockquote>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #ea580c; padding-bottom: 8px; margin-top: 36px; color: #c2410c;">
-        3. 마치며: 나를 위한 따뜻한 쉼표 하나
-    </h2>
-    <p>이번 주말에는 사랑하는 사람과 함께 아름다운 추억을 남겨보세요. 도움이 되셨다면 공감과 댓글 부탁드립니다!</p>
-</div>
-"""
-        # 7. 일반 사용자 직접 입력 맞춤형 원고
-        else:
-            html_content = f"""
-<div class="tistory-content-wrapper" style="line-height: 1.85; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; color: #333;">
-    <p style="font-size: 16px;">안녕하세요! 오늘 다뤄볼 주제는 많은 분들이 궁금해하시고 검색하고 계시는 <strong>{title}</strong>입니다. 핵심 내용과 실전 팁을 한눈에 알기 쉽게 정리해 드립니다.</p>
-    
-    <div style="background-color: #f8fafc; border-left: 4px solid #0284c7; padding: 18px; margin: 24px 0; border-radius: 8px;">
-        <p style="margin: 0 0 8px 0; font-weight: bold; color: #0369a1; font-size: 16px;">📌 오늘의 핵심 3줄 요약</p>
-        <ul style="margin: 0; padding-left: 20px; color: #075985; font-size: 14px;">
-            <li>{raw_topic}에 대해 반드시 알아두어야 할 핵심 개념과 최신 정보를 정리했습니다.</li>
-            <li>누구나 실생활이나 업무에 즉시 적용할 수 있는 구체적인 3단계 실천 로드맵을 제공합니다.</li>
-            <li>시행착오를 줄이고 원하는 목표를 달성할 수 있는 실전 꿀팁을 확인하세요.</li>
-        </ul>
-    </div>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 36px; color: #0369a1;">
-        1. 왜 지금 '{raw_topic}'에 주목해야 하는가?
-    </h2>
-    <p>정보가 넘쳐나는 시대일수록 정확하고 실용적인 정보를 빠르게 습득하고 내 것으로 만드는 실행력이 중요합니다. 본 글에서는 핵심만 짚어 불필요한 시행착오를 줄여드립니다.</p>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 36px; color: #0369a1;">
-        2. 성공적인 실행을 위한 3단계 로드맵
-    </h2>
-    <ol style="padding-left: 20px; margin-bottom: 24px;">
-        <li style="margin-bottom: 10px;"><strong>1단계 (목표 정의):</strong> 내가 얻고자 하는 구체적인 결과와 우선순위 설정</li>
-        <li style="margin-bottom: 10px;"><strong>2단계 (환경 구축):</strong> 필요한 도구와 정보, 자료를 체계적으로 준비</li>
-        <li style="margin-bottom: 10px;"><strong>3단계 (실전 피드백):</strong> 작은 단위부터 실행해 보고 지속적으로 개선해 나가기</li>
-    </ol>
-
-    <blockquote style="background: #f8fafc; border-left: 4px solid #0284c7; padding: 14px 18px; margin: 24px 0; font-style: italic; color: #075985;">
-        "가장 늦었다고 생각할 때가 가장 빠른 때입니다. 지금 바로 시작해 보세요!"
-    </blockquote>
-
-    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 36px; color: #0369a1;">
-        3. 마치며: 당신의 성공적인 도전을 응원합니다
-    </h2>
-    <p>오늘 정리해 드린 내용을 바탕으로 좋은 결과를 만들어 가시기를 바랍니다. 도움이 되셨다면 공감과 댓글 부탁드립니다!</p>
-</div>
-"""
-        print(f"[이과장 (작가)] ✅ 맞춤형 전문 원고 작성 완료! (약 {len(html_content)} 글자)")
-        return html_content.strip()
+        return html_content
 
 
-# ==========================================
-# 5. 사내 에이전트 3: 박차장 (SEO & 교열 최적화)
-# ==========================================
 class AgentParkSEO:
     """원고의 H2/H3 태그 구조, 키워드 밀도, 맞춤법, 티스토리 태그 정제"""
     def optimize(self, html_content: str, keywords: List[str]) -> Dict:
