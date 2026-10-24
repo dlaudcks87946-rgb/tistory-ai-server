@@ -309,15 +309,71 @@ class AgentLeeWriter:
     </ol>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        4. 자주 묻는 질문(FAQ) 및 처리 기간
+        4. 신청 전 반드시 점검해야 할 반려 방지 체크포인트
     </h2>
-    <p><strong>Q. 이미 납부한 경우에도 감면받을 수 있나요?</strong><br>A. 네, 감면 요건을 충족했으나 기납부한 경우 법정 기한 내에 <strong>경정청구(과오납 환급신청)</strong>를 통해 돌려받으실 수 있습니다.</p>
-    <p style="margin-top: 10px;"><strong>Q. 처리 기간은 얼마나 걸리나요?</strong><br>A. 접수일로부터 영업일 기준 7일~14일 정도 소요되며 승인 시 문자 알림이 전송됩니다.</p>
+    <p>신청 반려나 처리 지연을 방지하기 위해 다음 3가지를 반드시 사전 점검하세요.</p>
+    <div style="background-color: #fefce8; border: 1.5px solid #fde047; border-radius: 8px; padding: 16px; margin: 16px 0;">
+        <ul style="margin: 0; padding-left: 20px; color: #854d0e; font-size: 14px; line-height: 1.85;">
+            <li><strong>서류 유효기간:</strong> 주민등록등본 및 소득 증빙은 1개월 이내 발급분만 인정됩니다.</li>
+            <li><strong>가구원 정보 최신화:</strong> 신청 시점의 주민등록상 세대원 기준이 포털에 정확히 등록되어 있는지 확인하세요.</li>
+            <li><strong>기납부 소멸시효:</strong> 이미 납부한 건은 납부일로부터 5년 이내 경정청구 시 환급받으실 수 있습니다.</li>
+        </ul>
+    </div>
 
     <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
-        5. 마치며: {clean_topic} 혜택을 놓치지 마세요
+        5. 자주 묻는 질문(FAQ) 및 처리 기간
     </h2>
-    <p>오늘 안내해 드린 <strong>{clean_topic}</strong>의 상세 절차와 서류를 확인하셔서 정당한 감면 혜택을 꼭 챙기시길 바랍니다!</p>
+    <p><strong>Q. 이미 납부한 경우에도 감면받을 수 있나요?</strong><br>A. 네, 감면 요건을 충족했으나 기납부한 경우 법정 기한(5년 이내) 내에 <strong>경정청구(과오납 환급신청)</strong>를 통해 차액을 본인 계좌로 돌려받으실 수 있습니다.</p>
+    <p style="margin-top: 10px;"><strong>Q. 처리 기간은 얼마나 걸리나요?</strong><br>A. 접수일로부터 영업일 기준 7일~14일 정도 소요되며 승인 시 문자 알림톡이 전송됩니다.</p>
+    <p style="margin-top: 10px;"><strong>Q. 오류 발생 시 어디로 문의하나요?</strong><br>A. 정부24 콜센터(1588-2188) 또는 위택스 고객센터(110)를 통해 원격 상담을 지원받으실 수 있습니다.</p>
+
+    <h2 style="font-size: 20px; font-weight: bold; border-bottom: 2px solid #22c55e; padding-bottom: 8px; margin-top: 36px; color: #15803d;">
+        6. [총정리] {clean_topic} 핵심 요약 및 실무자 최종 당부
+    </h2>
+    <p>오늘 다룬 <strong>{clean_topic}</strong>의 핵심 정보를 한눈에 비교할 수 있도록 정리해 드립니다.</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">
+        <thead>
+            <tr style="background-color: #f1f5f9; border-bottom: 2px solid #94a3b8; text-align: left;">
+                <th style="padding: 10px 12px; font-weight: bold; color: #1e293b; width: 25%;">구분</th>
+                <th style="padding: 10px 12px; font-weight: bold; color: #1e293b; width: 45%;">핵심 내용</th>
+                <th style="padding: 10px 12px; font-weight: bold; color: #1e293b; width: 30%;">실전 팁</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 12px; font-weight: bold; color: #0369a1;">신청 포털</td>
+                <td style="padding: 10px 12px; color: #334155;"><strong>{portal_name}</strong></td>
+                <td style="padding: 10px 12px; color: #16a34a;">24시간 간편인증 접수</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0; background-color: #f8fafc;">
+                <td style="padding: 10px 12px; font-weight: bold; color: #0369a1;">필수 서류</td>
+                <td style="padding: 10px 12px; color: #334155;">신분증, 등본, 감면 증빙, 통장 사본</td>
+                <td style="padding: 10px 12px; color: #16a34a;">모바일 사진 파일 등록</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 10px 12px; font-weight: bold; color: #0369a1;">처리 기간</td>
+                <td style="padding: 10px 12px; color: #334155;">영업일 기준 7일~14일</td>
+                <td style="padding: 10px 12px; color: #16a34a;">문자 알림톡 결과 통보</td>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+                <td style="padding: 10px 12px; font-weight: bold; color: #0369a1;">기납부 환급</td>
+                <td style="padding: 10px 12px; color: #334155;">납부 후 5년 이내 경정청구</td>
+                <td style="padding: 10px 12px; color: #16a34a;">지정 계좌 현금 입금</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 16px 20px; margin: 20px 0; border-radius: 8px;">
+        <p style="margin: 0 0 6px 0; font-weight: bold; color: #15803d; font-size: 15px;">💡 실무자의 마지막 당부: "신청해야 내 돈이 됩니다"</p>
+        <p style="margin: 0; font-size: 14px; color: #166534; line-height: 1.8;">
+            정부 지원금이나 감면 제도는 직접 기한 내에 신청한 분들에게만 적용되는 정당한 권리입니다. 미루다 기한을 놓치면 큰 손해가 발생할 수 있으니 지금 바로 <strong>{portal_name}</strong>에 접속하셔서 간편인증으로 자격을 확인해 보시길 권장합니다.
+        </p>
+    </div>
+
+    <p style="margin-top: 20px; line-height: 1.85; color: #333;">
+        오늘 정리해 드린 <strong>{clean_topic}</strong> 완벽 가이드가 여러분의 소중한 시간과 비용을 아끼는 데 실질적인 도움이 되었기를 바랍니다. 신청 중 궁금한 점이 있으시다면 언제든 댓글로 남겨주시면 정성껏 답변드리겠습니다. 도움이 되셨다면 공감과 구독 부탁드립니다. 감사합니다!
+    </p>
 </div>
 """
         return html_content
