@@ -5314,16 +5314,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 <p style="font-size:15px;margin-bottom:14px;line-height:1.85;">새로운 기술을 도입할 때 가장 경계해야 할 것은 '모든 도구를 한꺼번에 다 쓰려는 완벽주의'입니다. 오늘 소개해 드린 4대 핵심 도구 중 가장 마음에 드는 1가지를 골라, 내일 아침 출근 직후 이메일 초안 작성이나 회의록 요약부터 가볍게 시작해 보세요. 하루 1시간이 절약되고 저녁이 있는 삶이 시작됩니다!</p>
 
 
-        <div style="background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;padding:18px 20px;margin:28px 0;">
-          <h3 style="margin:0 0 10px 0;font-size:16px;font-weight:900;color:#1e293b;display:flex;align-items:center;gap:6px;">
-            <i class="fa-solid fa-bookmark text-indigo-600"></i> 함께 읽으면 유익한 연관 실전 가이드
-          </h3>
-          <ul style="margin:0;padding-left:20px;color:#475569;font-size:13.5px;line-height:1.85;">
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 심층 매뉴얼로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[다음 편] 2026 실전 핵심 매뉴얼: 실패 없는 3단계 심층 분석 ➔</a></li>
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 꿀팁으로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[심층 분석] 초보자가 가장 많이 하는 실수 3가지와 시간·비용 절약 꿀팁 ➔</a></li>
-          </ul>
-        </div>
-      
 </div></div>
 
               <div class="mt-10 pt-6 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
@@ -10402,18 +10392,8 @@ if __name__ == "__main__":
       const H = (n, text) => `<h2 style="font-size:21px;font-weight:800;color:#0f172a;margin-top:38px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #16a34a;">${n}. ${text}</h2>`;
       const P = (text) => `<p style="font-size:15px;margin-bottom:14px;line-height:1.85;">${text}</p>`;
 
-      // [독자용 자연스러운 연관 추천 가이드 실로 링크]
-      const siloLinkBox = `
-        <div style="background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:14px;padding:18px 20px;margin:28px 0;">
-          <h3 style="margin:0 0 10px 0;font-size:16px;font-weight:900;color:#1e293b;display:flex;align-items:center;gap:6px;">
-            <i class="fa-solid fa-bookmark text-indigo-600"></i> 함께 읽으면 유익한 연관 실전 가이드
-          </h3>
-          <ul style="margin:0;padding-left:20px;color:#475569;font-size:13.5px;line-height:1.85;">
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 심층 매뉴얼로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[다음 편] 2026 실전 핵심 매뉴얼: 실패 없는 3단계 심층 분석 ➔</a></li>
-            <li><a href="#" onclick="showToast('연관 내부 링크: 실전 꿀팁으로 연결됩니다.', 'info'); return false;" style="color:#0284c7;font-weight:bold;text-decoration:underline;">[심층 분석] 초보자가 가장 많이 하는 실수 3가지와 시간·비용 절약 꿀팁 ➔</a></li>
-          </ul>
-        </div>
-      `;
+      // [독자용 연관 가이드 (제거됨)]
+      const siloLinkBox = '';
 
       // 1. IT / AI / 테크 & 생산성 전문 콘텐츠
       if (cat === 'tech_ai') {
