@@ -2960,11 +2960,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                       </span>
                       <div>
                         <span class="text-xs font-extrabold text-indigo-950 tracking-tight">전략 기획 회의실</span>
-                        <span class="text-[8.5px] text-indigo-600 font-semibold block -mt-0.5">12-Agent Boardroom (전사 12인 지정석 회의실)</span>
+                        <span id="boardroom-desc-subtitle" class="text-[8.5px] text-indigo-600 font-semibold block -mt-0.5">5-Agent Executive Boardroom (5개 부서 대표 회의실)</span>
                       </div>
                     </div>
-                    <span class="px-2 py-0.5 rounded-full text-[8.5px] font-black bg-indigo-100 text-indigo-800 border border-indigo-300 shadow-xs">
-                      12인 지정석 완비
+                    <span id="boardroom-attendee-badge" class="px-2 py-0.5 rounded-full text-[8.5px] font-black bg-indigo-100 text-indigo-800 border border-indigo-300 shadow-xs">
+                      대표 5인 지정석
                     </span>
                   </div>
                 </div>
@@ -2992,9 +2992,9 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 <div class="dept-bottom-wall-seg absolute top-[414px] left-[1460px] w-[144px] h-[10px] rounded-r-md pointer-events-none z-0"></div>
                 <div id="door-conf" class="dept-doorway-portal doorway-threshold-mat absolute top-[402px] left-[1370px] w-[90px] h-[26px] rounded-b-lg border-x-2 border-b-2 border-indigo-500 flex items-center justify-between px-1.5 shadow-md z-0 pointer-events-none">
                   <span class="text-[7.5px] font-black text-indigo-950 flex items-center gap-1">
-                    <i class="fa-solid fa-door-open text-indigo-600 text-[8px]"></i> 12인 회의실 입구
+                    <i class="fa-solid fa-door-open text-indigo-600 text-[8px]"></i> 전략 기획 회의실 입구
                   </span>
-                  <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" title="전사 12인 회의실 게이트"></span>
+                  <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" title="전략 기획 회의실 게이트"></span>
                 </div>
 
                 <!-- =======================================================
@@ -3018,7 +3018,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                       <i class="fa-solid fa-palette text-[8px]"></i> 미디어디자인팀 (신·배)
                     </span>
                     <span class="flex items-center gap-1 text-indigo-700">
-                      12인 전략 회의실 <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                      전략 기획 회의실 <i class="fa-solid fa-chevron-right text-[8px]"></i>
                     </span>
                   </div>
 
@@ -3651,55 +3651,55 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                      ANCHOR SPOTS & SEATS (All 7 Agent Seats & New Room Targets)
                      ======================================================= -->
 
-                <!-- 12 Conference Room Chairs (6 Top at top: 100px, 6 Bottom at top: 272px) - Luxury High-Back Leather -->
-                <!-- Top Row 6 Chairs (y: 100px) -->
-                <div id="chair-kim" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1264px;" title="김대리 지정석">
+                <!-- 5 Executive Representatives Conference Chairs (Kang, Shin, Song, Jung, Choi) -->
+                <!-- Top Row Chairs (y: 100px) -->
+                <div id="chair-kim" class="boardroom-chair-luxury top-row pointer-events-none z-5 boardroom-extra-seat" style="top: 100px; left: 1264px; display: none;" title="김대리 지정석 (예비석)">
                   <span class="text-[7.5px] font-extrabold text-sky-300">김</span>
                   <span class="w-1 h-1 rounded-full bg-sky-400 mt-0.5"></span>
                 </div>
-                <div id="chair-lee" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1314px;" title="이과장 지정석">
+                <div id="chair-lee" class="boardroom-chair-luxury top-row pointer-events-none z-5 boardroom-extra-seat" style="top: 100px; left: 1314px; display: none;" title="이과장 지정석 (예비석)">
                   <span class="text-[7.5px] font-extrabold text-orange-300">이</span>
                   <span class="w-1 h-1 rounded-full bg-orange-400 mt-0.5"></span>
                 </div>
-                <div id="chair-kang" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1364px;" title="강팀장(마케팅) 지정석">
+                <div id="chair-kang" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1364px;" title="강팀장(마케팅 대표) 지정석">
                   <span class="text-[7.5px] font-extrabold text-rose-300">강</span>
                   <span class="w-1 h-1 rounded-full bg-rose-400 mt-0.5"></span>
                 </div>
-                <div id="chair-shin" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1414px;" title="신디자이너(비주얼) 지정석">
+                <div id="chair-shin" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1414px;" title="신디자이너(비주얼 대표) 지정석">
                   <span class="text-[7.5px] font-extrabold text-pink-300">신</span>
                   <span class="w-1 h-1 rounded-full bg-pink-400 mt-0.5"></span>
                 </div>
-                <div id="chair-song" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1464px;" title="송연구원 지정석">
+                <div id="chair-song" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1464px;" title="송연구원(R&D 대표) 지정석">
                   <span class="text-[7.5px] font-extrabold text-purple-300">송</span>
                   <span class="w-1 h-1 rounded-full bg-purple-400 mt-0.5"></span>
                 </div>
-                <div id="chair-han" class="boardroom-chair-luxury top-row pointer-events-none z-5" style="top: 100px; left: 1514px;" title="한연구원 지정석">
+                <div id="chair-han" class="boardroom-chair-luxury top-row pointer-events-none z-5 boardroom-extra-seat" style="top: 100px; left: 1514px; display: none;" title="한연구원 지정석 (예비석)">
                   <span class="text-[7.5px] font-extrabold text-cyan-300">한</span>
                   <span class="w-1 h-1 rounded-full bg-cyan-400 mt-0.5"></span>
                 </div>
 
-                <!-- Bottom Row 6 Chairs (y: 272px) -->
-                <div id="chair-park" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1264px;" title="박차장 지정석">
+                <!-- Bottom Row Chairs (y: 272px) -->
+                <div id="chair-park" class="boardroom-chair-luxury pointer-events-none z-5 boardroom-extra-seat" style="top: 272px; left: 1264px; display: none;" title="박차장 지정석 (예비석)">
                   <span class="w-1 h-1 rounded-full bg-emerald-400 mb-0.5"></span>
                   <span class="text-[7.5px] font-extrabold text-emerald-300">박</span>
                 </div>
-                <div id="chair-jung" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1314px;" title="정부장 지정석">
+                <div id="chair-jung" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1314px;" title="정부장(1팀 대표 / 회의 주재) 지정석">
                   <span class="w-1 h-1 rounded-full bg-indigo-400 mb-0.5"></span>
                   <span class="text-[7.5px] font-extrabold text-indigo-200">정</span>
                 </div>
-                <div id="chair-yoon" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1364px;" title="윤프로(마케팅) 지정석">
+                <div id="chair-yoon" class="boardroom-chair-luxury pointer-events-none z-5 boardroom-extra-seat" style="top: 272px; left: 1364px; display: none;" title="윤프로 지정석 (예비석)">
                   <span class="w-1 h-1 rounded-full bg-amber-400 mb-0.5"></span>
                   <span class="text-[7.5px] font-extrabold text-amber-300">윤</span>
                 </div>
-                <div id="chair-cho" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1414px;" title="조매니저(마케팅) 지정석">
+                <div id="chair-cho" class="boardroom-chair-luxury pointer-events-none z-5 boardroom-extra-seat" style="top: 272px; left: 1414px; display: none;" title="조매니저 지정석 (예비석)">
                   <span class="w-1 h-1 rounded-full bg-orange-400 mb-0.5"></span>
                   <span class="text-[7.5px] font-extrabold text-orange-300">조</span>
                 </div>
-                <div id="chair-bae" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1464px;" title="배PD(미디어) 지정석">
+                <div id="chair-bae" class="boardroom-chair-luxury pointer-events-none z-5 boardroom-extra-seat" style="top: 272px; left: 1464px; display: none;" title="배PD 지정석 (예비석)">
                   <span class="w-1 h-1 rounded-full bg-purple-400 mb-0.5"></span>
                   <span class="text-[7.5px] font-extrabold text-purple-200">배</span>
                 </div>
-                <div id="chair-choi" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1514px;" title="최엔지니어 지정석">
+                <div id="chair-choi" class="boardroom-chair-luxury pointer-events-none z-5" style="top: 272px; left: 1514px;" title="최엔지니어(오류대응 대표) 지정석">
                   <span class="w-1 h-1 rounded-full bg-emerald-400 mb-0.5"></span>
                   <span class="text-[7.5px] font-extrabold text-emerald-300">최</span>
                 </div>
@@ -7680,6 +7680,34 @@ if __name__ == "__main__":
       elements.cinematicHud.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
       elements.cinematicHud.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
     }
+
+    // ========================================================
+    // 🪑 BOARDROOM SEATS DYNAMIC REGISTRY & CONTROLLER
+    // 회의실 참석 인원 동적 관리: 대표 5인 기본 세팅 및 인원 추가 시 자동 좌석 활성화
+    // ========================================================
+    const DEFAULT_BOARDROOM_ATTENDEES = ['chair-jung', 'chair-kang', 'chair-shin', 'chair-song', 'chair-choi'];
+
+    function setBoardroomAttendees(activeChairIds = DEFAULT_BOARDROOM_ATTENDEES) {
+      const ALL_CHAIRS = [
+        'chair-kim', 'chair-lee', 'chair-kang', 'chair-shin', 'chair-song', 'chair-han',
+        'chair-park', 'chair-jung', 'chair-yoon', 'chair-cho', 'chair-bae', 'chair-choi'
+      ];
+      ALL_CHAIRS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (activeChairIds.includes(id)) {
+            el.style.display = 'flex';
+          } else {
+            el.style.display = 'none';
+          }
+        }
+      });
+      const badge = document.getElementById('boardroom-attendee-badge');
+      if (badge) badge.textContent = `대표 ${activeChairIds.length}인 회의석`;
+      const subtitle = document.getElementById('boardroom-desc-subtitle');
+      if (subtitle) subtitle.textContent = `${activeChairIds.length}-Agent Executive Boardroom (${activeChairIds.length}인 대표 회의실)`;
+    }
+    window.setBoardroomAttendees = setBoardroomAttendees;
 
     // Dynamic Anchor Spot Calculator (Pixel-perfect on all screen sizes)
     function getSpot(spotId) {
@@ -16364,6 +16392,7 @@ function closeAllModals() {
     startIdleRoaming(); // 대기 상태 자율 회사 산책 시작!
     startRndResearchCycle(); // 1~5대 연구 과제 실시간 로테이션 루프 시작!
     preHireSpecialResearchers(5); // 특채 연구원 5인 기본 생성 및 연구 성과 즉시 적용!
+    setBoardroomAttendees(); // 전략 회의실 대표 5인 좌석 자동 세팅!
 
     // Run safe binding when DOM is ready
     if (document.readyState === 'loading') {
