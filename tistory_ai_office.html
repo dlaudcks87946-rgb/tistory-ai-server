@@ -2565,7 +2565,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                             <!-- YouTube Shorts & Instagram Reels Generator Button -->
               <button id="btn-open-shorts-studio" onclick="openShortsStudio()" class="px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-700 hover:to-pink-700 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-pink-500/25 transition active:scale-95 flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer" title="현재 블로그 주제로 40초 유튜브 숏폼 &amp; 인스타 릴스 동영상 원클릭 자동 제작">
                 <i class="fa-solid fa-clapperboard text-yellow-300 animate-pulse"></i>
-                <span>🎬 40초 숏폼 영상 제작</span>
+                <span>🎬 20초 감성 릴스 제작</span>
               </button>
               <button id="btn-start-work" class="px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm shadow-md shadow-orange-500/25 transition active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap glow-pulse" title="회의 애니메이션 후 크롬을 열어 티스토리에 자동 포스팅">
                 <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
@@ -17899,10 +17899,10 @@ function closeAllModals() {
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h3 class="font-black text-base sm:text-lg text-white">🎬 AI 40초 숏폼 영상 제작 스튜디오</h3>
+            <h3 class="font-black text-base sm:text-lg text-white">🎬 AI 20초 감성 바이럴 릴스 &amp; 숏폼 스튜디오</h3>
             <span class="px-2 py-0.5 rounded-full text-[10px] bg-gradient-to-r from-pink-500 to-purple-500 text-white font-extrabold shadow-sm">YouTube Shorts &amp; Reels</span>
           </div>
-          <p class="text-xs text-pink-200/80">배PD(비디오 디렉터) &amp; 신디자이너가 1080x1920 세로형 HD 비디오, AI 한국어 음성 더빙, 자막을 100% 무료 자동 생성합니다.</p>
+          <p class="text-xs text-pink-200/80">배PD &amp; 신디자이너가 감성 Lo-Fi BGM + 20초 초압축 시선강탈 키네틱 릴스를 100% 무료 자동 생성합니다.</p>
         </div>
       </div>
       <button onclick="closeShortsStudio()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-sm transition">
@@ -17934,13 +17934,13 @@ function closeAllModals() {
           <div class="flex items-center gap-2 text-xs text-slate-400">
             <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold"><i class="fa-solid fa-check"></i> 비용 0원</span>
             <span>•</span>
-            <span class="inline-flex items-center gap-1 text-cyan-400 font-semibold"><i class="fa-solid fa-microphone"></i> MS Edge-TTS 인공지능 음성</span>
+            <span class="inline-flex items-center gap-1 text-cyan-400 font-semibold"><i class="fa-solid fa-music"></i> Chill Lo-Fi 비트 자동 믹싱</span>
             <span>•</span>
             <span class="inline-flex items-center gap-1 text-pink-400 font-semibold"><i class="fa-solid fa-mobile-screen"></i> 1080x1920 세로형 9:16</span>
           </div>
           <button id="btn-render-shorts" onclick="generateShortsVideo()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-500 hover:to-rose-400 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-pink-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
             <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
-            <span>지금 40초 숏폼 즉시 제작</span>
+            <span>🔥 20초 감성 바이럴 릴스 즉시 제작</span>
           </button>
         </div>
       </div>
@@ -17953,19 +17953,19 @@ function closeAllModals() {
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-[11px] font-mono">
           <div id="step-script" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
-            <div>1. 5단계 대본</div>
+            <div>1. 바이럴 3단계 대본</div>
             <div class="font-bold text-pink-300 mt-0.5">작성 중...</div>
           </div>
           <div id="step-audio" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
-            <div>2. Edge-TTS 음성</div>
+            <div>2. Edge-TTS 쾌속 음성</div>
             <div class="font-bold text-slate-500 mt-0.5">대기 중</div>
           </div>
           <div id="step-render" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
-            <div>3. FFmpeg 인코딩</div>
+            <div>3. Lo-Fi BGM 믹싱</div>
             <div class="font-bold text-slate-500 mt-0.5">대기 중</div>
           </div>
           <div id="step-finish" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400">
-            <div>4. MP4 완성</div>
+            <div>4. 20초 릴스 완성</div>
             <div class="font-bold text-slate-500 mt-0.5">대기 중</div>
           </div>
         </div>
@@ -18138,11 +18138,9 @@ function closeAllModals() {
 
     if (timeline) {
       const dynamicScenes = [
-        { badge: '🚨 충격 후킹', text: `${t}, 아직도 제대로 모르고 계셨나요? 딱 40초 만에 정리해 드립니다!` },
-        { badge: '💡 핵심 포인트', text: `${t}의 가장 중요한 핵심 요점과 필수 정보를 바로 알려드립니다.` },
-        { badge: '⚠️ 주의사항', text: `놓치면 손해보는 필수 주의사항과 자격 조건을 반드시 확인하세요.` },
-        { badge: '🔑 시크릿 꿀팁', text: `전문가들만 아는 실전 적용 꿀팁과 200% 활용 노하우 대공개!` },
-        { badge: '👉 프로필 링크', text: `더 상세한 실전 신청 방법과 링크는 프로필 블로그 포스팅에서 지금 바로 확인하세요!` }
+        { badge: '🔥 충격 후킹 (0~7초)', text: `솔직히 아직도 이거 모르셨나요? 남들은 '${t}' 하나로 조용히 앞서가고 있습니다!` },
+        { badge: '💡 핵심 비법 (8~16초)', text: `딱 2가지만 기억하세요. 레드오션에서 힘 빼지 마시고 0원으로 바로 세팅해 두면 끝납니다.` },
+        { badge: '👉 프로필 링크 유입 (17~24초)', text: `더 늦기 전에 확인하세요! 100% 무료 상세 가이드와 바로가기 링크는 프로필 고정 댓글에 모두 남겨뒀습니다!` }
       ];
       timeline.innerHTML = '';
       dynamicScenes.forEach((sc, idx) => {
