@@ -968,6 +968,20 @@ class ShortsVideoRenderer:
     def __init__(self):
         self.ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
         self._init_fonts()
+        self._init_gradient_overlay()
+
+    def _init_gradient_overlay(self):
+        """상하단 은은한 시네마틱 비네팅 오버레이 (웹툰 그림 위에서 텍스트 및 자막 시인성 극대화)"""
+        self.gradient_overlay = Image.new("RGBA", (self.WIDTH, self.HEIGHT), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(self.gradient_overlay)
+        # 상단 320px 은은한 비네팅 (alpha 0 ~ 130)
+        for y in range(320):
+            a = int(130 * (1 - y / 320))
+            draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
+        # 하단 450px 은은한 비네팅 (alpha 0 ~ 160)
+        for y in range(1470, self.HEIGHT):
+            a = int(160 * ((y - 1470) / 450))
+            draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
 
     def _init_fonts(self):
         font_candidates = [
@@ -1126,10 +1140,37 @@ class ShortsVideoRenderer:
         total_duration = sum(scene_durations)
         total_frames = int(total_duration * self.FPS)
 
-        # 3. 실사 B-roll 세로 영상 탐색
+        # 3. AI 캐릭터 웹툰 씬 배경 탐색 (Option 1 정통 썰툰 모드)
+        cat_key = script_data.get("category_key")
+        if not cat_key:
+            tags = script_data.get("tags", [])
+            title = script_data.get("title", "")
+            if any("직장" in t or "회사" in t or "신입" in t or "상사" in t for t in tags) or any(k in title for k in ["직장", "사이다", "과장", "팀장", "부장", "회사"]):
+                cat_key = "workplace"
+            elif any("소개팅" in t or "연애" in t for t in tags) or any(k in title for k in ["소개팅", "빌런", "뷔페", "더치페이", "전남친"]):
+                cat_key = "blind_date"
+            elif any("미스터리" in t or "소름" in t for t in tags) or any(k in title for k in ["소름", "미스터리", "거울", "도어락", "택배"]):
+                cat_key = "mystery"
+            elif any("배달" in t or "황당" in t for t in tags) or any(k in title for k in ["배달", "치킨", "마라탕", "배민"]):
+                cat_key = "delivery"
+            else:
+                cat_key = "workplace"
+
+        webtoon_dir = os.path.join(base_dir, "assets", "webtoon", cat_key)
+        use_webtoon = os.path.exists(webtoon_dir) and os.path.exists(os.path.join(webtoon_dir, "scene_0.jpg"))
+
+        scene_webtoon_images = []
+        if use_webtoon:
+            for s_idx in range(len(script_data["scenes"])):
+                p = os.path.join(webtoon_dir, f"scene_{s_idx}.jpg")
+                if not os.path.exists(p):
+                    p = os.path.join(webtoon_dir, "scene_0.jpg")
+                scene_webtoon_images.append(Image.open(p).convert("RGBA"))
+
+        # 실사 B-roll 세로 영상 탐색 (웹툰 배경 미존재 시 fallback)
         broll_dir = os.path.join(base_dir, "assets", "broll")
         broll_video = None
-        if os.path.exists(broll_dir):
+        if not use_webtoon and os.path.exists(broll_dir):
             candidates = [
                 os.path.join(broll_dir, f) for f in os.listdir(broll_dir)
                 if (f.startswith("norm_") or f.startswith("broll_")) and f.endswith(".mp4")
@@ -1151,7 +1192,25 @@ class ShortsVideoRenderer:
             scene_kinetic_chunks.append(chunks)
 
         # 5. FFmpeg 비디오 렌더링 파이프라인 구성
-        if broll_video:
+        if use_webtoon:
+            ffmpeg_cmd = [
+                self.ffmpeg_exe, "-y",
+                "-f", "rawvideo",
+                "-vcodec", "rawvideo",
+                "-s", f"{self.WIDTH}x{self.HEIGHT}",
+                "-pix_fmt", "rgb24",
+                "-r", str(self.FPS),
+                "-i", "-",
+                "-i", final_audio_path,
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest",
+                output_filepath
+            ]
+        elif broll_video:
             ffmpeg_cmd = [
                 self.ffmpeg_exe, "-y",
                 "-stream_loop", "-1",
@@ -1237,15 +1296,36 @@ class ShortsVideoRenderer:
 
             time_in_chunk = scene_time - active_chunk["start"]
 
-            # 프레임 오버레이 렌더링
-            img = self._render_frame(
-                scene, progress, current_time, scene_time,
-                active_chunk, time_in_chunk, has_broll=bool(broll_video),
-                global_cta=script_data.get("cta_text"),
-                scene_idx=current_scene_idx
-            )
-            proc.stdin.write(img.tobytes())
+            # AI 웹툰 애니메이션 줌인 (Ken Burns Effect)
+            if use_webtoon and scene_webtoon_images:
+                cur_img = scene_webtoon_images[current_scene_idx]
+                orig_w, orig_h = cur_img.size
+                dur = scene_durations[current_scene_idx]
+                prog_in_scene = min(1.0, max(0.0, scene_time / dur))
+                # 7% 스무스 줌인 애니메이션
+                scale = 1.0 + 0.07 * prog_in_scene
+                crop_w = int(orig_w / scale)
+                crop_h = int(orig_h / scale)
+                crop_x = (orig_w - crop_w) // 2
+                crop_y = (orig_h - crop_h) // 2
+                frame_bg = cur_img.crop((crop_x, crop_y, crop_x + crop_w, crop_y + crop_h)).resize((self.WIDTH, self.HEIGHT), Image.Resampling.BILINEAR)
 
+                img = self._render_frame(
+                    scene, progress, current_time, scene_time,
+                    active_chunk, time_in_chunk, has_broll=True,
+                    global_cta=script_data.get("cta_text"),
+                    scene_idx=current_scene_idx,
+                    base_canvas=frame_bg
+                )
+                proc.stdin.write(img.convert("RGB").tobytes())
+            else:
+                img = self._render_frame(
+                    scene, progress, current_time, scene_time,
+                    active_chunk, time_in_chunk, has_broll=bool(broll_video),
+                    global_cta=script_data.get("cta_text"),
+                    scene_idx=current_scene_idx
+                )
+                proc.stdin.write(img.convert("RGB").tobytes() if not broll_video else img.tobytes())
 
         proc.stdin.close()
         proc.wait()
@@ -1259,7 +1339,7 @@ class ShortsVideoRenderer:
             pass
 
         file_size_mb = os.path.getsize(output_filepath) / (1024 * 1024)
-        print(f"✅ [실사 B-roll + 키네틱 쇼츠 파이프라인] 1080x1920 MP4 영상 렌더링 완성! ({file_size_mb:.2f} MB, {total_duration:.1f}초)")
+        print(f"✅ [AI 오피스 웹툰 애니메이션 쇼츠 파이프라인] 1080x1920 MP4 영상 렌더링 완성! ({file_size_mb:.2f} MB, {total_duration:.1f}초)")
 
         return {
             "success": True,
@@ -1276,20 +1356,17 @@ class ShortsVideoRenderer:
     def _render_frame(
         self, scene: Dict, progress: float, current_time: float, scene_time: float,
         active_chunk: Dict, time_in_chunk: float, has_broll: bool,
-        global_cta: Optional[str] = None, scene_idx: int = 0
+        global_cta: Optional[str] = None, scene_idx: int = 0,
+        base_canvas: Optional[Image.Image] = None
     ) -> Image.Image:
-        """단일 시선 집중(Single Center Focus) 바이럴 숏폼 렌더러 (시선 분산 100% 방지)"""
-        if has_broll:
-            img = Image.new("RGBA", (self.WIDTH, self.HEIGHT), (0, 0, 0, 0))
+        """단일 시선 집중(Single Center Focus) 바이럴 숏폼 렌더러 (웹툰 씬 일러스트 지원)"""
+        if base_canvas:
+            # 웹툰 그림 캔버스 위에 은은한 비네팅 오버레이를 알파 블렌딩 합성하여 검은 띠 없이 자연스러운 시네마틱 효과 연출
+            img = Image.alpha_composite(base_canvas.convert("RGBA"), self.gradient_overlay)
             draw = ImageDraw.Draw(img)
-
-            # 상단 & 하단 시네마틱 딥 그라데이션 (자막 및 텍스트 시인성 극대화)
-            for y in range(320):
-                a = int(175 * (1 - y / 320))
-                draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
-            for y in range(1420, self.HEIGHT):
-                a = int(215 * ((y - 1420) / 500))
-                draw.line([(0, y), (self.WIDTH, y)], fill=(10, 10, 20, a))
+        elif has_broll:
+            img = self.gradient_overlay.copy()
+            draw = ImageDraw.Draw(img)
         else:
             img = Image.new("RGB", (self.WIDTH, self.HEIGHT), color=(15, 17, 26))
             draw = ImageDraw.Draw(img)
