@@ -180,52 +180,29 @@ except ImportError:
 # ==========================================
 
 class Config:
-
     # 본인 티스토리 블로그 서브도메인 (https://lanchan.tistory.com/)
-
-    TISTORY_BLOG_NAME: str = "lanchan"
-
+    TISTORY_BLOG_NAME: str = os.getenv("TISTORY_BLOG_NAME") or os.getenv("tistory_blog_name") or "lanchan"
     
-
-    # Google Gemini AI API 키
-
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    # Google Gemini AI API 키 (대소문자 환경변수 동시 지원)
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY") or os.getenv("gemini_api_key") or ""
     
     # 텔레그램 스마트폰 알림 봇 설정
-    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
-    TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
-
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN") or os.getenv("telegram_bot_token") or ""
+    TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID") or os.getenv("telegram_chat_id") or ""
     
-
-    # 카카오 계정 로그인 정보 (선택 사항: 적어두면 봇이 아이디/비번을 자동 입력해 줍니다)
-
-    KAKAO_ID: str = os.getenv("KAKAO_ID", "")
-
-    KAKAO_PW: str = os.getenv("KAKAO_PW", "")
-
+    # 카카오 계정 로그인 정보 (Railway / 로컬 환경변수 대소문자 호환)
+    KAKAO_ID: str = os.getenv("KAKAO_ID") or os.getenv("kakao_id") or ""
+    KAKAO_PW: str = os.getenv("KAKAO_PW") or os.getenv("kakao_pw") or ""
     
-
-    # 크롬 사용자 세션 프로필 폴더 (한 번 로그인하면 다음부터는 로그인 창 없이 바로 통과!)
-
+    # 크롬 사용자 세션 프로필 폴더
     DEFAULT_PROFILE_DIR = os.path.join(os.path.expanduser("~"), ".tistory_chrome_session")
+    USER_DATA_DIR: Optional[str] = os.getenv("CHROME_USER_DATA") or os.getenv("chrome_user_data") or DEFAULT_PROFILE_DIR
 
-    USER_DATA_DIR: Optional[str] = os.getenv("CHROME_USER_DATA", DEFAULT_PROFILE_DIR)
+    # 기본 발행 모드: "public"(공개 발행) 또는 "private"(비공개/임시저장) (Railway 소문자 publish_mode 완벽 지원)
+    PUBLISH_MODE: str = os.getenv("PUBLISH_MODE") or os.getenv("publish_mode") or "public"
 
-
-
-    # 기본 발행 모드: "public"(공개 발행) 또는 "private"(비공개/임시저장)
-
-    PUBLISH_MODE: str = os.getenv("PUBLISH_MODE", "public")
-
-
-
-    # 브라우저 창 표시 여부 (직접 화면을 보며 로그인할 수 있도록 Windows에서는 무조건 False로 창을 띄웁니다)
-
-    HEADLESS: bool = os.getenv("HEADLESS", "false").lower() == "true" or (sys.platform.startswith("linux") and not os.getenv("DISPLAY"))
-
-
-
-
+    # 브라우저 창 표시 여부
+    HEADLESS: bool = (os.getenv("HEADLESS") or os.getenv("headless") or "false").lower() == "true" or (sys.platform.startswith("linux") and not os.getenv("DISPLAY"))
 
 # ==========================================
 
@@ -430,36 +407,23 @@ class AgentKimPlanner:
 
 
     def detect_category(self, topic: str) -> str:
-
         t = topic.lower()
-
-        if any(w in t for w in ["청년", "지원금", "혜택", "복지", "지원", "도약계좌", "월세", "보조금", "수당", "교통비"]):
-
-            return "policy_youth"
-
-        if any(w in t for w in ["ai", "에이전트", "인공지능", "gpt", "챗gpt", "제미나이", "클로드", "생산성", "tech"]):
-
+        # 1. IT / AI / 프로그래밍 / 테크 (높은 우선순위: '기능 지원' 등 오분류 방지)
+        if any(w in t for w in ["ai", "에이전트", "인공지능", "gpt", "챗gpt", "chatgpt", "제미나이", "gemini", "클로드", "claude", "생산성", "tech", "커서", "cursor", "프롬프트", "llm", "n8n", "모니터", "소프트웨어", "api", "gpu", "하드웨어"]):
             return "tech_ai"
-
-        if any(w in t for w in ["애드센스", "블로그", "티스토리", "수익", "cpc", "노하우", "방문자"]):
-
-            return "blog_adsense"
-
-        if any(w in t for w in ["파이썬", "부업", "자동화", "코딩", "재테크", "퇴근"]):
-
+        if any(w in t for w in ["파이썬", "python", "코딩", "프로그래밍", "셀레니움", "크롤링", "스크래핑", "부업", "자동화", "재테크"]):
             return "coding_side"
-
-        if any(w in t for w in ["홈카페", "원두", "머신", "커피", "에스프레소", "바리스타"]):
-
+        if any(w in t for w in ["애드센스", "adsense", "블로그", "티스토리", "tistory", "수익화", "cpc", "노하우", "방문자"]):
+            return "blog_adsense"
+        # 2. 복지 / 정부정책 (구체적 복지 키워드만 엄격 매칭)
+        if any(w in t for w in ["청년도약", "청년지원", "정부지원금", "국가지원", "복지혜택", "보조금", "바우처", "아동수당", "부모급여", "기초연금", "국민연금", "실업급여", "청년월세", "k-패스", "도약계좌"]):
+            return "policy_youth"
+        # 3. 생활 / 취미 / 여행
+        if any(w in t for w in ["홈카페", "원두", "에스프레소", "커피", "바리스타"]) and not any(w in t for w in ["러닝", "머신러닝"]):
             return "home_cafe"
-
-        if any(w in t for w in ["여행", "가을", "힐링", "주말", "명소", "관광", "나들이", "단풍"]):
-
+        if any(w in t for w in ["여행", "가을", "힐링", "주말", "명소", "관광", "나들이", "단풍", "숙소", "호텔", "펜션"]):
             return "travel_healing"
-
         return "general"
-
-
 
     def generate_seo_title_and_tags(self, topic: str, category: str) -> Optional[Dict]:
 
@@ -890,27 +854,91 @@ class AgentLeeWriter:
                     if checkpoint_items:
                         break
 
-        # 4. 카드 1: 인포그래픽 텍스트 빌드
-        tag = "⚡ 2026 OFFICIAL VERIFIED GUIDE"
-        s1_t, s1_d, s1_b = "🎯 지원 자격 및 대상", "소득 및 연령 조건 정밀 적합도 판별", "적합도 99% 매칭"
-        s2_t, s2_d, s2_b = "📋 신청 절차 및 서류", "온라인 간편 접수 및 필수 구비서류", "간편 서류 준비 100%"
-        s3_t, s3_d, s3_b = "💎 최대 혜택 및 수령법", "정부 지원금 및 환급 혜택 극대화", "혜택 수혜율 100%"
+        # 4. 카드 1: 인포그래픽 텍스트 빌드 (카테고리별 맞춤 동기화)
+        is_it_tech = any(k in t_low for k in ['ai', 'gpt', 'chatgpt', '제미나이', 'gemini', '클로드', 'claude', '파이썬', 'python', '코딩', '개발', '에디터', 'cursor', '프롬프트', 'llm', '크롤링', '셀레니움', 'api', '소프트웨어', 'gpu', '프로그래밍', '자동화', 'n8n'])
+        is_blog_adsense = any(k in t_low for k in ['애드센스', 'adsense', '블로그', '티스토리', 'cpc', '고단가', '수익화'])
+        is_tax_finance = any(k in t_low for k in ['연말정산', '세액', '소득공제', '환급', '세금', '국세청', '월급', '급여', '대출', '금리', '주택담보', '특례', '디딤돌', '버팀목'])
+        is_welfare_youth = any(k in t_low for k in ['청년도약', '도약계좌', '청년지원', '정부지원금', '보조금', '바우처', '월세지원', '부모급여', '아동수당', '복지'])
+        is_health = any(k in t_low for k in ['건강보험', '피부양자', '본인부담', '보험료', '실손'])
+        is_travel_life = any(k in t_low for k in ['여행', '단풍', '호텔', '펜션', '숙소', '맛집', '카페', '힐링', '코스', '캠핑', '명소'])
 
-        if any(k in t_low for k in ['연말정산', '세액', '소득공제', '환급', '세금', '국세청', '월급', '급여']):
-            tag = "💰 2026 국세청 연말정산 환급 가이드"
-            s1_t, s1_d, s1_b = "🎯 공제 항목 정밀 체크", "누락되기 쉬운 세액·소득공제 100% 발굴", "공제 누락율 0%"
-            s2_t, s2_d, s2_b = "📋 홈택스 간소화 조회", "연말정산 모의계산 및 원클릭 서류 제출", "환급액 최대치 산출"
-            s3_t, s3_d, s3_b = "💵 13월의 월급 수령", "실질 환급금 통장 입금 및 절세 완성", "평균 130만원 환급"
-        elif any(k in t_low for k in ['청년도약', '적금', '예금', '목돈', '저축', '계좌']):
-            tag = "🌱 2026 청년 목돈 마련 자산형성 플랜"
-            s1_t, s1_d, s1_b = "🎯 가입 자격 & 나이 요건", "개인소득 7,500만원 이하 기준 검증", "정부 승인율 99%"
-            s2_t, s2_d, s2_b = "📋 은행별 우대금리 비교", "최고 연 6%대 금리 혜택 은행 선정", "우대금리 100% 적용"
-            s3_t, s3_d, s3_b = "💎 정부기여금 최대 수령", "매월 최대 3.3만원 추가 지원 + 비과세", "최대 5,000만원 목돈"
-        elif any(k in t_low for k in ['건강보험', '피부양자', '본인부담', '보험료']):
+        if is_it_tech:
+            tag = "💻 2026 IT·AI 실전 기술 가이드"
+            s1_t, s1_d, s1_b = "🎯 핵심 개념 & 도구 설치", "필수 개발 환경 및 호환성 세팅", "환경 구축 100% 완료"
+            s2_t, s2_d, s2_b = "📋 실전 활용 & 프롬프트", "실무 적용 코드 및 핵심 사용 팁", "생산성 300% 향상"
+            s3_t, s3_d, s3_b = "⚡ 성능 최적화 & 자동화", "오류 해결 및 효율 극대화 노하우", "완벽 자동화 완성"
+            detail_tag = "📋 2026 실전 체크포인트 점검표"
+            detail_title = f"☑️ [실행 전 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 실행 환경 및 버전 점검", "공식 패키지 및 최신 안정화 버전 확인", "OS 및 시스템 요구사양 정합성 검증", "[✓] 실행 환경 구축 준비 완료"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 필수 설정 및 의존성 구성", "필수 라이브러리 및 확장 도구 세팅", "설정 파일 및 API 연동 상태 점검", "[✓] 필수 의존성 구성 100% 완료"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 실무 예제 및 코드 검증", "실전 예제 코드 및 프롬프트 동작 테스트", "예외 상황 및 오류 사전 방어", "[✓] 실전 테스트 및 검증 완료"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 자동화 및 생산성 극대화", "반복 작업 자동화 및 유지보수 규칙", "단축키 및 실무 최적화 팁 적용", "[✓] 생산성 3배 극대화 달성"
+        elif is_blog_adsense:
+            tag = "📈 2026 블로그 수익화 & 애드센스 가이드"
+            s1_t, s1_d, s1_b = "🎯 고단가 키워드 발굴", "경쟁도 낮고 클릭단가 높은 키워드", "황금 키워드 발굴 100%"
+            s2_t, s2_d, s2_b = "📋 체류시간 방어 서식", "서식 최적화 및 광고 스마트 배치", "이탈률 0% 방어"
+            s3_t, s3_d, s3_b = "💰 애드센스 수익 극대화", "CTR 3배 향상 및 상위 노출 전략", "일 100달러 수익 플랜"
+            detail_tag = "📋 2026 블로그 수익 최적화 점검표"
+            detail_title = f"☑️ [수익화 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 검색 의도 및 키워드 분석", "실시간 검색 트렌드 및 CPC 단가 검증", "네이버·구글 검색 상위 노출 가능성 점검", "[✓] 검색 타겟 키워드 선정 완료"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. H태그 및 문서 구조 설계", "H2/H3 계층 구조 및 모바일 가독성", "핵심 요약 박스 및 비교표 구성", "[✓] SEO 최적화 문서 구조 완비"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 광고 스마트 슬롯 최적화", "본문 상단/중간/하단 최적 배치", "체류시간 방어 및 무효클릭 방지", "[✓] 클릭률 극대화 슬롯 세팅 완료"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 색인 급행 등록 및 모니터링", "구글 서치콘솔 및 네이버 웹마스터 색인", "실시간 유입 트래픽 및 성과 분석", "[✓] 검색엔진 급행 색인 신호 완료"
+        elif is_tax_finance:
+            tag = "💰 2026 세무·금융 핵심 가이드"
+            s1_t, s1_d, s1_b = "🎯 공제 항목 및 금리 분석", "누락되기 쉬운 공제 및 우대금리 발굴", "적용율 100% 매칭"
+            s2_t, s2_d, s2_b = "📋 홈택스·금융사 간편 조회", "모의계산 및 원클릭 서류 제출", "혜택액 최대치 산출"
+            s3_t, s3_d, s3_b = "💵 실질 환급 및 절세 완성", "환급금 수령 및 이자 비용 절감", "절세 혜택 극대화"
+            detail_tag = "📋 2026 금융·세무 사전 점검표"
+            detail_title = f"☑️ [실행 전 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 소득 및 자격 요건 확인", "총급여·연소득 구간별 공제 기준 확인", "금융사별 대출 한도 및 심사 요건 점검", "[✓] 자격 요건 적합도 100% 확인"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 필수 증빙서류 사전 완비", "국세청 소득금액증명원 및 등본 준비", "금융거래확인서 등 필수 서류 구비", "[✓] 원클릭 서류 제출 준비 완료"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 우대 혜택 및 금리 비교", "카드·통장 실적별 우대 혜택 총정리", "최적 금융 상품 및 절세 경로 선택", "[✓] 최저 비용/최고 환급 경로 확정"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 최종 신청 및 환급 확인", "신청 마감일 준수 및 사후 환급 점검", "5월 경정청구 및 추가 환급액 확인", "[✓] 절세 및 자산관리 완성"
+        elif is_welfare_youth:
+            tag = "🌱 2026 정부 정책지원금 실전 가이드"
+            s1_t, s1_d, s1_b = "🎯 지원 자격 및 대상 판별", "연령 및 소득 기준 정밀 적합도 검토", "적합도 99% 매칭"
+            s2_t, s2_d, s2_b = "📋 신청 절차 및 구비서류", "온라인 간편 접수 및 서류 제출", "간편 서류 준비 100%"
+            s3_t, s3_d, s3_b = "💎 정부지원금 최대 수령", "추가 매칭 지원금 및 감면 혜택", "혜택 수혜율 100%"
+            detail_tag = "📋 2026 실행 전 필수 사전 점검표"
+            detail_title = f"☑️ [실행 전 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 가입 자격 & 나이 요건 확인", "개인소득 및 가구 중위소득 기준 확인", "연령 및 주거 요건 적합 여부 판별", "[✓] 지원 대상 적합도 100% 검증"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 필수 구비서류 사전 준비", "주민등록등본 및 소득증빙서류 발급", "신분증 및 모바일 간편인증 준비", "[✓] 무서류/간편 접수 준비 완료"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 공식 접수처 원클릭 신청", "복지로·정부24 전용 온라인 창구 접수", "접수 번호 및 처리 현황 실시간 확인", "[✓] 온라인 접수 채널 검증 완료"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 최대 지원금 및 혜택 수령", "매월 지원금 입금 계좌 유효성 점검", "만기 혜택 및 비과세 혜택 완성", "[✓] 정부 지원금 수령 플랜 완성"
+        elif is_health:
             tag = "🛡️ 2026 국민건강보험 핵심 가이드"
-            s1_t, s1_d, s1_b = "🎯 피부양자 자격 기준", "연소득 2,000만원 & 재산 요건 정밀 분석", "탈락 위험 0% 방어"
+            s1_t, s1_d, s1_b = "🎯 피부양자 자격 기준", "연소득 2,000만원 & 재산 요건 분석", "탈락 위험 0% 방어"
             s2_t, s2_d, s2_b = "📋 지역가입자 전환 대비", "보험료 폭탄 예방 및 감면 제도 활용", "보험료 최대 50% 절감"
             s3_t, s3_d, s3_b = "💎 사후환급금 돌려받기", "본인부담상한제 초과금 신청 및 환급", "평균 132만원 수령"
+            detail_tag = "📋 2026 건강보험 필수 사전 점검표"
+            detail_title = f"☑️ [건강보험 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 연간 합산소득 2,000만원 확인", "근로·사업·이자·배당소득 합산 기준", "소득 기준선 초과 여부 정밀 점검", "[✓] 소득 요건 적합도 판별 완료"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 재산세 과세표준 기준 점검", "재산과표 5.4억원 이하 안전 구간 확인", "공시가격 변동분 및 지분 소유 검증", "[✓] 재산 요건 안전 구간 확인"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 임의계속가입 제도 활용", "지역가입 전환 시 기존 보험료 36개월 유지", "첫 고지서 수령 후 2개월 내 신청", "[✓] 보험료 폭탄 방어 제도 확인"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 본인부담상한제 환급금 조회", "초과 의료비 전액 사후환급 신청", "국민건강보험공단 즉시 입금 신청", "[✓] 의료비 미환급금 조회 완료"
+        elif is_travel_life:
+            tag = "✈️ 2026 실전 힐링 여행 가이드"
+            s1_t, s1_d, s1_b = "🎯 최적 방문 시기 & 코스", "핵심 명소 및 추천 이동 동선", "만족도 99% 추천 코스"
+            s2_t, s2_d, s2_b = "📋 예약 및 필수 준비물", "숙소·교통편 사전 예약 및 주차 팁", "사전 준비 100% 완료"
+            s3_t, s3_d, s3_b = "💎 감성 힐링 & 비용 절약", "현지인 추천 맛집 및 할인 꿀팁", "알찬 여행 코스 완성"
+            detail_tag = "📋 2026 여행 출발 전 필수 점검표"
+            detail_title = f"☑️ [출발 전 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 날씨 및 최적 일정 점검", "주간 기상 예보 및 개화/단풍 시기", "혼잡 시간대 피한 최적 방문 시간", "[✓] 방문 일정 최적화 완료"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 이동 경로 및 주차 정보", "대중교통 환승 및 내비게이션 경로", "무료/공영 주차장 위치 사전 확보", "[✓] 주차 및 이동 동선 완비"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 사전 예약 및 티켓 확인", "모바일 입장권 및 현장 대기 예약", "지역 화폐 및 할인 쿠폰 적용", "[✓] 입장 및 예약권 준비 완료"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 주변 맛집 및 편의시설", "동선 내 검증된 로컬 맛집 선정", "화장실·휴게시설 등 편의 인프라", "[✓] 완벽 힐링 코스 완성"
+        else:
+            tag = "⚡ 2026 OFFICIAL VERIFIED GUIDE"
+            s1_t, s1_d, s1_b = "🎯 핵심 개요 및 주요 포인트", "핵심 기준 및 최신 동향 정밀 분석", "정확도 99% 신뢰도"
+            s2_t, s2_d, s2_b = "📋 단계별 실천 실행 가이드", "초보자도 따라 할 수 있는 명확한 루틴", "실행 가이드 100% 제공"
+            s3_t, s3_d, s3_b = "💡 주의사항 및 전문가 팁", "실질적인 비용/시간 절약 및 노하우", "만족도 100% 달성"
+            detail_tag = "📋 2026 실행 전 필수 사전 점검표"
+            detail_title = f"☑️ [실행 전 필수 체크포인트] {safe_topic}"
+            d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 사전 준비 및 기준 점검", "필수 정보 및 최신 기준 사전 확인", "누락 방지를 위한 사전 준비 리스트 점검", "[✓] 사전 준비 및 검증 완료"
+            d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 단계별 실행 순서 확인", "시행착오 없는 추천 실행 순서 숙지", "상황별 맞춤 선택 가이드 적용", "[✓] 실행 프로세스 점검 완료"
+            d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 핵심 비교 및 혜택 극대화", "가성비 및 효율성 최우선 선택", "불필요한 지출 및 시간 낭비 차단", "[✓] 최대 효율 선택 완료"
+            d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 최종 확인 및 사후 관리", "예외 상황 및 유의사항 최종 체크", "장기적인 유지 및 관리 꿀팁 적용", "[✓] 완벽 실행 완료"
 
         # 본문 실제 소제목이 있으면 Step 1, 2, 3 제목에 실시간 100% 동기화!
         if len(raw_h2_list) >= 1 and raw_h2_list[0]:
@@ -938,15 +966,7 @@ class AgentLeeWriter:
 
         title_svg = f"""<text x="600" y="148" font-size="33" letter-spacing="-0.5">{e_l1}</text><text x="600" y="196" font-size="33" fill="#5eead4" letter-spacing="-0.5">{e_l2}</text>""" if l2 else f"""<text x="600" y="172" font-size="35" letter-spacing="-0.5">{e_l1}</text>"""
 
-        svg_content = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%" style="border-radius: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Malgun Gothic', sans-serif;"><defs><linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0a0f1d"/><stop offset="50%" stop-color="#0f172a"/><stop offset="100%" stop-color="#064e3b"/></linearGradient><radialGradient id="glow1" cx="20%" cy="20%" r="40%"><stop offset="0%" stop-color="#14b8a6" stop-opacity="0.25"/><stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/></radialGradient><radialGradient id="glow2" cx="80%" cy="80%" r="50%"><stop offset="0%" stop-color="#0d9488" stop-opacity="0.2"/><stop offset="100%" stop-color="#0d9488" stop-opacity="0"/></radialGradient></defs><rect width="1200" height="675" fill="url(#bgGrad)"/><rect width="1200" height="675" fill="url(#glow1)"/><rect width="1200" height="675" fill="url(#glow2)"/><rect x="24" y="24" width="1152" height="627" rx="16" fill="none" stroke="#2dd4bf" stroke-opacity="0.45" stroke-width="2"/><g transform="translate(600, 68)"><rect x="-190" y="-18" width="380" height="36" rx="18" fill="#134e4a" stroke="#2dd4bf" stroke-width="1.5"/><text x="0" y="6" text-anchor="middle" fill="#5eead4" font-size="13" font-weight="800" letter-spacing="1.5">{e_tag}</text></g><g fill="#ffffff" font-weight="900" text-anchor="middle">{title_svg}</g><g transform="translate(60, 248)"><rect width="330" height="350" rx="16" fill="#0b1329" fill-opacity="0.9" stroke="#10b981" stroke-width="2"/><rect x="18" y="20" width="80" height="26" rx="6" fill="#065f46"/><text x="58" y="38" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="800">STEP 01</text><text x="24" y="85" fill="#ffffff" font-size="19" font-weight="800">{e_s1_t}</text><line x1="24" y1="102" x2="306" y2="102" stroke="#334155" stroke-width="1"/><text x="24" y="142" fill="#cbd5e1" font-size="14.5" font-weight="500">▶ 핵심 요건 및 개요</text><text x="24" y="172" fill="#94a3b8" font-size="13.5">• {e_s1_d}</text><rect x="20" y="290" width="290" height="38" rx="8" fill="#065f46" fill-opacity="0.4" stroke="#059669" stroke-width="1"/><text x="165" y="314" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="700">✓ {e_s1_b}</text></g><g transform="translate(435, 248)"><rect width="330" height="350" rx="16" fill="#0b1329" fill-opacity="0.9" stroke="#0284c7" stroke-width="2"/><rect x="18" y="20" width="80" height="26" rx="6" fill="#075985"/><text x="58" y="38" text-anchor="middle" fill="#bae6fd" font-size="12" font-weight="800">STEP 02</text><text x="24" y="85" fill="#ffffff" font-size="19" font-weight="800">{e_s2_t}</text><line x1="24" y1="102" x2="306" y2="102" stroke="#334155" stroke-width="1"/><text x="24" y="142" fill="#cbd5e1" font-size="14.5" font-weight="500">▶ 세부 실행 기준</text><text x="24" y="172" fill="#94a3b8" font-size="13.5">• {e_s2_d}</text><rect x="20" y="290" width="290" height="38" rx="8" fill="#075985" fill-opacity="0.4" stroke="#0284c7" stroke-width="1"/><text x="165" y="314" text-anchor="middle" fill="#7dd3fc" font-size="13" font-weight="700">✓ {e_s2_b}</text></g><g transform="translate(810, 248)"><rect width="330" height="350" rx="16" fill="#0b1329" fill-opacity="0.9" stroke="#d97706" stroke-width="2"/><rect x="18" y="20" width="80" height="26" rx="6" fill="#78350f"/><text x="58" y="38" text-anchor="middle" fill="#fde68a" font-size="12" font-weight="800">STEP 03</text><text x="24" y="85" fill="#ffffff" font-size="19" font-weight="800">{e_s3_t}</text><line x1="24" y1="102" x2="306" y2="102" stroke="#334155" stroke-width="1"/><text x="24" y="142" fill="#cbd5e1" font-size="14.5" font-weight="500">▶ 실전 적용 및 수령</text><text x="24" y="172" fill="#94a3b8" font-size="13.5">• {e_s3_d}</text><rect x="20" y="290" width="290" height="38" rx="8" fill="#78350f" fill-opacity="0.4" stroke="#d97706" stroke-width="1"/><text x="165" y="314" text-anchor="middle" fill="#fde68a" font-size="13" font-weight="700">✓ {e_s3_b}</text></g><text x="600" y="626" text-anchor="middle" fill="#64748b" font-size="12" font-weight="600">※ 본 가이드는 2026년 정부 공식 최신 시행령 및 기준을 실시간 반영하였습니다.</text></svg>"""
-
-        # 5. 카드 2: 체크포인트 세부 인포그래픽 SVG 빌드
-        detail_tag = "📋 2026 실행 전 필수 사전 점검표"
-        detail_title = f"☑️ [실행 전 필수 체크포인트] {safe_topic}"
-        d1_c, d1_t, d1_v, d1_s, d1_b = "CHECK 01", "01. 가입 자격 & 나이 요건 확인", "만 19~34세 청년 & 개인소득 7,500만원 이하", "가구 중위소득 250% 이하 충족 여부 확인", "[✓] 신청 대상 자격 적합도 100% 검증 완료"
-        d2_c, d2_t, d2_v, d2_s, d2_b = "CHECK 02", "02. 필수 구비서류 사전 준비", "홈택스 소득금액증명원 및 주민등록등본", "신분증 및 모바일 신분증 사전 준비", "[✓] 무서류 즉시 신청 프로세스 준비 완료"
-        d3_c, d3_t, d3_v, d3_s, d3_b = "CHECK 03", "03. 은행별 최고 우대금리 비교", "기본금리 4.5% + 우대금리 최고 1.5% (최대 6.0%)", "급여이체, 카드 결제 실적 우대금리 조건 충족", "[✓] 최고 6.0% 우대금리 적용 완료"
-        d4_c, d4_t, d4_v, d4_s, d4_b = "CHECK 04", "04. 정부기여금 최대 144만원 수령", "개인소득 구간별 매월 최대 3.3만원 추가 매칭", "5년 만기 시 이자소득세 15.4% 전액 비과세 혜택", "[✓] 5,000만원 목돈 형성 플랜 완성"
+        svg_content = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%" style="border-radius: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Malgun Gothic', sans-serif;"><defs><linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0a0f1d"/><stop offset="50%" stop-color="#0f172a"/><stop offset="100%" stop-color="#064e3b"/></linearGradient><radialGradient id="glow1" cx="20%" cy="20%" r="40%"><stop offset="0%" stop-color="#14b8a6" stop-opacity="0.25"/><stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/></radialGradient><radialGradient id="glow2" cx="80%" cy="80%" r="50%"><stop offset="0%" stop-color="#0d9488" stop-opacity="0.2"/><stop offset="100%" stop-color="#0d9488" stop-opacity="0"/></radialGradient></defs><rect width="1200" height="675" fill="url(#bgGrad)"/><rect width="1200" height="675" fill="url(#glow1)"/><rect width="1200" height="675" fill="url(#glow2)"/><rect x="24" y="24" width="1152" height="627" rx="16" fill="none" stroke="#2dd4bf" stroke-opacity="0.45" stroke-width="2"/><g transform="translate(600, 68)"><rect x="-190" y="-18" width="380" height="36" rx="18" fill="#134e4a" stroke="#2dd4bf" stroke-width="1.5"/><text x="0" y="6" text-anchor="middle" fill="#5eead4" font-size="13" font-weight="800" letter-spacing="1.5">{e_tag}</text></g><g fill="#ffffff" font-weight="900" text-anchor="middle">{title_svg}</g><g transform="translate(60, 248)"><rect width="330" height="350" rx="16" fill="#0b1329" fill-opacity="0.9" stroke="#10b981" stroke-width="2"/><rect x="18" y="20" width="80" height="26" rx="6" fill="#065f46"/><text x="58" y="38" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="800">STEP 01</text><text x="24" y="85" fill="#ffffff" font-size="19" font-weight="800">{e_s1_t}</text><line x1="24" y1="102" x2="306" y2="102" stroke="#334155" stroke-width="1"/><text x="24" y="142" fill="#cbd5e1" font-size="14.5" font-weight="500">▶ 핵심 요건 및 개요</text><text x="24" y="172" fill="#94a3b8" font-size="13.5">• {e_s1_d}</text><rect x="20" y="290" width="290" height="38" rx="8" fill="#065f46" fill-opacity="0.4" stroke="#059669" stroke-width="1"/><text x="165" y="314" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="700">✓ {e_s1_b}</text></g><g transform="translate(435, 248)"><rect width="330" height="350" rx="16" fill="#0b1329" fill-opacity="0.9" stroke="#0284c7" stroke-width="2"/><rect x="18" y="20" width="80" height="26" rx="6" fill="#075985"/><text x="58" y="38" text-anchor="middle" fill="#bae6fd" font-size="12" font-weight="800">STEP 02</text><text x="24" y="85" fill="#ffffff" font-size="19" font-weight="800">{e_s2_t}</text><line x1="24" y1="102" x2="306" y2="102" stroke="#334155" stroke-width="1"/><text x="24" y="142" fill="#cbd5e1" font-size="14.5" font-weight="500">▶ 세부 실행 기준</text><text x="24" y="172" fill="#94a3b8" font-size="13.5">• {e_s2_d}</text><rect x="20" y="290" width="290" height="38" rx="8" fill="#075985" fill-opacity="0.4" stroke="#0284c7" stroke-width="1"/><text x="165" y="314" text-anchor="middle" fill="#7dd3fc" font-size="13" font-weight="700">✓ {e_s2_b}</text></g><g transform="translate(810, 248)"><rect width="330" height="350" rx="16" fill="#0b1329" fill-opacity="0.9" stroke="#d97706" stroke-width="2"/><rect x="18" y="20" width="80" height="26" rx="6" fill="#78350f"/><text x="58" y="38" text-anchor="middle" fill="#fde68a" font-size="12" font-weight="800">STEP 03</text><text x="24" y="85" fill="#ffffff" font-size="19" font-weight="800">{e_s3_t}</text><line x1="24" y1="102" x2="306" y2="102" stroke="#334155" stroke-width="1"/><text x="24" y="142" fill="#cbd5e1" font-size="14.5" font-weight="500">▶ 실전 적용 및 수령</text><text x="24" y="172" fill="#94a3b8" font-size="13.5">• {e_s3_d}</text><rect x="20" y="290" width="290" height="38" rx="8" fill="#78350f" fill-opacity="0.4" stroke="#d97706" stroke-width="1"/><text x="165" y="314" text-anchor="middle" fill="#fde68a" font-size="13" font-weight="700">✓ {e_s3_b}</text></g><text x="600" y="626" text-anchor="middle" fill="#64748b" font-size="12" font-weight="600">※ 본 가이드는 2026년 공식 최신 가이드라인 및 기준을 실시간 반영하였습니다.</text></svg>"""
 
         if checkpoint_heading:
             clean_ch = clean_h2(checkpoint_heading)
@@ -964,18 +984,26 @@ class AgentLeeWriter:
                 t1, v1 = parse_li(checkpoint_items[0])
                 d1_t = "01. " + (t1[:18] + '...' if len(t1) > 18 else t1)
                 d1_v = v1[:32] + '...' if len(v1) > 32 else v1
+                d1_s = f"본문 {clean_h2(safe_topic)} 핵심 점검 기준"
+                d1_b = f"[✓] {t1[:12]} 확인 완료"
             if len(checkpoint_items) >= 2:
                 t2, v2 = parse_li(checkpoint_items[1])
                 d2_t = "02. " + (t2[:18] + '...' if len(t2) > 18 else t2)
                 d2_v = v2[:32] + '...' if len(v2) > 32 else v2
+                d2_s = f"실무 적용 사전 정합성 체크"
+                d2_b = f"[✓] {t2[:12]} 준비 완료"
             if len(checkpoint_items) >= 3:
                 t3, v3 = parse_li(checkpoint_items[2])
                 d3_t = "03. " + (t3[:18] + '...' if len(t3) > 18 else t3)
                 d3_v = v3[:32] + '...' if len(v3) > 32 else v3
+                d3_s = f"공식 가이드라인 및 최적 경로 선택"
+                d3_b = f"[✓] {t3[:12]} 검증 완료"
             if len(checkpoint_items) >= 4:
                 t4, v4 = parse_li(checkpoint_items[3])
                 d4_t = "04. " + (t4[:18] + '...' if len(t4) > 18 else t4)
                 d4_v = v4[:32] + '...' if len(v4) > 32 else v4
+                d4_s = f"최종 성과 및 혜택 극대화 달성"
+                d4_b = f"[✓] {t4[:12]} 완료"
 
         e_d_tag = _html.escape(detail_tag)
         e_d_title = _html.escape(detail_title)
