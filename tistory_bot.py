@@ -2070,8 +2070,17 @@ class AgentJungSeleniumPublisher:
 
 # ==========================================
 
-# 7. 대화형 키워드 선택 및 메인 진입점
+    def publish(self, title: str, content_html: str, tags: list = None, category: str = "general") -> dict:
+        """AutopilotDaemonEngine 등에서 호출하는 표준 자동 발행 인터페이스"""
+        return self.publish_via_browser(
+            title=title,
+            html_content=content_html,
+            tags=tags or [],
+            publish_mode=self.config.PUBLISH_MODE
+        )
 
+# ==========================================
+# 7. 대화형 키워드 선택 및 메인 진입점
 # ==========================================
 
 class TistoryAICorporation:
