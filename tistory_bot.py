@@ -1556,10 +1556,11 @@ class AgentJungSeleniumPublisher:
 
                 # 카카오 로그인 버튼 자동 클릭 시도 (로그인 폼 즉시 노출)
                 try:
-                    kakao_btns = driver.find_elements(By.CSS_SELECTOR, ".btn_login.link_kakao_id, .btn_kakao, a[href*='kakao']")
-                    if kakao_btns:
-                        kakao_btns[0].click()
-                        time.sleep(1.0)
+                    driver.execute_script('''
+                        var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
+                        if (btn) btn.click();
+                    ''')
+                    time.sleep(1.5)
                 except Exception:
                     pass
 
