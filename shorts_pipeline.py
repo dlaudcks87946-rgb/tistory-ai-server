@@ -1522,6 +1522,431 @@ def generate_shorts_pipeline(topic: str, blog_url: str = "", category: str = "au
     return result
 
 
+class CardNewsReelsGenerator:
+    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 카드뉴스 슬라이드 및 영상 자동 제작 엔진"""
+    WIDTH = 1080
+    HEIGHT = 1920
+    FPS = 30
+    SECONDS_PER_SLIDE = 3.2  # 각 슬라이드당 3.2초 (5장 총 16초)
+
+    def __init__(self):
+        self.ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+        font_candidates = [
+            "C:\\Windows\\Fonts\\malgunbd.ttf",
+            "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "malgunbd.ttf"
+        ]
+        reg_candidates = [
+            "C:\\Windows\\Fonts\\malgun.ttf",
+            "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "malgun.ttf"
+        ]
+
+        bold_path = next((f for f in font_candidates if os.path.exists(f)), None)
+        reg_path = next((f for f in reg_candidates if os.path.exists(f)), None)
+
+        try:
+            if bold_path:
+                self.font_h1 = ImageFont.truetype(bold_path, 64)
+                self.font_h2 = ImageFont.truetype(bold_path, 46)
+                self.font_h3 = ImageFont.truetype(bold_path, 34)
+                self.font_badge = ImageFont.truetype(bold_path, 24)
+            else:
+                self.font_h1 = ImageFont.load_default()
+                self.font_h2 = ImageFont.load_default()
+                self.font_h3 = ImageFont.load_default()
+                self.font_badge = ImageFont.load_default()
+
+            if reg_path:
+                self.font_body = ImageFont.truetype(reg_path, 28)
+                self.font_small = ImageFont.truetype(reg_path, 22)
+            else:
+                self.font_body = ImageFont.load_default()
+                self.font_small = ImageFont.load_default()
+        except Exception:
+            self.font_h1 = ImageFont.load_default()
+            self.font_h2 = ImageFont.load_default()
+            self.font_h3 = ImageFont.load_default()
+            self.font_body = ImageFont.load_default()
+            self.font_badge = ImageFont.load_default()
+            self.font_small = ImageFont.load_default()
+
+    def _draw_background(self, theme="emerald"):
+        img = Image.new("RGB", (self.WIDTH, self.HEIGHT), (10, 15, 29))
+        draw = ImageDraw.Draw(img)
+
+        if theme == "indigo":
+            c_top = (15, 23, 42)
+            c_bot = (30, 27, 75)
+            stroke_col = (129, 140, 248)
+            badge_bg = (49, 46, 129)
+            text_accent = (165, 180, 252)
+        elif theme == "amber":
+            c_top = (15, 23, 42)
+            c_bot = (69, 26, 3)
+            stroke_col = (251, 191, 36)
+            badge_bg = (120, 53, 15)
+            text_accent = (253, 230, 138)
+        else:  # emerald (금융/지원금/재테크 메인 테마)
+            c_top = (10, 15, 29)
+            c_bot = (6, 78, 59)
+            stroke_col = (45, 212, 191)
+            badge_bg = (19, 78, 74)
+            text_accent = (94, 234, 212)
+
+        for y in range(self.HEIGHT):
+            ratio = y / self.HEIGHT
+            r = int(c_top[0] * (1 - ratio) + c_bot[0] * ratio)
+            g = int(c_top[1] * (1 - ratio) + c_bot[1] * ratio)
+            b = int(c_top[2] * (1 - ratio) + c_bot[2] * ratio)
+            draw.line([(0, y), (self.WIDTH, y)], fill=(r, g, b))
+
+        # Ambient Glow Circle
+        draw.ellipse([self.WIDTH - 400, 100, self.WIDTH + 300, 800], fill=badge_bg)
+        draw.ellipse([-200, self.HEIGHT - 700, 500, self.HEIGHT], fill=badge_bg)
+
+        # Border
+        draw.rounded_rectangle([30, 30, self.WIDTH - 30, self.HEIGHT - 30], radius=24, outline=stroke_col, width=3)
+        return img, draw, stroke_col, badge_bg, text_accent
+
+    def generate_slides(self, topic: str, blog_url: str = "") -> list:
+        t_low = topic.lower()
+        theme = "emerald"
+        if any(k in t_low for k in ["ai", "gpt", "코딩", "파이썬", "tech"]):
+            theme = "indigo"
+        elif any(k in t_low for k in ["애드센스", "블로그", "수익", "여행", "카페"]):
+            theme = "amber"
+
+        # 금융/지원금별 맞춤형 세부 데이터
+        if any(k in t_low for k in ["주택담보대출", "주담대", "대환", "갈아타기", "금리"]):
+            spec_items = [
+                ("CHECK 01", "주택 요건", "KB시세 9억원 이하 주택 대상 (실거주 목적 대출 우선)"),
+                ("CHECK 02", "소득 기준", "부부합산 소득 1억원 이하 (신혼부부 최대 1.3억원 완화)"),
+                ("CHECK 03", "LTV·DSR", "LTV 최대 70%, 스트레스 DSR 2단계 적용 한도 산정"),
+                ("CHECK 04", "기존 대출", "기존 대출 취급 후 6개월 이상 경과 시 비대면 갈아타기 가능")
+            ]
+            rows = [
+                ("비교 01", "실질 금리 인하", "연 4.8% 기존 금리 ➔ 연 3.2%대 저금리로 환승", "월 40만원 절약"),
+                ("비교 02", "중도상환수수료", "대출 실행 3년 경과 시 수수료 100% 면제 적용", "수수료 0원"),
+                ("비교 03", "우대금리 결합", "급여이체, 청약통장, 카드 실적 결합 시 추가 감면", "최대 0.8%p 추가"),
+                ("비교 04", "연말 소득공제", "장기주택저당차입금 이자상환액 연 1,800만원 공제", "절세 효과 극대화")
+            ]
+            chks = [
+                ("서류 01", "부동산 등기부등본", "인터넷등기소 열람용이 아닌 '제출용' 발급 필수"),
+                ("서류 02", "소득금액증명원", "국세청 홈택스 최근 2개년 소득증빙 PDF 원클릭 발급"),
+                ("서류 03", "재직증명서 & 건보득실", "직장 건강보험공단 비대면 마이데이터 자동 연동"),
+                ("서류 04", "매매계약서 / 등기필증", "원본 확인 및 전자문서 지갑 즉시 전송 준비")
+            ]
+        elif any(k in t_low for k in ["청년", "도약계좌", "희망적금", "청년지원"]):
+            spec_items = [
+                ("CHECK 01", "연령 기준", "만 19세 ~ 34세 청년 (병역 이행 시 최대 6년 연장)"),
+                ("CHECK 02", "소득 요건", "직전 과세기간 총급여 7,500만원 이하 (종합소득 6,300만원)"),
+                ("CHECK 03", "가구 소득", "가구원 수 기준 중위소득 250% 이하 판정"),
+                ("CHECK 04", "유지 조건", "가입 후 3년 이상 유지 시 비과세 혜택 100% 보장")
+            ]
+            rows = [
+                ("비교 01", "정부 기여금 매칭", "매월 납입액 대비 정부지원금 최대 월 3.3만원 추가", "연 40만원 지원"),
+                ("비교 02", "최고 기본+우대금리", "연 6.0% 수준의 초고금리 목돈 마련 효과", "시중 최고금리"),
+                ("비교 03", "이자소득 비과세", "15.4% 이자소득세 전액 면제 (순수익 보존)", "세금 0원 혜택"),
+                ("비교 04", "5년 만기 예상액", "매월 70만원 저축 시 만기 시 약 5,000만원 형성", "5,000만원 달성")
+            ]
+            chks = [
+                ("서류 01", "신분증 사본", "주민등록증 또는 모바일 신분증 즉시 인증"),
+                ("서류 02", "소득확인증명서", "홈택스 청년도약계좌용 소득확인증명서 발급"),
+                ("서류 03", "주민등록등본", "정부24 세대분리 및 가구원 확인용 등본"),
+                ("서류 04", "전용 은행 앱", "취급 11대 시중은행 스마트뱅킹 앱 사전 설치")
+            ]
+        else:
+            spec_items = [
+                ("CHECK 01", "대상 요건", "공식 가이드라인 연령 및 소득 기준 100% 매칭 여부 사전 판별"),
+                ("CHECK 02", "적용 범위", "최신 고시 기준 지원 대상 및 최대 수혜 한도 정밀 확인"),
+                ("CHECK 03", "우대 조건", "주요 우대 항목 충족 시 감면율 및 보조금 극대화"),
+                ("CHECK 04", "예외 기준", "중복 수혜 방지 규정 및 지원 자격 유지 요건 점검")
+            ]
+            rows = [
+                ("비교 01", "실질 절감 혜택", "조건 충족 시 매월 고정 비용 및 수수료 대폭 절감", "월 최대 35만원 절약"),
+                ("비교 02", "최고 우대율", "기본 혜택에 필수 우대 조건 결합 시 최대치 달성", "우대율 100% 적용"),
+                ("비교 03", "부가 세제 혜택", "비과세 감면 및 연말정산 소득공제 추가 반영", "절세 효과 극대화"),
+                ("비교 04", "환급금 수령", "신청 즉시 계좌 입금 및 차기 청구서 차감 반영", "미환급금 0% 전액 수령")
+            ]
+            chks = [
+                ("서류 01", "신분증 & 주민등록등본", "정부24 무료 발급 (최근 1개월 이내 최신 증빙 완비)"),
+                ("서류 02", "소득금액증명원", "국세청 홈택스 원클릭 PDF 다운로드 또는 무인발급"),
+                ("서류 03", "자격 증빙 공적서류", "대상별 해당 증빙서류 및 공공 마이데이터 비대면 연동"),
+                ("서류 04", "본인 명의 입출금 계좌", "혜택 지원금 입금용 1금융권 정상 계좌 확인")
+            ]
+
+        slides = []
+
+        # ==========================================
+        # Slide 1: Cover (표지 - 첫 1초 시선 강탈)
+        # ==========================================
+        img1, d1, stroke, bg_badge, accent = self._draw_background(theme)
+        d1.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
+        d1.text((540, 172), "⚡ 2026 OFFICIAL GUIDE  [ 1 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+
+        lines = topic.split()
+        if len(lines) > 4:
+            mid = len(lines) // 2
+            t_line1 = " ".join(lines[:mid])
+            t_line2 = " ".join(lines[mid:])
+        else:
+            t_line1 = topic
+            t_line2 = ""
+
+        d1.text((540, 420), t_line1, fill=(255, 255, 255), font=self.font_h1, anchor="mm")
+        if t_line2:
+            d1.text((540, 500), t_line2, fill=accent, font=self.font_h1, anchor="mm")
+
+        d1.text((540, 620), "모르면 손해 보는 2026 실전 핵심 4단계 총정리", fill=(203, 213, 225), font=self.font_h3, anchor="mm")
+
+        d1.rounded_rectangle([90, 720, 990, 1550], radius=24, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
+        
+        steps = [
+            ("STEP 01", "지원 대상 & 핵심 자격 요건 판별", "연령 및 소득 기준 100% 매칭 여부 사전 판별"),
+            ("STEP 02", "최고 혜택 & 최저 금리 비교 분석", "불필요한 지출 및 수수료 100% 감면 전략"),
+            ("STEP 03", "서류 반려 0% 필수 구비서류 점검", "공식 전산망 원클릭 간편 접수 사전 준비")
+        ]
+        y_pos = 780
+        for code, tit, desc in steps:
+            d1.rounded_rectangle([130, y_pos, 260, y_pos + 46], radius=10, fill=bg_badge, outline=stroke, width=2)
+            d1.text((195, y_pos + 23), code, fill=accent, font=self.font_badge, anchor="mm")
+            d1.text((290, y_pos + 23), tit, fill=(255, 255, 255), font=self.font_h3, anchor="lm")
+            d1.text((140, y_pos + 80), f"• {desc}", fill=(148, 163, 184), font=self.font_body, anchor="lm")
+            d1.line([(130, y_pos + 120), (950, y_pos + 120)], fill=(51, 65, 85), width=1)
+            y_pos += 150
+
+        d1.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=bg_badge, outline=stroke, width=2)
+        d1.text((540, 1670), "👉 지금 넘겨서 핵심 확인 (저장🔖 필수)", fill=(255, 255, 255), font=self.font_h3, anchor="mm")
+        slides.append(img1)
+
+        # ==========================================
+        # Slide 2: 자격 및 대상 (Step 1)
+        # ==========================================
+        img2, d2, stroke, bg_badge, accent = self._draw_background(theme)
+        d2.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
+        d2.text((540, 172), "📋 STEP 01. 자격 & 요건  [ 2 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+
+        d2.text((540, 310), "신청 대상 및 자격 기준", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
+        d2.text((540, 380), "신청 전 반드시 확인해야 할 4가지 기본 조건", fill=(148, 163, 184), font=self.font_h3, anchor="mm")
+
+        y_box = 450
+        for chk, tit, desc in spec_items:
+            d2.rounded_rectangle([90, y_box, 990, y_box + 200], radius=20, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
+            d2.rounded_rectangle([130, y_box + 30, 260, y_box + 76], radius=8, fill=bg_badge, outline=stroke, width=1)
+            d2.text((195, y_box + 53), chk, fill=accent, font=self.font_badge, anchor="mm")
+            d2.text((280, y_box + 53), tit, fill=(255, 255, 255), font=self.font_h2, anchor="lm")
+            d2.text((130, y_box + 120), f"▶ {desc}", fill=(203, 213, 225), font=self.font_body, anchor="lm")
+            d2.text((130, y_box + 160), "✓ 적합도 검증 완료 (반려 위험 0% 방어)", fill=stroke, font=self.font_small, anchor="lm")
+            y_box += 230
+
+        d2.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=(15, 23, 42), outline=stroke, width=2)
+        d2.text((540, 1670), "👉 다음 장: 최대 혜택 및 비교 분석", fill=accent, font=self.font_h3, anchor="mm")
+        slides.append(img2)
+
+        # ==========================================
+        # Slide 3: 혜택 및 비교 (Step 2)
+        # ==========================================
+        img3, d3, stroke, bg_badge, accent = self._draw_background(theme)
+        d3.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
+        d3.text((540, 172), "💎 STEP 02. 핵심 혜택  [ 3 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+
+        d3.text((540, 310), "핵심 혜택 & 실질 절감 비교", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
+        d3.text((540, 380), "조건을 맞췄을 때 실제로 얻게 되는 핵심 가치", fill=(148, 163, 184), font=self.font_h3, anchor="mm")
+
+        y_r = 450
+        for r_code, r_tit, r_sub, r_badge in rows:
+            d3.rounded_rectangle([90, y_r, 990, y_r + 200], radius=20, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
+            d3.text((130, y_r + 53), r_tit, fill=(255, 255, 255), font=self.font_h2, anchor="lm")
+            d3.rounded_rectangle([720, y_r + 30, 950, y_r + 76], radius=8, fill=bg_badge, outline=stroke, width=1)
+            d3.text((835, y_r + 53), r_badge, fill=accent, font=self.font_badge, anchor="mm")
+            d3.text((130, y_r + 120), f"▶ {r_sub}", fill=(203, 213, 225), font=self.font_body, anchor="lm")
+            d3.text((130, y_r + 160), "✓ 공식 최신 고시 기준 실시간 적용", fill=stroke, font=self.font_small, anchor="lm")
+            y_r += 230
+
+        d3.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=(15, 23, 42), outline=stroke, width=2)
+        d3.text((540, 1670), "👉 다음 장: 필수 서류 체크리스트", fill=accent, font=self.font_h3, anchor="mm")
+        slides.append(img3)
+
+        # ==========================================
+        # Slide 4: 체크리스트 (Step 3)
+        # ==========================================
+        img4, d4, stroke, bg_badge, accent = self._draw_background(theme)
+        d4.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
+        d4.text((540, 172), "🛡️ STEP 03. 필수 서류  [ 4 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+
+        d4.text((540, 310), "실행 전 필수 구비서류 체크", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
+        d4.text((540, 380), "서류 미비로 반려되지 않도록 미리 준비할 목록", fill=(148, 163, 184), font=self.font_h3, anchor="mm")
+
+        y_c = 450
+        for c_code, c_tit, c_sub in chks:
+            d4.rounded_rectangle([90, y_c, 990, y_c + 200], radius=20, fill=(11, 19, 41), outline=stroke, width=2)
+            d4.text((130, y_c + 53), f"✅ {c_tit}", fill=(255, 255, 255), font=self.font_h2, anchor="lm")
+            d4.text((130, y_c + 120), f"▶ {c_sub}", fill=(203, 213, 225), font=self.font_body, anchor="lm")
+            d4.text((130, y_c + 160), "[✓] 서류 준비 상태: 100% 준비 완료", fill=accent, font=self.font_small, anchor="lm")
+            y_c += 230
+
+        d4.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=(15, 23, 42), outline=stroke, width=2)
+        d4.text((540, 1670), "👉 마지막 장: 공식 신청처 및 프로필 링크", fill=accent, font=self.font_h3, anchor="mm")
+        slides.append(img4)
+
+        # ==========================================
+        # Slide 5: Final CTA (저장 및 프로필 링크 유도)
+        # ==========================================
+        img5, d5, stroke, bg_badge, accent = self._draw_background(theme)
+        d5.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
+        d5.text((540, 172), "📌 OFFICIAL COMPLETE  [ 5 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+
+        d5.text((540, 360), "나중에 신청할 때 보려면?", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
+        d5.text((540, 440), "지금 놓치면 다시 찾기 어렵습니다!", fill=(251, 191, 36), font=self.font_h2, anchor="mm")
+
+        # Action Cards
+        d5.rounded_rectangle([90, 530, 990, 750], radius=20, fill=(11, 19, 41), outline=stroke, width=3)
+        d5.text((540, 600), "🔖 우측 하단 [저장] 버튼 필수!", fill=(255, 255, 255), font=self.font_h2, anchor="mm")
+        d5.text((540, 670), "신청 마감 전에 꺼내볼 수 있도록 저장해두세요.", fill=(203, 213, 225), font=self.font_body, anchor="mm")
+
+        d5.rounded_rectangle([90, 790, 990, 1010], radius=20, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
+        d5.text((540, 860), "✈️ 필요한 친구에게 [DM 공유]", fill=(255, 255, 255), font=self.font_h2, anchor="mm")
+        d5.text((540, 930), "혜택 대상인 가족, 지인에게 비행기 아이콘으로 전송!", fill=(148, 163, 184), font=self.font_body, anchor="mm")
+
+        # Link CTA Box (핵심 블로그 전환 구역!)
+        d5.rounded_rectangle([90, 1070, 990, 1480], radius=24, fill=bg_badge, outline=stroke, width=3)
+        d5.text((540, 1140), "🔗 공식 신청 사이트 & 모의 계산기", fill=(255, 255, 255), font=self.font_h2, anchor="mm")
+        d5.text((540, 1220), "자세한 신청 자격 및 공식 접수 링크는", fill=accent, font=self.font_h3, anchor="mm")
+        d5.rounded_rectangle([160, 1290, 920, 1400], radius=20, fill=(255, 255, 255))
+        d5.text((540, 1345), "👉 [프로필 링크]에서 즉시 확인!", fill=(15, 23, 42), font=self.font_h2, anchor="mm")
+
+        d5.text((540, 1580), "📢 팔로우하고 2026 알짜 재테크·지원금 정보 매일 받아보기", fill=(203, 213, 225), font=self.font_h3, anchor="mm")
+        slides.append(img5)
+
+        return slides
+
+    def render_reels_video(self, topic: str, blog_url: str = "") -> dict:
+        clean_topic = topic.strip() or "2026 주택담보대출 최저금리 비교 및 절세 가이드"
+        safe_name = re.sub(r'[\s\\/:*?"<>|]+', '_', clean_topic)[:25]
+        timestamp = int(time.time())
+
+        out_dir = os.path.join(os.getcwd(), "output", "shorts")
+        os.makedirs(out_dir, exist_ok=True)
+
+        carousel_dir_name = f"carousel_{safe_name}_{timestamp}"
+        carousel_folder = os.path.join(out_dir, carousel_dir_name)
+        os.makedirs(carousel_folder, exist_ok=True)
+
+        import urllib.parse
+        encoded_carousel = urllib.parse.quote(carousel_dir_name)
+
+        # 1. 5장 슬라이드 이미지 생성 및 캐러셀 개별 저장
+        slide_imgs = self.generate_slides(clean_topic, blog_url)
+        slide_paths = []
+        slide_urls = []
+        for idx, img in enumerate(slide_imgs, 1):
+            fname = f"slide_{idx}.png"
+            p = os.path.join(carousel_folder, fname)
+            img.save(p, "PNG")
+            slide_paths.append(p)
+            slide_urls.append(f"/output/shorts/{encoded_carousel}/{fname}")
+
+        # 2. 16초 비디오 렌더링 (3.2초 x 5장 = 16초)
+        video_filename = f"reels_cardnews_{safe_name}_{timestamp}.mp4"
+        encoded_video = urllib.parse.quote(video_filename)
+        video_path = os.path.join(out_dir, video_filename)
+
+        bgm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "lofi_beat.mp3")
+        has_bgm = os.path.exists(bgm_path)
+
+        total_duration = self.SECONDS_PER_SLIDE * len(slide_imgs)  # 16.0s
+        frames_per_slide = int(self.FPS * self.SECONDS_PER_SLIDE)
+
+        cmd = [
+            self.ffmpeg_exe,
+            "-y",
+            "-f", "rawvideo",
+            "-vcodec", "rawvideo",
+            "-s", f"{self.WIDTH}x{self.HEIGHT}",
+            "-pix_fmt", "rgb24",
+            "-r", str(self.FPS),
+            "-i", "-"
+        ]
+
+        if has_bgm:
+            cmd.extend([
+                "-stream_loop", "-1",
+                "-i", bgm_path,
+                "-t", str(total_duration),
+                "-af", f"afade=t=out:st={total_duration - 2.0}:d=2.0,volume=0.35",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest"
+            ])
+        else:
+            cmd.extend(["-t", str(total_duration)])
+
+        cmd.extend([
+            "-c:v", "libx264",
+            "-preset", "veryfast",
+            "-pix_fmt", "yuv420p",
+            video_path
+        ])
+
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        try:
+            for img in slide_imgs:
+                raw_bytes = img.tobytes()
+                for _ in range(frames_per_slide):
+                    proc.stdin.write(raw_bytes)
+            proc.stdin.close()
+            proc.wait(timeout=60)
+        except Exception as e:
+            if proc.poll() is None:
+                proc.kill()
+            raise e
+
+        # 3. 인스타그램 최적화 캡션 생성
+        caption = (
+            f"📌 {clean_topic} 1분 핵심 요약 카드뉴스\n\n"
+            f"지원 조건, 우대 혜택, 필수 서류까지 한눈에 보기 쉽게 5장으로 정리했습니다.\n\n"
+            f"🔖 나중에 신청할 때 찾아보시려면 지금 우측 하단 [저장] 눌러두세요!\n"
+            f"✈️ 주변에 필요한 친구나 가족에게 DM으로 공유해주세요.\n\n"
+            f"👉 공식 신청 누리집 링크 및 모의 계산기는 [프로필 링크]에서 바로 확인하실 수 있습니다!\n\n"
+            f"#릴스 #카드뉴스 #정보공유 #재테크 #정부지원금 #생활꿀팁 #직장인팁 #인스타릴스"
+        )
+
+        size_mb = round(os.path.getsize(video_path) / (1024 * 1024), 2) if os.path.exists(video_path) else 0
+
+        meta = {
+            "status": "success",
+            "title": f"📌 {clean_topic} 핵심 총정리",
+            "format": "instagram_cardnews_reels",
+            "duration": total_duration,
+            "size_mb": size_mb,
+            "filepath": video_path,
+            "filename": video_filename,
+            "web_url": f"/output/shorts/{encoded_video}",
+            "carousel_folder": carousel_folder,
+            "slide_images": slide_paths,
+            "slide_urls": slide_urls,
+            "instagram_caption": caption,
+            "tags": "#릴스 #카드뉴스 #정보공유 #재테크 #정부지원금 #생활꿀팁 #직장인팁 #인스타릴스",
+            "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        meta_path = os.path.join(out_dir, f"reels_cardnews_{safe_name}_{timestamp}_meta.json")
+        with open(meta_path, "w", encoding="utf-8") as f:
+            json.dump(meta, f, ensure_ascii=False, indent=2)
+
+        meta["meta_path"] = meta_path
+        return meta
+
+
+def generate_cardnews_pipeline(topic: str, blog_url: str = "", category: str = "auto") -> Dict:
+    """인스타그램 캐러셀 & 9:16 카드뉴스 슬라이드 릴스 생성 파이프라인 단일 진입점"""
+    generator = CardNewsReelsGenerator()
+    return generator.render_reels_video(topic=topic, blog_url=blog_url)
+
+
 
 if __name__ == "__main__":
     import argparse

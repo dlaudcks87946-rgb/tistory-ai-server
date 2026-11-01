@@ -3771,6 +3771,10 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_response(200)
                 if file_disk_path.endswith(".mp4"):
                     self.send_header("Content-Type", "video/mp4")
+                elif file_disk_path.endswith(".png"):
+                    self.send_header("Content-Type", "image/png")
+                elif file_disk_path.endswith(".jpg") or file_disk_path.endswith(".jpeg"):
+                    self.send_header("Content-Type", "image/jpeg")
                 elif file_disk_path.endswith(".json"):
                     self.send_header("Content-Type", "application/json; charset=utf-8")
                 else:
@@ -3981,84 +3985,88 @@ class LocalDashboardHandler(http.server.SimpleHTTPRequestHandler):
 
 
         if self.path == "/api/shorts/generate":
-
             content_length = int(self.headers.get("Content-Length", 0))
-
             post_data = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
-
             try:
-
                 payload = json.loads(post_data)
-
             except Exception:
-
                 payload = {}
-
             topic = payload.get("topic", "내 도시락 맨날 훔쳐먹던 꼰대 상사 참교육한 썰")
-
             blog_url = payload.get("blog_url", f"https://{self.app_instance.config.TISTORY_BLOG_NAME}.tistory.com/" if self.app_instance else "")
-
             category = payload.get("category", "auto")
-
             print(f"\n[웹 대시보드] 🎬 숏폼 영상 제작 요청 감지! 카테고리: '{category}', 주제: '{topic}'")
-
             try:
-
                 import importlib
-
                 import shorts_pipeline
-
                 importlib.reload(shorts_pipeline)
-
                 result = shorts_pipeline.generate_shorts_pipeline(topic=topic, blog_url=blog_url, category=category)
-
                 self.send_response(200)
-
                 self.send_header("Content-Type", "application/json; charset=utf-8")
-
                 self._send_cors_headers()
-
                 self.end_headers()
-
                 self.wfile.write(json.dumps(result, ensure_ascii=False).encode("utf-8"))
-
             except Exception as e:
-
                 print(f"[숏폼 오류] {e}")
-
                 self.send_response(500)
-
                 self.send_header("Content-Type", "application/json; charset=utf-8")
-
                 self._send_cors_headers()
-
                 self.end_headers()
-
                 self.wfile.write(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False).encode("utf-8"))
-
             return
 
-
+        if self.path == "/api/shorts/generate_cardnews":
+            content_length = int(self.headers.get("Content-Length", 0))
+            post_data = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            try:
+                payload = json.loads(post_data)
+            except Exception:
+                payload = {}
+            topic = payload.get("topic", "2026 주택담보대출 최저금리 비교 및 절세 가이드")
+            blog_url = payload.get("blog_url", f"https://{self.app_instance.config.TISTORY_BLOG_NAME}.tistory.com/" if self.app_instance else "")
+            category = payload.get("category", "finance")
+            print(f"\n[웹 대시보드] 📑 9:16 인스타 카드뉴스 릴스 & 캐러셀 제작 요청! 주제: '{topic}'")
+            try:
+                import importlib
+                import shorts_pipeline
+                importlib.reload(shorts_pipeline)
+                result = shorts_pipeline.generate_cardnews_pipeline(topic=topic, blog_url=blog_url, category=category)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self._send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(result, ensure_ascii=False).encode("utf-8"))
+            except Exception as e:
+                print(f"[카드뉴스 릴스 오류] {e}")
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self._send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}, ensure_ascii=False).encode("utf-8"))
+            return
 
         if self.path == "/api/shorts/open_folder":
-
-            folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", "shorts")
-
-            os.makedirs(folder_path, exist_ok=True)
-
+            content_length = int(self.headers.get("Content-Length", 0))
+            post_data = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+            target_folder = None
             try:
+                payload = json.loads(post_data)
+                target_folder = payload.get("folder")
+            except Exception:
+                pass
 
+            folder_path = target_folder if (target_folder and os.path.exists(target_folder)) else os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", "shorts")
+            os.makedirs(folder_path, exist_ok=True)
+            try:
                 if sys.platform.startswith("win"):
-
                     os.startfile(folder_path)
-
             except Exception as e:
-
                 print(f"[폴더 열기 오류] {e}")
-
             self.send_response(200)
-
             self.send_header("Content-Type", "application/json; charset=utf-8")
+            self._send_cors_headers()
+            self.end_headers()
+            self.wfile.write(json.dumps({"success": True, "path": folder_path}, ensure_ascii=False).encode("utf-8"))
+            return
 
             self._send_cors_headers()
 

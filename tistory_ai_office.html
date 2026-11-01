@@ -37661,11 +37661,69 @@ function closeAllModals() {
 
     <div class="p-5 sm:p-6 space-y-5 overflow-y-auto text-slate-200">
 
-      
+      <!-- 🚀 쇼츠 & 릴스 제작 모드 탭 (성우 썰 스토리 vs 인스타 카드뉴스 릴스) -->
+      <div class="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800">
+        <button type="button" id="tab-mode-story" onclick="switchShortsStudioMode('story')" class="flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-md cursor-pointer">
+          <i class="fa-solid fa-microphone-lines text-amber-300"></i>
+          <span>🎙️ 유튜브 썰 &amp; 스토리 숏폼</span>
+        </button>
+        <button type="button" id="tab-mode-cardnews" onclick="switchShortsStudioMode('cardnews')" class="flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60 cursor-pointer">
+          <i class="fa-solid fa-layer-group text-emerald-400"></i>
+          <span>📑 9:16 인스타 카드뉴스 릴스 &amp; 캐러셀</span>
+          <span class="px-1.5 py-0.5 rounded-full text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">주담대/지원금</span>
+        </button>
+      </div>
 
-      <!-- 🎭 유튜브 썰 쇼츠 4종 카테고리 선택기 -->
+      <!-- 📑 [모드 2] 인스타그램 카드뉴스 릴스 & 캐러셀 테마 선택기 -->
+      <div id="cardnews-categories-container" class="hidden space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="block text-xs font-bold text-emerald-300">
+            <i class="fa-solid fa-layer-group text-emerald-400 mr-1"></i>인스타 카드뉴스 추천 테마 (원클릭 자동 입력)
+          </label>
+          <span class="text-[11px] text-emerald-400/80 font-mono">5장 캐러셀 이미지 + 16초 BGM 릴스 동시 생성</span>
+        </div>
 
-      <div class="space-y-3">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectCardnewsTopic('2026 주택담보대출 갈아타기 최저금리 비교 및 절세 가이드')" class="p-3 rounded-2xl bg-slate-900 border-2 border-emerald-500/40 hover:border-emerald-400 bg-emerald-950/20 text-left transition hover:scale-[1.02] cursor-pointer flex flex-col justify-between shadow-md">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">🏠</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">대출/환승</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">주택담보대출 갈아타기</div>
+            <div class="text-[11px] text-slate-400 truncate">최저금리 비교·월40만 절감</div>
+          </button>
+
+          <button type="button" onclick="selectCardnewsTopic('2026 청년도약계좌 정부기여금 & 비과세 혜택 총정리')" class="p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 hover:border-emerald-400 text-left transition hover:scale-[1.02] cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">💰</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">청년적금</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">청년도약계좌 총정리</div>
+            <div class="text-[11px] text-slate-400 truncate">5,000만원 목돈·비과세</div>
+          </button>
+
+          <button type="button" onclick="selectCardnewsTopic('2026 소상공인 정책자금 저금리 대환대출 신청 자격')" class="p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 hover:border-emerald-400 text-left transition hover:scale-[1.02] cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">🏢</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">정책자금</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">소상공인 저금리 대환</div>
+            <div class="text-[11px] text-slate-400 truncate">2~3%대 저금리 갈아타기</div>
+          </button>
+
+          <button type="button" onclick="selectCardnewsTopic('2026 근로장려금 정기신청 자격 및 최대 지급액 총정리')" class="p-3 rounded-2xl bg-slate-900 border-2 border-slate-800 hover:border-emerald-400 text-left transition hover:scale-[1.02] cursor-pointer flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xl">📋</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">정부환급</span>
+            </div>
+            <div class="font-extrabold text-xs sm:text-sm text-white">근로장려금 신청 가이드</div>
+            <div class="text-[11px] text-slate-400 truncate">최대 330만원 지급액 확인</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 🎭 [모드 1] 유튜브 썰 쇼츠 4종 카테고리 선택기 -->
+      <div id="story-categories-container" class="space-y-3">
 
         <div class="flex items-center justify-between">
 
@@ -38147,7 +38205,7 @@ function closeAllModals() {
 
             <!-- 5. 5-Scene Script Timeline -->
 
-            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-2">
+            <div id="shorts-timeline-container" class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 space-y-2">
 
               <div class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
 
@@ -38156,6 +38214,38 @@ function closeAllModals() {
               </div>
 
               <div id="shorts-timeline-scenes" class="space-y-1.5 max-h-48 overflow-y-auto text-xs"></div>
+
+            </div>
+
+
+
+            <!-- 6. 인스타그램 카드뉴스 5장 캐러셀 갤러리 (카드뉴스 모드 시 자동 노출) -->
+
+            <div id="cardnews-carousel-gallery" class="hidden bg-slate-950/70 p-3.5 rounded-xl border border-emerald-500/40 space-y-3">
+
+              <div class="flex items-center justify-between">
+
+                <span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+
+                  <i class="fa-solid fa-images text-emerald-400"></i> 📸 인스타그램 캐러셀 5장 슬라이드 묶음
+
+                </span>
+
+                <button type="button" onclick="openCarouselFolder()" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] transition active:scale-95 cursor-pointer flex items-center gap-1">
+
+                  <i class="fa-solid fa-folder-open"></i> <span>캐러셀 폴더 열기</span>
+
+                </button>
+
+              </div>
+
+              <div class="text-[11px] text-slate-400">
+
+                1080x1920 세로형 9:16 고화질 PNG 5장이 생성되었습니다. 인스타 피드에 묶음 사진(캐러셀)으로 바로 업로드하세요.
+
+              </div>
+
+              <div id="cardnews-slides-container" class="grid grid-cols-5 gap-2"></div>
 
             </div>
 
@@ -38689,330 +38779,301 @@ function closeAllModals() {
 
 
 
-  window.generateShortsVideo = async function() {
+  let currentShortsMode = 'story'; // 'story' (성우 썰 스토리) or 'cardnews' (인스타 카드뉴스 릴스)
 
-    const topic = ($('shorts-input-topic') ? $('shorts-input-topic').value.trim() : '') || 
-
-                  '내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰';
-
-    const blogUrl = ($('shorts-input-blog') ? $('shorts-input-blog').value.trim() : '') || 'https://tistory-ai-corp.tistory.com';
-
+  window.switchShortsStudioMode = function(mode) {
+    currentShortsMode = mode;
+    const tabStory = $('tab-mode-story');
+    const tabCardnews = $('tab-mode-cardnews');
+    const storyCatBox = $('story-categories-container');
+    const cardnewsCatBox = $('cardnews-categories-container');
+    const inputTopic = $('shorts-input-topic');
     const btn = $('btn-render-shorts');
 
-    const renderBox = $('shorts-rendering-box');
+    if (mode === 'cardnews') {
+      if (tabStory) {
+        tabStory.className = 'flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60 cursor-pointer';
+      }
+      if (tabCardnews) {
+        tabCardnews.className = 'flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md cursor-pointer';
+      }
+      if (storyCatBox) storyCatBox.classList.add('hidden');
+      if (cardnewsCatBox) cardnewsCatBox.classList.remove('hidden');
+      if (inputTopic) {
+        inputTopic.placeholder = '예: 2026 주택담보대출 최저금리 비교 및 절세 가이드';
+        if (!inputTopic.value || inputTopic.value.includes('도시락') || inputTopic.value.includes('소개팅')) {
+          inputTopic.value = '2026 주택담보대출 갈아타기 최저금리 비교 및 절세 가이드';
+        }
+      }
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-layer-group text-emerald-300"></i> <span>📑 인스타 카드뉴스 릴스 &amp; 캐러셀 즉시 제작</span>';
+        btn.className = 'px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-400 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer';
+      }
+    } else {
+      if (tabStory) {
+        tabStory.className = 'flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-md cursor-pointer';
+      }
+      if (tabCardnews) {
+        tabCardnews.className = 'flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/60 cursor-pointer';
+      }
+      if (storyCatBox) storyCatBox.classList.remove('hidden');
+      if (cardnewsCatBox) cardnewsCatBox.classList.add('hidden');
+      if (inputTopic) {
+        inputTopic.placeholder = '예: 내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰';
+        if (inputTopic.value.includes('주택담보대출') || inputTopic.value.includes('청년도약계좌')) {
+          inputTopic.value = '내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰';
+        }
+      }
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> <span>🎬 유튜브 썰 쇼츠 즉시 제작하기</span>';
+        btn.className = 'px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:from-purple-500 hover:to-rose-400 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-pink-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer';
+      }
+    }
+  };
 
+  window.selectCardnewsTopic = function(topic) {
+    const inputTopic = $('shorts-input-topic');
+    if (inputTopic) {
+      inputTopic.value = topic;
+      try { if (typeof showToast === 'function') showToast(`카드뉴스 주제 선택: ${topic}`, 'info'); } catch(e) {}
+    }
+  };
+
+  window.openCarouselFolder = async function() {
+    const apiBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? '' : 'http://localhost:8080';
+    const folder = (latestShortsData && latestShortsData.carousel_folder) ? latestShortsData.carousel_folder : '';
+    try {
+      const res = await fetch(`${apiBase}/api/shorts/open_folder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folder: folder })
+      });
+      if (res.ok) {
+        if (typeof showToast === 'function') showToast('📁 5장 캐러셀 이미지 폴더를 탐색기로 열었습니다!', 'info');
+      }
+    } catch(e) {
+      if (typeof showToast === 'function') showToast('PC 탐색기 열기 실패: output/shorts 폴더를 확인하세요.', 'error');
+    }
+  };
+
+  window.generateShortsVideo = async function() {
+    const isCardnews = (currentShortsMode === 'cardnews');
+    const defaultTopic = isCardnews ? '2026 주택담보대출 갈아타기 최저금리 비교 및 절세 가이드' : '내 도시락 맨날 훔쳐먹던 꼰대 과장 참교육한 썰';
+    const topic = ($('shorts-input-topic') ? $('shorts-input-topic').value.trim() : '') || defaultTopic;
+    const blogUrl = ($('shorts-input-blog') ? $('shorts-input-blog').value.trim() : '') || 'https://tistory-ai-corp.tistory.com';
+    const btn = $('btn-render-shorts');
+    const renderBox = $('shorts-rendering-box');
     const statusText = $('shorts-status-text');
 
-
-
     btn.disabled = true;
-
     btn.classList.add('opacity-50', 'cursor-not-allowed');
-
     renderBox.classList.remove('hidden');
 
-    statusText.textContent = `🎬 배PD & 신디자이너가 썰 쇼츠 '${topic}' 영상을 렌더링하고 있습니다...`;
-
-
+    if (isCardnews) {
+      statusText.textContent = `📑 신디자이너가 9:16 인스타 카드뉴스 5장 슬라이드 및 16초 릴스 영상을 제작 중입니다...`;
+    } else {
+      statusText.textContent = `🎬 배PD & 신디자이너가 썰 쇼츠 '${topic}' 영상을 렌더링하고 있습니다...`;
+    }
 
     const updateStep = (id, text, isDone, isActive) => {
-
       const el = $(id);
-
       if (!el) return;
-
       const sub = el.querySelector('div:last-child');
-
       if (sub) sub.textContent = text;
-
       el.className = isDone ? 'p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/50 text-emerald-300' :
-
                      isActive ? 'p-2 rounded-lg bg-pink-950/60 border border-pink-500 text-pink-300 animate-pulse' :
-
                      'p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-400';
-
     };
 
-
-
-    updateStep('step-script', '작성 중...', false, true);
-
+    updateStep('step-script', isCardnews ? '5장 슬라이드 디자인' : '대본 작성 중...', false, true);
     updateStep('step-audio', '대기 중', false, false);
-
     updateStep('step-render', '대기 중', false, false);
-
     updateStep('step-finish', '대기 중', false, false);
 
-
-
-    // API 엔드포인트 자동 판정 (localhost 또는 상대 경로)
-
     const apiBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? '' : 'http://localhost:8080';
-
-
+    const endpoint = isCardnews ? `${apiBase}/api/shorts/generate_cardnews` : `${apiBase}/api/shorts/generate`;
 
     try {
-
       setTimeout(() => {
-
         updateStep('step-script', '완료 ✔', true, false);
-
-        updateStep('step-audio', '합성 중 (Edge-TTS 한국어 음성)...', false, true);
-
-      }, 3500);
-
-
+        updateStep('step-audio', isCardnews ? '개별 PNG 5장 추출 중...' : '합성 중 (Edge-TTS 한국어 음성)...', false, true);
+      }, 1500);
 
       setTimeout(() => {
-
         updateStep('step-audio', '완료 ✔', true, false);
-
         updateStep('step-render', 'FFmpeg 1080x1920 세로형 인코딩 중...', false, true);
+      }, 3000);
 
-      }, 8500);
-
-
-
-      const response = await fetch(`${apiBase}/api/shorts/generate`, {
-
+      const response = await fetch(endpoint, {
         method: 'POST',
-
         headers: { 'Content-Type': 'application/json' },
-
         body: JSON.stringify({ 
-
           topic: topic, 
-
           blog_url: blogUrl,
-
-          category: currentStoryCategory || 'workplace'
-
+          category: isCardnews ? 'finance' : (currentStoryCategory || 'workplace')
         })
-
       });
 
-
-
-
-
       if (!response.ok) {
-
-        throw new Error(`HTTP ${response.status}: 서버에서 숏폼 제작을 처리하지 못했습니다. (서버 상태 확인 필요)`);
-
+        throw new Error(`HTTP ${response.status}: 서버에서 숏폼 제작을 처리하지 못했습니다.`);
       }
-
-
 
       const data = await response.json();
-
-      if (!data.success && data.error) {
-
+      if (!data.success && data.error && !data.filepath) {
         throw new Error(data.error);
-
       }
 
-
-
-      data.topic = topic; // 생성된 주제 명시적 바인딩
-
+      data.topic = topic;
       latestShortsData = data;
-
       try { localStorage.setItem('tistory_latest_shorts', JSON.stringify(data)); } catch(e) {}
 
-
-
       updateStep('step-script', '완료 ✔', true, false);
-
       updateStep('step-audio', '완료 ✔', true, false);
-
       updateStep('step-render', '완료 ✔', true, false);
-
       updateStep('step-finish', '제작 완료 🎉', true, false);
-
-
 
       renderShortsResult(data);
 
-
-
+      const successTitle = isCardnews ? `📑 [인스타 카드뉴스 릴스 & 캐러셀 완성]` : `🎬 [20초 감성 릴스 제작 완료]`;
       try {
-
         if (typeof addLog === 'function') {
-
-          addLog('배PD', `🎬 [20초 감성 릴스 제작 완료] '${topic}' 1080x1920 세로 영상 및 메타데이터를 성공적으로 생성했습니다!`, 'text-pink-400');
-
+          addLog('신디자이너', `${successTitle} '${topic}' 1080x1920 세로 영상 및 5장 슬라이드 이미지를 성공적으로 생성했습니다!`, 'text-emerald-400');
         }
-
         if (typeof showToast === 'function') {
-
-          showToast(`🎬 '${topic}' 20초 감성 릴스 제작이 완료되었습니다!`, 'success');
-
+          showToast(`${successTitle} '${topic}' 제작이 완료되었습니다!`, 'success');
         }
-
       } catch(e) {}
 
-
-
-      statusText.textContent = `✅ '${topic}' 20초 감성 바이럴 릴스가 성공적으로 완성되었습니다!`;
-
+      statusText.textContent = `✅ '${topic}' 영상 및 캐러셀이 성공적으로 완성되었습니다!`;
       setTimeout(() => {
-
         renderBox.classList.add('hidden');
-
       }, 2500);
 
-
-
     } catch (err) {
-
       console.error('Shorts generation error:', err);
-
       statusText.textContent = `⚠️ 오류: ${err.message || '영상 생성에 실패했습니다.'}`;
-
       try {
-
         if (typeof showToast === 'function') showToast(`영상 생성 실패: ${err.message}`, 'error');
-
         if (typeof addLog === 'function') addLog('배PD', `⚠️ 숏폼 제작 실패: ${err.message}`, 'text-rose-400');
-
       } catch(e) {}
-
     } finally {
-
       btn.disabled = false;
-
       btn.classList.remove('opacity-50', 'cursor-not-allowed');
-
     }
-
   };
 
-
-
   function renderShortsResult(data) {
-
     if (!data) return;
-
     const player = $('shorts-player');
-
     const dlLink = $('shorts-btn-download');
-
     const metaTitle = $('shorts-meta-title');
-
     const metaTags = $('shorts-meta-tags');
-
     const metaComment = $('shorts-meta-comment');
-
     const metaDur = $('shorts-meta-duration');
-
     const fileStats = $('shorts-file-stats');
-
     const timeline = $('shorts-timeline-scenes');
-
-
+    const timelineContainer = $('shorts-timeline-container');
+    const carouselGallery = $('cardnews-carousel-gallery');
+    const slidesContainer = $('cardnews-slides-container');
 
     const videoSrc = data.web_url || (data.filename ? `/output/shorts/${data.filename}` : '');
-
     if (player && videoSrc) {
-
       player.src = videoSrc + (videoSrc.includes('?') ? '&' : '?') + 't=' + Date.now();
-
       player.load();
-
     }
-
     if (dlLink && videoSrc) {
-
       dlLink.href = videoSrc;
-
       dlLink.download = data.filename || 'tistory_shorts_1080x1920.mp4';
-
+      if (data.format === 'instagram_cardnews_reels') {
+        dlLink.innerHTML = '<i class="fa-solid fa-cloud-arrow-down text-emerald-300"></i> <span>📥 16초 카드뉴스 릴스 MP4 다운로드</span>';
+      } else {
+        dlLink.innerHTML = '<i class="fa-solid fa-cloud-arrow-down text-amber-300"></i> <span>📥 20초 바이럴 릴스 MP4 다운로드</span>';
+      }
     }
-
     if (metaTitle) metaTitle.textContent = data.title || '20초 바이럴 릴스 영상';
-
     if (metaTags) metaTags.textContent = data.tags || '#Shorts #Reels';
-
     if (metaComment) metaComment.textContent = data.pinned_comment || '더 자세한 내용은 프로필 링크 블로그에서 확인하세요!';
-
     const metaReels = $('shorts-meta-reels');
-
-    if (metaReels) metaReels.textContent = data.reels_caption || (data.title ? `🔥 ${data.title}\n\n여러분 생각은 어떠신가요? 댓글로 공유해주세요!\n\n#릴스 #사이다썰 #실화썰 #썰툰` : '');
+    if (metaReels) {
+      metaReels.textContent = data.instagram_caption || data.reels_caption || (data.title ? `🔥 ${data.title}\n\n여러분 생각은 어떠신가요? 댓글로 공유해주세요!\n\n#릴스 #정보공유 #재테크` : '');
+    }
 
     const rndStatusEl = $('shorts-rnd-status');
-
-    if (rndStatusEl && data.rnd_last_crawled_at) {
-
-      rndStatusEl.textContent = `실시간 수집: ${data.rnd_last_crawled_at} | UI 간섭 0% 세이프존`;
-
+    if (rndStatusEl) {
+      if (data.format === 'instagram_cardnews_reels') {
+        rndStatusEl.textContent = '1080x1920 9:16 인스타 캐러셀 & 릴스 최적화 완비';
+      } else if (data.rnd_last_crawled_at) {
+        rndStatusEl.textContent = `실시간 수집: ${data.rnd_last_crawled_at} | UI 간섭 0% 세이프존`;
+      }
     }
+    if (metaDur) metaDur.textContent = `${data.duration || 16}초 (${data.size_mb || 0.7}MB)`;
+    if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | ${data.size_mb || 0.7}MB | H.264 & AAC`;
 
-    if (metaDur) metaDur.textContent = `${data.duration || 45}초 (${data.size_mb || 1.0}MB)`;
-
-    if (fileStats) fileStats.textContent = `1080x1920 세로형 HD (9:16) | ${data.size_mb || 1.0}MB | H.264 & AAC`;
-
-
-
-    if (timeline && data.scenes && Array.isArray(data.scenes)) {
-
-      timeline.innerHTML = '';
-
-      data.scenes.forEach((sc, idx) => {
-
-        const item = document.createElement('div');
-
-        item.className = 'p-2 rounded-lg bg-slate-900 border border-slate-800 flex items-start gap-2.5';
-
-        item.innerHTML = `
-
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 whitespace-nowrap">${sc.badge || `씬 ${idx+1}`}</span>
-
-          <span class="text-slate-300 text-[11px] leading-relaxed">${sc.narration || ''}</span>
-
-        `;
-
-        timeline.appendChild(item);
-
-      });
-
+    // 📸 인스타 카드뉴스 캐러셀 슬라이드 갤러리 렌더링
+    if (data.slide_urls && Array.isArray(data.slide_urls) && data.slide_urls.length > 0) {
+      if (carouselGallery) carouselGallery.classList.remove('hidden');
+      if (timelineContainer) timelineContainer.classList.add('hidden');
+      if (slidesContainer) {
+        slidesContainer.innerHTML = '';
+        const slideLabels = ['1. 표지/훅', '2. 자격요건', '3. 핵심혜택', '4. 필수서류', '5. 최종CTA'];
+        data.slide_urls.forEach((url, idx) => {
+          const item = document.createElement('div');
+          item.className = 'relative group rounded-xl overflow-hidden border border-slate-700 bg-slate-900 aspect-[9/16] cursor-pointer hover:border-emerald-400 transition shadow-md';
+          item.title = `클릭하면 고화질 슬라이드 ${idx+1} 원본을 새 창에서 엽니다`;
+          item.onclick = () => window.open(url, '_blank');
+          item.innerHTML = `
+            <img src="${url}" alt="Slide ${idx+1}" class="w-full h-full object-cover group-hover:scale-105 transition" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end justify-center p-1">
+              <span class="text-[10px] text-emerald-300 font-bold"><i class="fa-solid fa-magnifying-glass-plus"></i> 확대</span>
+            </div>
+            <div class="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/75 text-[9px] font-mono text-emerald-300 font-bold border border-emerald-500/30">
+              ${slideLabels[idx] || `장 ${idx+1}`}
+            </div>
+          `;
+          slidesContainer.appendChild(item);
+        });
+      }
+    } else {
+      if (carouselGallery) carouselGallery.classList.add('hidden');
+      if (timelineContainer) timelineContainer.classList.remove('hidden');
+      if (timeline && data.scenes && Array.isArray(data.scenes)) {
+        timeline.innerHTML = '';
+        data.scenes.forEach((sc, idx) => {
+          const item = document.createElement('div');
+          item.className = 'p-2 rounded-lg bg-slate-900 border border-slate-800 flex items-start gap-2.5';
+          item.innerHTML = `
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30 whitespace-nowrap">${sc.badge || `씬 ${idx+1}`}</span>
+            <span class="text-slate-300 text-[11px] leading-relaxed">${sc.narration || ''}</span>
+          `;
+          timeline.appendChild(item);
+        });
+      }
     }
-
   }
 
 
 
-    window.openShortsFolder = async function() {
-
+  window.openShortsFolder = async function() {
     const apiBase = (window.location.protocol === 'http:' || window.location.protocol === 'https:') ? '' : 'http://localhost:8080';
-
     try {
-
-      const res = await fetch(`${apiBase}/api/shorts/open_folder`, { method: 'POST' });
-
+      const folder = (latestShortsData && latestShortsData.carousel_folder) ? latestShortsData.carousel_folder : '';
+      const res = await fetch(`${apiBase}/api/shorts/open_folder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folder: folder })
+      });
       if (res.ok) {
-
         if (typeof showToast === 'function') {
-
-          showToast('📁 내 PC 저장 폴더(output/shorts)를 탐색기로 열었습니다!', 'info');
-
+          showToast('📁 내 PC 저장 폴더를 탐색기로 열었습니다!', 'info');
         }
-
       } else {
-
         throw new Error('HTTP ' + res.status);
-
       }
-
     } catch(e) {
-
       if (typeof showToast === 'function') {
-
         showToast('내 PC 경로: 티스토리 폴더/output/shorts 폴더에서 확인하실 수 있습니다.', 'info');
-
       }
-
     }
-
   };
 
 
