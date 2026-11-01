@@ -3351,8 +3351,8 @@ class AutopilotDaemonEngine:
     def load_config(cls) -> Dict:
         default_cfg = {
             "enabled": True,
-            "mode": "morning_peak",  # morning_peak, evening_peak, twice_daily, lunch_peak, custom
-            "schedule_times": ["08:45"],  # KST 기준
+            "mode": "all_golden_times",  # all_golden_times (08:45, 12:15, 18:45), morning_peak, evening_peak, twice_daily, lunch_peak
+            "schedule_times": ["08:45", "12:15", "18:45"],  # KST 기준 하루 3대 골든타임 전수 포스팅
             "last_run_key": None,
             "last_run_at": None,
             "last_title": None,
@@ -3380,7 +3380,9 @@ class AutopilotDaemonEngine:
     def set_golden_time_preset(cls, mode: str) -> Dict:
         cfg = cls.load_config()
         cfg["mode"] = mode
-        if mode == "morning_peak":
+        if mode == "all_golden_times":
+            cfg["schedule_times"] = ["08:45", "12:15", "18:45"]
+        elif mode == "morning_peak":
             cfg["schedule_times"] = ["08:45"]
         elif mode == "evening_peak":
             cfg["schedule_times"] = ["18:45"]

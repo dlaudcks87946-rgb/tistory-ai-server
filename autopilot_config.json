@@ -1,8 +1,10 @@
 {
   "enabled": true,
-  "mode": "morning_peak",
+  "mode": "all_golden_times",
   "schedule_times": [
-    "08:45"
+    "08:45",
+    "12:15",
+    "18:45"
   ],
   "last_run_key": null,
   "last_run_at": null,
