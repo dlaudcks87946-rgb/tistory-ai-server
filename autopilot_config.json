@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "mode": "morning_peak",
+  "schedule_times": [
+    "08:45"
+  ],
+  "last_run_key": null,
+  "last_run_at": null,
+  "last_title": null,
+  "last_url": null,
+  "total_autopilot_posts": 0
+}

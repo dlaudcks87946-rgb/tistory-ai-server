@@ -15,7 +15,11 @@ ENV/
 # Runtime Data & Caches
 rnd_live_cache.json
 used_keywords.json
+kakao_config.json
 chrome_session/
+apply_batch*.py
+check_chars.py
+assets/sprites/backup/
 
 # IDE
 .vscode/
