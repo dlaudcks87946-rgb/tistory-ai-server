@@ -1,3 +1,4 @@
+from __future__ import annotations
 import threading
 import subprocess
 import os
@@ -83,7 +84,7 @@ import json
 
 import urllib.parse
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any, Union, Tuple
 
 
 
