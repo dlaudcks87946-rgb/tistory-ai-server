@@ -1528,7 +1528,7 @@ class CardNewsReelsGenerator:
     - 3D 일러스트 렌더링 에셋 결합 (유리 저축통, 3D 신축 아파트 단지)
     - 100% 자체 벡터 그래픽 (골드 코인, 에메랄드 체크, 스파클 다이아몬드)
     - 5열 현실 계산표 + 2단 비교 박스 + 인용구 팁 카드 + 실천 팁 뱃지
-    - 잔잔하고 감미로운 어쿠스틱 피아노 BGM (calm_piano.mp3) 15초 릴스 영상 생성
+    - 인스타 릴스 유행 감성 비트 (lofi_beat.mp3 / trending audio) 15초 릴스 영상 생성
     """
     WIDTH = 1080
     HEIGHT = 1920
@@ -1889,7 +1889,7 @@ class CardNewsReelsGenerator:
     def generate_slides(self, topic: str, blog_url: str = "") -> list:
         return [self.generate_single_master_sheet(topic)]
 
-    def render_reels_video(self, topic: str, blog_url: str = "") -> dict:
+    def render_reels_video(self, topic: str, blog_url: str = "", bgm_type: str = "trending") -> dict:
         clean_topic = topic.strip() or "2026 청년도약계좌 정부기여금 & 비과세 혜택 총정리"
         safe_name = re.sub(r'[\\s\\/:*?"<>|]+', '_', clean_topic)[:25]
         timestamp = int(time.time())
@@ -1911,14 +1911,22 @@ class CardNewsReelsGenerator:
 
         slide_urls = [f"/output/shorts/{encoded_carousel}/slide_1.png"]
 
-        # 2. 15초 잔잔한 피아노 BGM 릴스 비디오 렌더링
+        # 2. 15초 인스타 릴스 유행 트렌드 BGM 비디오 렌더링
         video_filename = f"reels_cardnews_{safe_name}_{timestamp}.mp4"
         encoded_video = urllib.parse.quote(video_filename)
         video_path = os.path.join(out_dir, video_filename)
 
-        bgm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "calm_piano.mp3")
-        if not os.path.exists(bgm_path):
+        if bgm_type == "piano":
+            bgm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "calm_piano.mp3")
+            if not os.path.exists(bgm_path):
+                bgm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "lofi_beat.mp3")
+            fade_vol = 0.25
+        else:  # "trending" (인스타 릴스 인기 상승 칠 로파이 트렌드 비트)
             bgm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "lofi_beat.mp3")
+            if not os.path.exists(bgm_path):
+                bgm_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "audio", "calm_piano.mp3")
+            fade_vol = 0.35
+
         has_bgm = os.path.exists(bgm_path)
 
         total_duration = self.DURATION  # 15.0초
@@ -1930,7 +1938,7 @@ class CardNewsReelsGenerator:
             cmd.extend([
                 "-stream_loop", "-1", "-i", bgm_path,
                 "-t", str(total_duration),
-                "-af", f"afade=t=in:ss=0:d=1.5,afade=t=out:st={total_duration - 2.0}:d=2.0,volume=0.25",
+                "-af", f"afade=t=in:ss=0:d=1.0,afade=t=out:st={total_duration - 2.0}:d=2.0,volume={fade_vol}",
                 "-c:v", "libx264",
                 "-preset", "veryfast",
                 "-pix_fmt", "yuv420p",
@@ -1987,10 +1995,10 @@ class CardNewsReelsGenerator:
         return meta
 
 
-def generate_cardnews_pipeline(topic: str, blog_url: str = "", category: str = "auto") -> Dict:
-    """인스타그램 1장 완결형 마스터 인포그래픽 & 잔잔한 릴스 영상 생성 파이프라인 단일 진입점"""
+def generate_cardnews_pipeline(topic: str, blog_url: str = "", category: str = "auto", bgm_type: str = "trending") -> Dict:
+    """인스타그램 1장 완결형 마스터 인포그래픽 & 인스타 릴스 유행 트렌드 비트 영상 생성 파이프라인 단일 진입점"""
     generator = CardNewsReelsGenerator()
-    return generator.render_reels_video(topic=topic, blog_url=blog_url)
+    return generator.render_reels_video(topic=topic, blog_url=blog_url, bgm_type=bgm_type)
 
 
 
