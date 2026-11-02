@@ -5094,10 +5094,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 <span>업무 지시 &amp; 티스토리 자동 발행</span>
               </button>
 
-              <button id="btn-open-scheduler" onclick="openBatchSchedulerModal()" class="px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-700 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-indigo-500/25 transition active:scale-95 flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer" title="키워드를 한 번에 여러 개 등록하고 자동 순차 포스팅">
-                <i class="fa-solid fa-calendar-check text-cyan-300"></i>
-                <span>📅 대량 예약 발행</span>
-              </button>
+              <!-- [대량 예약 발행 비활성화됨] -->
 
               <button id="btn-instant-publish" class="px-3.5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition active:scale-95 flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer" title="애니메이션 대기 없이 지금 즉시 크롬을 켜서 포스팅">
                 <i class="fa-solid fa-bolt text-amber-400"></i>
@@ -36902,7 +36899,7 @@ function closeAllModals() {
     </div>
   </div>
 
-  <div id="modal-batch-scheduler" onclick="if(event.target === this) closeBatchSchedulerModal()" style="cursor: pointer;" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+  <div id="modal-batch-scheduler" style="display:none !important;" onclick="if(event.target === this) closeBatchSchedulerModal()" style="cursor: pointer;" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div onclick="event.stopPropagation();" style="cursor: default;" class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
       <!-- Header -->
       <div class="p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 text-white flex items-center justify-between border-b border-indigo-800">
