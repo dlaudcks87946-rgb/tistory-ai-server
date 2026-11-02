@@ -1559,93 +1559,73 @@ class AgentJungSeleniumPublisher:
                 print("  ⏳ 로그인 완료 시까지 봇이 최대 180초 동안 대기합니다...")
                 print("=" * 65 + "\n")
 
-                # 카카오 로그인 버튼 클릭 및 아이디/비밀번호 자동 입력 시도 (최대 12초간 대기하며 입력)
+                # 카카오 계정 자동 로그인 시도
                 if self.config.KAKAO_ID and self.config.KAKAO_PW:
-                    for retry_login in range(12):
-                        try:
-                            # 1) 아직 티스토리 로그인 화면이면 '카카오계정으로 로그인' 버튼 클릭
-                            driver.execute_script('''
-                                var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
-                                if (btn) btn.click();
-                            ''')
-                            # 2) 카카오 인증창의 loginId, password 입력창 확인
-                            id_input = driver.find_elements(By.NAME, "loginId")
-                            pw_input = driver.find_elements(By.NAME, "password")
-                            if id_input and pw_input and id_input[0].is_displayed():
-                                id_input[0].clear()
-                                id_input[0].send_keys(self.config.KAKAO_ID)
-                                time.sleep(0.3)
-                                pw_input[0].clear()
-                                pw_input[0].send_keys(self.config.KAKAO_PW)
-                                time.sleep(0.3)
-                                pw_input[0].send_keys(Keys.ENTER)
-                                print("[정부장 (총괄)] 📲 카카오 계정 아이디/비번 자동 입력 및 제출 완료!")
-                                break
-                        except Exception:
-                            pass
-                        time.sleep(1.0)
-                else:
                     try:
-                        driver.execute_script('''
-                            var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
-                            if (btn) btn.click();
-                        ''')
-                        time.sleep(1.5)
-                    except Exception:
-                        pass
+                        time.sleep(2.0)
+                        btn_candidates = driver.find_elements(By.CSS_SELECTOR, "a.btn_login.link_kakao_id, .btn_login.link_kakao_id, .btn_kakao, a[href*='kakao']")
+                        for b in btn_candidates:
+                            try:
+                                if b.is_displayed():
+                                    driver.execute_script("arguments[0].click();", b)
+                                    print("[정부장 (총괄)] 👆 '카카오계정으로 로그인' 버튼 클릭 완료!")
+                                    break
+                            except Exception:
+                                pass
+                        time.sleep(2.0)
+                        id_inputs = driver.find_elements(By.NAME, "loginId")
+                        pw_inputs = driver.find_elements(By.NAME, "password")
+                        if id_inputs and pw_inputs:
+                            id_inputs[0].clear()
+                            id_inputs[0].send_keys(self.config.KAKAO_ID)
+                            time.sleep(0.3)
+                            pw_inputs[0].clear()
+                            pw_inputs[0].send_keys(self.config.KAKAO_PW)
+                            time.sleep(0.3)
+                            pw_inputs[0].send_keys(Keys.ENTER)
+                            print("[정부장 (총괄)] 📲 카카오 계정 자동 로그인 제출 완료! 에디터 진입 대기 중...")
+                    except Exception as login_auto_err:
+                        print(f"[정부장 (총괄)] ⚠️ 자동 로그인 입력 참고: {login_auto_err}")
 
-                # 로그인 대기 루프 (최대 180초)
+                # 에디터 진입 대기 루프 (최대 180초)
                 login_passed = False
                 for sec in range(1, 181):
                     time.sleep(1)
-
                     try:
                         cur_url = driver.current_url.lower()
                     except Exception:
                         cur_url = ''
-                    # 1) 티스토리 글쓰기 에디터 URL 감지 (manage, post, newpost, entry 등)
+
                     is_in_editor = any(k in cur_url for k in ['manage', 'post', 'newpost', 'entry']) and not any(k in cur_url for k in ['login', 'accounts.kakao.com', 'auth'])
                     if is_in_editor:
-                        # 글쓰기 제목창 또는 에디터 본문 요소가 로드되었는지 확인
-                        try:
-                            editor_elements = driver.find_elements(By.CSS_SELECTOR, "#post-title-inp, textarea.textarea_tit, input[placeholder*='제목'], [placeholder='제목을 입력하세요'], .tt-input-content, .ProseMirror")
-                        except Exception:
-                            editor_elements = []
-
                         login_passed = True
                         print(f"\n[정부장 (총괄)] ✅ 카카오 로그인 성공 및 에디터 진입 확인 ({cur_url})! ({sec}초 경과)")
                         time.sleep(1)
-                        # 에디터 진입 후 혹시 뜬 '이어서 작성하시겠습니까?' 팝업 자동 취소
-                        self.handle_tistory_alerts(driver, max_wait=1.5)
+                        self.handle_tistory_alerts(driver, max_wait=2.0)
                         break
 
-                    # 2) 만약 로그인 페이지에서 아이디/비번 입력창이 여전히 비어있다면 자동 재입력 시도 (3초, 8초, 15초)
-                    if self.config.KAKAO_ID and self.config.KAKAO_PW and sec in [3, 8, 15]:
+                    if self.config.KAKAO_ID and self.config.KAKAO_PW and sec in [5, 12, 25]:
                         try:
-                            driver.execute_script('''
-                                var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
-                                if (btn) btn.click();
-                            ''')
-                            id_input = driver.find_elements(By.NAME, "loginId")
-                            pw_input = driver.find_elements(By.NAME, "password")
-                            if id_input and pw_input and id_input[0].is_displayed():
-                                if not id_input[0].get_attribute("value"):
-                                    id_input[0].clear()
-                                    id_input[0].send_keys(self.config.KAKAO_ID)
-                                    time.sleep(0.3)
-                                    pw_input[0].clear()
-                                    pw_input[0].send_keys(self.config.KAKAO_PW)
-                                    time.sleep(0.3)
-                                    pw_input[0].send_keys(Keys.ENTER)
-                                    print(f"[정부장 (총괄)] 📲 ({sec}초) 카카오 계정 아이디/비번 자동 입력 제출!")
+                            btns = driver.find_elements(By.CSS_SELECTOR, "a.btn_login.link_kakao_id")
+                            if btns and btns[0].is_displayed():
+                                driver.execute_script("arguments[0].click();", btns[0])
+                                time.sleep(1.5)
+                            id_inps = driver.find_elements(By.NAME, "loginId")
+                            pw_inps = driver.find_elements(By.NAME, "password")
+                            if id_inps and pw_inps and not id_inps[0].get_attribute("value"):
+                                id_inps[0].send_keys(self.config.KAKAO_ID)
+                                time.sleep(0.3)
+                                pw_inps[0].send_keys(self.config.KAKAO_PW)
+                                time.sleep(0.3)
+                                pw_inps[0].send_keys(Keys.ENTER)
+                                print(f"[정부장 (총괄)] 📲 ({sec}초) 카카오 계정 아이디/비번 자동 입력 제출!")
                         except Exception:
                             pass
+
                     if sec % 15 == 0:
-                        print(f"[정부장 (총괄)] ⏳ 로그인 대기 중... ({sec}초 / 최대 180초) - 브라우저에서 로그인을 완료해주세요.")
+                        print(f"[정부장 (총괄)] ⏳ 로그인 대기 중... ({sec}초 / 최대 180초)")
                 if not login_passed:
                     raise TimeoutException(f"{used_browser_name} 카카오 로그인 및 2단계 인증 대기 시간(180초)이 초과되었습니다.")
-
-
 
             # ==========================================
 
