@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "mode": "all_golden_times",
   "schedule_times": [
     "08:45",
@@ -8,7 +8,7 @@
   ],
   "last_run_key": null,
   "last_run_at": "2026-11-02 14:50:18",
-  "last_title": "“월 35만 원 그냥 날리는 중입니다” 2026년 주담대 갈아타기, 모르면 100만 원 손해 보는 이유",
+  "last_title": "2026 주택담보대출 갈아타기 최저금리 비교 및 중도상환수수료 감면",
   "last_url": "https://lanchan.tistory.com",
-  "total_autopilot_posts": 3
+  "total_autopilot_posts": 4
 }
