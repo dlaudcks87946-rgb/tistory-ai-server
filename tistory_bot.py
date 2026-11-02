@@ -1554,30 +1554,38 @@ class AgentJungSeleniumPublisher:
                 print("  ⏳ 로그인 완료 시까지 봇이 최대 180초 동안 대기합니다...")
                 print("=" * 65 + "\n")
 
-                # 카카오 로그인 버튼 자동 클릭 시도 (로그인 폼 즉시 노출)
-                try:
-                    driver.execute_script('''
-                        var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
-                        if (btn) btn.click();
-                    ''')
-                    time.sleep(1.5)
-                except Exception:
-                    pass
-
-                # 카카오 아이디/비밀번호 자동 입력 시도
+                # 카카오 로그인 버튼 클릭 및 아이디/비밀번호 자동 입력 시도 (최대 12초간 대기하며 입력)
                 if self.config.KAKAO_ID and self.config.KAKAO_PW:
+                    for retry_login in range(12):
+                        try:
+                            # 1) 아직 티스토리 로그인 화면이면 '카카오계정으로 로그인' 버튼 클릭
+                            driver.execute_script('''
+                                var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
+                                if (btn) btn.click();
+                            ''')
+                            # 2) 카카오 인증창의 loginId, password 입력창 확인
+                            id_input = driver.find_elements(By.NAME, "loginId")
+                            pw_input = driver.find_elements(By.NAME, "password")
+                            if id_input and pw_input and id_input[0].is_displayed():
+                                id_input[0].clear()
+                                id_input[0].send_keys(self.config.KAKAO_ID)
+                                time.sleep(0.3)
+                                pw_input[0].clear()
+                                pw_input[0].send_keys(self.config.KAKAO_PW)
+                                time.sleep(0.3)
+                                pw_input[0].send_keys(Keys.ENTER)
+                                print("[정부장 (총괄)] 📲 카카오 계정 아이디/비번 자동 입력 및 제출 완료!")
+                                break
+                        except Exception:
+                            pass
+                        time.sleep(1.0)
+                else:
                     try:
-                        id_input = driver.find_elements(By.NAME, "loginId")
-                        pw_input = driver.find_elements(By.NAME, "password")
-                        if id_input and pw_input:
-                            id_input[0].clear()
-                            id_input[0].send_keys(self.config.KAKAO_ID)
-                            time.sleep(0.3)
-                            pw_input[0].clear()
-                            pw_input[0].send_keys(self.config.KAKAO_PW)
-                            time.sleep(0.3)
-                            pw_input[0].send_keys(Keys.ENTER)
-                            print("[정부장 (총괄)] 📲 아이디/비번 자동 입력 완료. 스마트폰 2단계 인증을 승인해주세요!")
+                        driver.execute_script('''
+                            var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
+                            if (btn) btn.click();
+                        ''')
+                        time.sleep(1.5)
                     except Exception:
                         pass
 
@@ -2036,7 +2044,10 @@ class AgentJungSeleniumPublisher:
 
 
 
-            return {"success": True, "mode": "live_browser", "blog_url": blog_home}
+            final_cur_url = driver.current_url if driver else blog_home
+            published_url = final_cur_url if (f"{self.config.TISTORY_BLOG_NAME}.tistory.com/" in final_cur_url and not any(k in final_cur_url for k in ["manage", "newpost", "post", "auth", "login"])) else blog_home
+
+            return {"success": True, "mode": "live_browser", "blog_url": published_url, "url": published_url}
 
 
 
