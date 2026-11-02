@@ -1573,6 +1573,19 @@ class AgentJungSeleniumPublisher:
                             except Exception:
                                 pass
                         time.sleep(2.0)
+
+                        # [간편 로그인 화면 감지] 저장된 프로필 계정 카드 원클릭 승인
+                        cur_login_url = driver.current_url.lower()
+                        if "simple" in cur_login_url or "simplelogin" in cur_login_url:
+                            simple_cards = driver.find_elements(By.CSS_SELECTOR, "a.wrap_profile, .wrap_profile, .list_account a")
+                            for sc in simple_cards:
+                                txt = sc.text or ""
+                                if self.config.KAKAO_ID in txt or ("새로운" not in txt and "새 계정" not in txt):
+                                    driver.execute_script("arguments[0].click();", sc)
+                                    print(f"[정부장 (총괄)] 👆 간편로그인 등록 계정 카드 원클릭 승인 완료! ({txt.strip()[:30]})")
+                                    break
+                            time.sleep(2.0)
+
                         id_inputs = driver.find_elements(By.NAME, "loginId")
                         pw_inputs = driver.find_elements(By.NAME, "password")
                         if id_inputs and pw_inputs:
@@ -1604,12 +1617,22 @@ class AgentJungSeleniumPublisher:
                         self.handle_tistory_alerts(driver, max_wait=2.0)
                         break
 
-                    if self.config.KAKAO_ID and self.config.KAKAO_PW and sec in [5, 12, 25]:
+                    if self.config.KAKAO_ID and self.config.KAKAO_PW and sec in [3, 6, 12, 20]:
                         try:
                             btns = driver.find_elements(By.CSS_SELECTOR, "a.btn_login.link_kakao_id")
                             if btns and btns[0].is_displayed():
                                 driver.execute_script("arguments[0].click();", btns[0])
                                 time.sleep(1.5)
+                            # 간편 로그인 카드 재검사
+                            if "simple" in cur_url or "simplelogin" in cur_url:
+                                simple_cards = driver.find_elements(By.CSS_SELECTOR, "a.wrap_profile, .wrap_profile, .list_account a")
+                                for sc in simple_cards:
+                                    txt = sc.text or ""
+                                    if self.config.KAKAO_ID in txt or ("새로운" not in txt and "새 계정" not in txt):
+                                        driver.execute_script("arguments[0].click();", sc)
+                                        print(f"[정부장 (총괄)] 👆 ({sec}초) 간편로그인 카드 자동 클릭!")
+                                        time.sleep(2.0)
+                                        break
                             id_inps = driver.find_elements(By.NAME, "loginId")
                             pw_inps = driver.find_elements(By.NAME, "password")
                             if id_inps and pw_inps and not id_inps[0].get_attribute("value"):
