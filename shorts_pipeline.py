@@ -1523,7 +1523,14 @@ def generate_shorts_pipeline(topic: str, blog_url: str = "", category: str = "au
 
 
 class CardNewsReelsGenerator:
-    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 카드뉴스 슬라이드 및 영상 자동 제작 엔진"""
+    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 바이럴 화이트 인포그래픽 카드뉴스 생성 엔진
+    - 사용자 제공 레퍼런스 스타일 100% 반영:
+      1. 화이트 카드 캔버스 (#FFFFFF / #F8FAFC) + 연회색 테두리
+      2. 대형 후킹 헤드라인 (블랙 & 코랄레드 #E11D48 / 코발트블루)
+      3. 현실 계산 비교표 그리드 (매매가별 대출금/현금/월리금/필요월급 or 1억 모으기 저축표)
+      4. 정책 완화 전후비교 카드 (기존 vs 개선 화살표, 3대 상품 그리드)
+      5. 서류 반려 방지 체크리스트 + 고전환 프로필 링크 CTA 슬라이드
+    """
     WIDTH = 1080
     HEIGHT = 1920
     FPS = 30
@@ -1549,283 +1556,347 @@ class CardNewsReelsGenerator:
 
         try:
             if bold_path:
-                self.font_h1 = ImageFont.truetype(bold_path, 64)
-                self.font_h2 = ImageFont.truetype(bold_path, 46)
-                self.font_h3 = ImageFont.truetype(bold_path, 34)
-                self.font_badge = ImageFont.truetype(bold_path, 24)
+                self.f_hero = ImageFont.truetype(bold_path, 80)
+                self.f_super = ImageFont.truetype(bold_path, 108)
+                self.f_h1 = ImageFont.truetype(bold_path, 54)
+                self.f_h2 = ImageFont.truetype(bold_path, 42)
+                self.f_h3 = ImageFont.truetype(bold_path, 34)
+                self.f_badge = ImageFont.truetype(bold_path, 26)
+                self.f_table_head = ImageFont.truetype(bold_path, 28)
+                self.f_table_body = ImageFont.truetype(bold_path, 27)
             else:
-                self.font_h1 = ImageFont.load_default()
-                self.font_h2 = ImageFont.load_default()
-                self.font_h3 = ImageFont.load_default()
-                self.font_badge = ImageFont.load_default()
+                self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = ImageFont.load_default()
 
             if reg_path:
-                self.font_body = ImageFont.truetype(reg_path, 28)
-                self.font_small = ImageFont.truetype(reg_path, 22)
+                self.f_body = ImageFont.truetype(reg_path, 28)
+                self.f_body_reg = ImageFont.truetype(reg_path, 26)
+                self.f_small = ImageFont.truetype(reg_path, 22)
             else:
-                self.font_body = ImageFont.load_default()
-                self.font_small = ImageFont.load_default()
+                self.f_body = self.f_body_reg = self.f_small = ImageFont.load_default()
         except Exception:
-            self.font_h1 = ImageFont.load_default()
-            self.font_h2 = ImageFont.load_default()
-            self.font_h3 = ImageFont.load_default()
-            self.font_body = ImageFont.load_default()
-            self.font_badge = ImageFont.load_default()
-            self.font_small = ImageFont.load_default()
+            self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = ImageFont.load_default()
+            self.f_body = self.f_body_reg = self.f_small = ImageFont.load_default()
 
-    def _draw_background(self, theme="emerald"):
-        img = Image.new("RGB", (self.WIDTH, self.HEIGHT), (10, 15, 29))
+    def _draw_canvas(self):
+        """깔끔한 인스타 화이트 카드 배경 렌더링"""
+        img = Image.new("RGB", (self.WIDTH, self.HEIGHT), (255, 255, 255))
         draw = ImageDraw.Draw(img)
-
-        if theme == "indigo":
-            c_top = (15, 23, 42)
-            c_bot = (30, 27, 75)
-            stroke_col = (129, 140, 248)
-            badge_bg = (49, 46, 129)
-            text_accent = (165, 180, 252)
-        elif theme == "amber":
-            c_top = (15, 23, 42)
-            c_bot = (69, 26, 3)
-            stroke_col = (251, 191, 36)
-            badge_bg = (120, 53, 15)
-            text_accent = (253, 230, 138)
-        else:  # emerald (금융/지원금/재테크 메인 테마)
-            c_top = (10, 15, 29)
-            c_bot = (6, 78, 59)
-            stroke_col = (45, 212, 191)
-            badge_bg = (19, 78, 74)
-            text_accent = (94, 234, 212)
-
-        for y in range(self.HEIGHT):
-            ratio = y / self.HEIGHT
-            r = int(c_top[0] * (1 - ratio) + c_bot[0] * ratio)
-            g = int(c_top[1] * (1 - ratio) + c_bot[1] * ratio)
-            b = int(c_top[2] * (1 - ratio) + c_bot[2] * ratio)
-            draw.line([(0, y), (self.WIDTH, y)], fill=(r, g, b))
-
-        # Ambient Glow Circle
-        draw.ellipse([self.WIDTH - 400, 100, self.WIDTH + 300, 800], fill=badge_bg)
-        draw.ellipse([-200, self.HEIGHT - 700, 500, self.HEIGHT], fill=badge_bg)
-
-        # Border
-        draw.rounded_rectangle([30, 30, self.WIDTH - 30, self.HEIGHT - 30], radius=24, outline=stroke_col, width=3)
-        return img, draw, stroke_col, badge_bg, text_accent
+        draw.rounded_rectangle([36, 36, self.WIDTH - 36, self.HEIGHT - 36], radius=28, outline=(226, 232, 240), width=4)
+        return img, draw
 
     def generate_slides(self, topic: str, blog_url: str = "") -> list:
-        t_low = topic.lower()
-        theme = "emerald"
-        if any(k in t_low for k in ["ai", "gpt", "코딩", "파이썬", "tech"]):
-            theme = "indigo"
-        elif any(k in t_low for k in ["애드센스", "블로그", "수익", "여행", "카페"]):
-            theme = "amber"
-
-        # 금융/지원금별 맞춤형 세부 데이터
-        if any(k in t_low for k in ["주택담보대출", "주담대", "대환", "갈아타기", "금리"]):
-            spec_items = [
-                ("CHECK 01", "주택 요건", "KB시세 9억원 이하 주택 대상 (실거주 목적 대출 우선)"),
-                ("CHECK 02", "소득 기준", "부부합산 소득 1억원 이하 (신혼부부 최대 1.3억원 완화)"),
-                ("CHECK 03", "LTV·DSR", "LTV 최대 70%, 스트레스 DSR 2단계 적용 한도 산정"),
-                ("CHECK 04", "기존 대출", "기존 대출 취급 후 6개월 이상 경과 시 비대면 갈아타기 가능")
-            ]
-            rows = [
-                ("비교 01", "실질 금리 인하", "연 4.8% 기존 금리 ➔ 연 3.2%대 저금리로 환승", "월 40만원 절약"),
-                ("비교 02", "중도상환수수료", "대출 실행 3년 경과 시 수수료 100% 면제 적용", "수수료 0원"),
-                ("비교 03", "우대금리 결합", "급여이체, 청약통장, 카드 실적 결합 시 추가 감면", "최대 0.8%p 추가"),
-                ("비교 04", "연말 소득공제", "장기주택저당차입금 이자상환액 연 1,800만원 공제", "절세 효과 극대화")
-            ]
-            chks = [
-                ("서류 01", "부동산 등기부등본", "인터넷등기소 열람용이 아닌 '제출용' 발급 필수"),
-                ("서류 02", "소득금액증명원", "국세청 홈택스 최근 2개년 소득증빙 PDF 원클릭 발급"),
-                ("서류 03", "재직증명서 & 건보득실", "직장 건강보험공단 비대면 마이데이터 자동 연동"),
-                ("서류 04", "매매계약서 / 등기필증", "원본 확인 및 전자문서 지갑 즉시 전송 준비")
-            ]
-        elif any(k in t_low for k in ["청년", "도약계좌", "희망적금", "청년지원"]):
-            spec_items = [
-                ("CHECK 01", "연령 기준", "만 19세 ~ 34세 청년 (병역 이행 시 최대 6년 연장)"),
-                ("CHECK 02", "소득 요건", "직전 과세기간 총급여 7,500만원 이하 (종합소득 6,300만원)"),
-                ("CHECK 03", "가구 소득", "가구원 수 기준 중위소득 250% 이하 판정"),
-                ("CHECK 04", "유지 조건", "가입 후 3년 이상 유지 시 비과세 혜택 100% 보장")
-            ]
-            rows = [
-                ("비교 01", "정부 기여금 매칭", "매월 납입액 대비 정부지원금 최대 월 3.3만원 추가", "연 40만원 지원"),
-                ("비교 02", "최고 기본+우대금리", "연 6.0% 수준의 초고금리 목돈 마련 효과", "시중 최고금리"),
-                ("비교 03", "이자소득 비과세", "15.4% 이자소득세 전액 면제 (순수익 보존)", "세금 0원 혜택"),
-                ("비교 04", "5년 만기 예상액", "매월 70만원 저축 시 만기 시 약 5,000만원 형성", "5,000만원 달성")
-            ]
-            chks = [
-                ("서류 01", "신분증 사본", "주민등록증 또는 모바일 신분증 즉시 인증"),
-                ("서류 02", "소득확인증명서", "홈택스 청년도약계좌용 소득확인증명서 발급"),
-                ("서류 03", "주민등록등본", "정부24 세대분리 및 가구원 확인용 등본"),
-                ("서류 04", "전용 은행 앱", "취급 11대 시중은행 스마트뱅킹 앱 사전 설치")
-            ]
-        else:
-            spec_items = [
-                ("CHECK 01", "대상 요건", "공식 가이드라인 연령 및 소득 기준 100% 매칭 여부 사전 판별"),
-                ("CHECK 02", "적용 범위", "최신 고시 기준 지원 대상 및 최대 수혜 한도 정밀 확인"),
-                ("CHECK 03", "우대 조건", "주요 우대 항목 충족 시 감면율 및 보조금 극대화"),
-                ("CHECK 04", "예외 기준", "중복 수혜 방지 규정 및 지원 자격 유지 요건 점검")
-            ]
-            rows = [
-                ("비교 01", "실질 절감 혜택", "조건 충족 시 매월 고정 비용 및 수수료 대폭 절감", "월 최대 35만원 절약"),
-                ("비교 02", "최고 우대율", "기본 혜택에 필수 우대 조건 결합 시 최대치 달성", "우대율 100% 적용"),
-                ("비교 03", "부가 세제 혜택", "비과세 감면 및 연말정산 소득공제 추가 반영", "절세 효과 극대화"),
-                ("비교 04", "환급금 수령", "신청 즉시 계좌 입금 및 차기 청구서 차감 반영", "미환급금 0% 전액 수령")
-            ]
-            chks = [
-                ("서류 01", "신분증 & 주민등록등본", "정부24 무료 발급 (최근 1개월 이내 최신 증빙 완비)"),
-                ("서류 02", "소득금액증명원", "국세청 홈택스 원클릭 PDF 다운로드 또는 무인발급"),
-                ("서류 03", "자격 증빙 공적서류", "대상별 해당 증빙서류 및 공공 마이데이터 비대면 연동"),
-                ("서류 04", "본인 명의 입출금 계좌", "혜택 지원금 입금용 1금융권 정상 계좌 확인")
-            ]
-
         slides = []
+        clean_topic = topic.strip()
+        t_low = clean_topic.lower()
 
-        # ==========================================
-        # Slide 1: Cover (표지 - 첫 1초 시선 강탈)
-        # ==========================================
-        img1, d1, stroke, bg_badge, accent = self._draw_background(theme)
-        d1.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
-        d1.text((540, 172), "⚡ 2026 OFFICIAL GUIDE  [ 1 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+        # 테마 판별: 부동산/대출 vs 저축/재테크/지원금
+        is_savings = any(k in t_low for k in ["1억", "저축", "적금", "도약", "희망", "재테크", "월급", "통장"])
+        is_housing = any(k in t_low for k in ["주담대", "대출", "주택", "아파트", "매매", "내집마련", "부동산", "전세", "디딤돌", "보금자리"])
 
-        lines = topic.split()
-        if len(lines) > 4:
-            mid = len(lines) // 2
-            t_line1 = " ".join(lines[:mid])
-            t_line2 = " ".join(lines[mid:])
+        # ====================================================
+        # SLIDE 1: 대형 후킹 표지 (레퍼런스 1번 스타일)
+        # ====================================================
+        img1, d1 = self._draw_canvas()
+        category_tag = "💰 직장인 재테크 실전 연구소" if is_savings else "🏠 내집마련 실전 연구소"
+        d1.rounded_rectangle([70, 70, 440, 126], radius=16, fill=(241, 245, 249))
+        d1.text((95, 98), category_tag, fill=(71, 85, 105), font=self.f_badge, anchor="lm")
+        d1.text((self.WIDTH - 90, 98), "SLIDE [ 1 / 5 ]", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
+
+        if is_savings and not is_housing:
+            subhead = "어떻게 하면 가장 빠르게 목돈을 모을까?"
+            main_pre = "월급별 1억 만들기"
+            main_strong = "현실 계산표"
+            banner_title = "월 실수령액별 1억 달성 기간 & 저축 전략"
+            box1_badge = "01 기간별"
+            box1_title = "1억 모으기"
+            box1_rows = [
+                ("3년 목표", "월 278만 원", (225, 29, 72)),
+                ("5년 목표", "월 167만 원", (225, 29, 72)),
+                ("7년 목표", "월 119만 원", (30, 58, 138)),
+                ("10년 목표", "월 83만 원", (30, 58, 138))
+            ]
+            box2_badge = "02 월급별"
+            box2_title = "40% 저축 시"
+            box2_rows = [
+                ("월 250만", "약 8년 4개월", (30, 58, 138)),
+                ("월 300만", "약 6년 11개월", (30, 58, 138)),
+                ("월 400만", "약 5년 3개월", (225, 29, 72)),
+                ("월 500만", "약 4년 2개월", (225, 29, 72))
+            ]
+            tip_headline = "💡 1억은 '월급 크기'보다 '저축률'이 핵심!"
+            tip_desc1 = "• 월 300만 원도 40% 저축 시 약 7년 만에 1억 달성"
+            tip_desc2 = "• 정부 청년도약계좌 결합 시 정부 기여금 + 비과세 혜택"
+            tip_desc3 = "• 선저축 후지출 습관으로 종잣돈 형성 속도 2배 단축"
         else:
-            t_line1 = topic
-            t_line2 = ""
+            subhead = "지금 내 월급으로 얼마짜리 집까지 살 수 있을까?"
+            main_pre = "내 집 마련"
+            main_strong = "현실 커트라인"
+            banner_title = "아파트 매매가별 대출 한도 & 필요 현금 총정리"
+            box1_badge = "01 기간별"
+            box1_title = "1억 모으기"
+            box1_rows = [
+                ("3년 목표", "월 278만 원", (225, 29, 72)),
+                ("5년 목표", "월 167만 원", (225, 29, 72)),
+                ("7년 목표", "월 119만 원", (30, 58, 138)),
+                ("10년 목표", "월 83만 원", (30, 58, 138))
+            ]
+            box2_badge = "02 월급별"
+            box2_title = "대출 한도"
+            box2_rows = [
+                ("월 300만", "최대 2.8억", (30, 58, 138)),
+                ("월 400만", "최대 3.9억", (30, 58, 138)),
+                ("월 500만", "최대 4.9억", (225, 29, 72)),
+                ("월 600만", "최대 5.8억", (225, 29, 72))
+            ]
+            tip_headline = "💡 '월급 액수'보다 '저축률'과 'DSR 관리'가 핵심!"
+            tip_desc1 = "• 소득 300만 원도 DSR 3단계 방어 시 내집마련 가능"
+            tip_desc2 = "• 정부 특례상품 결합 시 최저 연 3%대 고정금리 적용"
+            tip_desc3 = "• 비아파트·신혼특례 LTV 최대 80% 완화 혜택"
 
-        d1.text((540, 420), t_line1, fill=(255, 255, 255), font=self.font_h1, anchor="mm")
-        if t_line2:
-            d1.text((540, 500), t_line2, fill=accent, font=self.font_h1, anchor="mm")
+        d1.text((70, 220), subhead, fill=(100, 116, 139), font=self.f_h3, anchor="lt")
+        d1.text((70, 290), main_pre, fill=(15, 23, 42), font=self.f_hero, anchor="lt")
+        d1.text((70, 400), main_strong, fill=(225, 29, 72), font=self.f_super, anchor="lt")
 
-        d1.text((540, 620), "모르면 손해 보는 2026 실전 핵심 4단계 총정리", fill=(203, 213, 225), font=self.font_h3, anchor="mm")
+        # Dark Navy Highlight Banner
+        d1.rounded_rectangle([70, 560, 1010, 650], radius=18, fill=(15, 23, 42))
+        d1.text((540, 605), banner_title, fill=(255, 255, 255), font=self.f_h2, anchor="mm")
 
-        d1.rounded_rectangle([90, 720, 990, 1550], radius=24, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
-        
-        steps = [
-            ("STEP 01", "지원 대상 & 핵심 자격 요건 판별", "연령 및 소득 기준 100% 매칭 여부 사전 판별"),
-            ("STEP 02", "최고 혜택 & 최저 금리 비교 분석", "불필요한 지출 및 수수료 100% 감면 전략"),
-            ("STEP 03", "서류 반려 0% 필수 구비서류 점검", "공식 전산망 원클릭 간편 접수 사전 준비")
-        ]
-        y_pos = 780
-        for code, tit, desc in steps:
-            d1.rounded_rectangle([130, y_pos, 260, y_pos + 46], radius=10, fill=bg_badge, outline=stroke, width=2)
-            d1.text((195, y_pos + 23), code, fill=accent, font=self.font_badge, anchor="mm")
-            d1.text((290, y_pos + 23), tit, fill=(255, 255, 255), font=self.font_h3, anchor="lm")
-            d1.text((140, y_pos + 80), f"• {desc}", fill=(148, 163, 184), font=self.font_body, anchor="lm")
-            d1.line([(130, y_pos + 120), (950, y_pos + 120)], fill=(51, 65, 85), width=1)
-            y_pos += 150
+        # Two Box Summary Grid
+        # Left Box
+        d1.rounded_rectangle([70, 690, 520, 1260], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
+        d1.rounded_rectangle([90, 715, 230, 765], radius=12, fill=(30, 58, 138))
+        d1.text((160, 740), box1_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        d1.text((250, 740), box1_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
+        y_tmp = 810
+        for period, amount, col in box1_rows:
+            d1.rounded_rectangle([90, y_tmp, 500, y_tmp + 95], radius=14, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+            d1.text((120, y_tmp + 48), period, fill=(51, 65, 85), font=self.f_body, anchor="lm")
+            d1.text((470, y_tmp + 48), amount, fill=col, font=self.f_h2, anchor="rm")
+            y_tmp += 110
 
-        d1.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=bg_badge, outline=stroke, width=2)
-        d1.text((540, 1670), "👉 지금 넘겨서 핵심 확인 (저장🔖 필수)", fill=(255, 255, 255), font=self.font_h3, anchor="mm")
+        # Right Box
+        d1.rounded_rectangle([560, 690, 1010, 1260], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
+        d1.rounded_rectangle([580, 715, 720, 765], radius=12, fill=(225, 29, 72))
+        d1.text((650, 740), box2_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        d1.text((740, 740), box2_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
+        y_tmp2 = 810
+        for pay, loan, col in box2_rows:
+            d1.rounded_rectangle([580, y_tmp2, 990, y_tmp2 + 95], radius=14, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+            d1.text((610, y_tmp2 + 48), pay, fill=(51, 65, 85), font=self.f_body, anchor="lm")
+            d1.text((960, y_tmp2 + 48), loan, fill=col, font=self.f_h2, anchor="rm")
+            y_tmp2 += 110
+
+        # Bottom Highlight Advice Banner
+        d1.rounded_rectangle([70, 1310, 1010, 1630], radius=24, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
+        d1.text((120, 1380), tip_headline, fill=(159, 18, 57), font=self.f_h2, anchor="lm")
+        d1.text((120, 1450), tip_desc1, fill=(71, 85, 105), font=self.f_body, anchor="lm")
+        d1.text((120, 1510), tip_desc2, fill=(71, 85, 105), font=self.f_body, anchor="lm")
+        d1.text((120, 1570), tip_desc3, fill=(71, 85, 105), font=self.f_body, anchor="lm")
+
+        # Bottom Swipe Pill
+        d1.rounded_rectangle([260, 1690, 820, 1780], radius=45, fill=(15, 23, 42))
+        d1.text((540, 1735), "옆으로 넘겨서 상세 비교표 확인 👉", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
         slides.append(img1)
 
-        # ==========================================
-        # Slide 2: 자격 및 대상 (Step 1)
-        # ==========================================
-        img2, d2, stroke, bg_badge, accent = self._draw_background(theme)
-        d2.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
-        d2.text((540, 172), "📋 STEP 01. 자격 & 요건  [ 2 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+        # ====================================================
+        # SLIDE 2: 현실 계산 비교표 (레퍼런스 3번 완벽 재현!)
+        # ====================================================
+        img2, d2 = self._draw_canvas()
+        d2.rounded_rectangle([70, 70, 380, 126], radius=16, fill=(241, 245, 249))
+        d2.text((95, 98), "📊 현실 계산 비교표", fill=(71, 85, 105), font=self.f_badge, anchor="lm")
+        d2.text((self.WIDTH - 90, 98), "SLIDE [ 2 / 5 ]", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
 
-        d2.text((540, 310), "신청 대상 및 자격 기준", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
-        d2.text((540, 380), "신청 전 반드시 확인해야 할 4가지 기본 조건", fill=(148, 163, 184), font=self.font_h3, anchor="mm")
+        d2.text((70, 200), "내 집 마련 현실 커트라인", fill=(225, 29, 72), font=self.f_hero, anchor="lt")
+        d2.text((70, 310), "아파트 가격별 대출금 / 필요 내 돈 / 필요 월급", fill=(71, 85, 105), font=self.f_h3, anchor="lt")
 
-        y_box = 450
-        for chk, tit, desc in spec_items:
-            d2.rounded_rectangle([90, y_box, 990, y_box + 200], radius=20, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
-            d2.rounded_rectangle([130, y_box + 30, 260, y_box + 76], radius=8, fill=bg_badge, outline=stroke, width=1)
-            d2.text((195, y_box + 53), chk, fill=accent, font=self.font_badge, anchor="mm")
-            d2.text((280, y_box + 53), tit, fill=(255, 255, 255), font=self.font_h2, anchor="lm")
-            d2.text((130, y_box + 120), f"▶ {desc}", fill=(203, 213, 225), font=self.font_body, anchor="lm")
-            d2.text((130, y_box + 160), "✓ 적합도 검증 완료 (반려 위험 0% 방어)", fill=stroke, font=self.font_small, anchor="lm")
-            y_box += 230
+        # Table Header
+        headers = ["매매가", "대출금(70%)", "준비할 현금", "매달 원리금", "필요 월급"]
+        cols = [70, 240, 440, 640, 840, 1010]
+        d2.rounded_rectangle([70, 400, 1010, 480], radius=14, fill=(241, 245, 249))
+        for i in range(len(headers)):
+            mid_x = (cols[i] + cols[i+1]) // 2
+            d2.text((mid_x, 440), headers[i], fill=(30, 41, 59), font=self.f_table_head, anchor="mm")
 
-        d2.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=(15, 23, 42), outline=stroke, width=2)
-        d2.text((540, 1670), "👉 다음 장: 최대 혜택 및 비교 분석", fill=accent, font=self.font_h3, anchor="mm")
+        # Table Rows (8개 실전 구간)
+        data_table = [
+            ("4.0억", "2.80억", "1.20억", "142만 원", "489만 원"),
+            ("5.0억", "3.50억", "1.50억", "177만 원", "611만 원"),
+            ("6.0억", "4.20억", "1.80억", "212만 원", "733만 원"),
+            ("6.5억", "4.55억", "1.95억", "230만 원", "794만 원"),
+            ("7.0억", "4.90억", "2.10억", "248만 원", "855만 원"),
+            ("8.0억", "5.60억", "2.40억", "283만 원", "977만 원"),
+            ("9.0억", "6.00억", "3.00억", "303만 원", "1,047만 원"),
+            ("10.0억", "6.00억", "4.00억", "303만 원", "1,047만 원")
+        ]
+
+        y_row = 495
+        for idx, (p_price, p_loan, p_cash, p_month, p_salary) in enumerate(data_table):
+            bg_col = (255, 255, 255) if idx % 2 == 0 else (248, 250, 252)
+            d2.rounded_rectangle([70, y_row, 1010, y_row + 88], radius=10, fill=bg_col, outline=(226, 232, 240), width=1)
+            
+            d2.text(((cols[0] + cols[1]) // 2, y_row + 44), p_price, fill=(22, 101, 52), font=self.f_table_body, anchor="mm")
+            d2.text(((cols[1] + cols[2]) // 2, y_row + 44), p_loan, fill=(161, 98, 7), font=self.f_table_body, anchor="mm")
+            d2.text(((cols[2] + cols[3]) // 2, y_row + 44), p_cash, fill=(29, 78, 216), font=self.f_table_body, anchor="mm")
+            d2.text(((cols[3] + cols[4]) // 2, y_row + 44), p_month, fill=(190, 24, 93), font=self.f_table_body, anchor="mm")
+            d2.text(((cols[4] + cols[5]) // 2, y_row + 44), p_salary, fill=(185, 28, 28), font=self.f_table_body, anchor="mm")
+            y_row += 98
+
+        d2.text((70, 1340), "* 기준: 수도권 비규제지역 기준 (LTV 최대 70%, 30년 만기 연 4.2% 기준)", fill=(148, 163, 184), font=self.f_small, anchor="lt")
+        d2.text((70, 1375), "* 세전 월급 기준 DSR 40% 규제 적용 시 필요 월 소득 산정", fill=(148, 163, 184), font=self.f_small, anchor="lt")
+
+        # Bottom Tip Box
+        d2.rounded_rectangle([70, 1430, 1010, 1640], radius=20, fill=(239, 246, 255), outline=(191, 219, 254), width=2)
+        d2.text((120, 1490), "📌 전문가의 현실 솔루션", fill=(30, 58, 138), font=self.f_h2, anchor="lm")
+        d2.text((120, 1560), "소득이 부족하다면 생애최초 LTV 80% 우대와 디딤돌/보금자리론 특례를", fill=(71, 85, 105), font=self.f_body, anchor="lm")
+        d2.text((120, 1600), "우선 활용하면 필요 월급을 최대 30%까지 낮출 수 있습니다.", fill=(71, 85, 105), font=self.f_body, anchor="lm")
+
+        d2.rounded_rectangle([260, 1690, 820, 1780], radius=45, fill=(15, 23, 42))
+        d2.text((540, 1735), "다음 장: 2026 정부 완화 정책 확인 👉", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
         slides.append(img2)
 
-        # ==========================================
-        # Slide 3: 혜택 및 비교 (Step 2)
-        # ==========================================
-        img3, d3, stroke, bg_badge, accent = self._draw_background(theme)
-        d3.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
-        d3.text((540, 172), "💎 STEP 02. 핵심 혜택  [ 3 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+        # ====================================================
+        # SLIDE 3: 정책 완화 전후 비교 (레퍼런스 2번 완벽 재현!)
+        # ====================================================
+        img3, d3 = self._draw_canvas()
+        d3.rounded_rectangle([70, 70, 380, 126], radius=16, fill=(241, 245, 249))
+        d3.text((95, 98), "🏛️ 2026 정책 완화", fill=(71, 85, 105), font=self.f_badge, anchor="lm")
+        d3.text((self.WIDTH - 90, 98), "SLIDE [ 3 / 5 ]", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
 
-        d3.text((540, 310), "핵심 혜택 & 실질 절감 비교", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
-        d3.text((540, 380), "조건을 맞췄을 때 실제로 얻게 되는 핵심 가치", fill=(148, 163, 184), font=self.font_h3, anchor="mm")
+        d3.text((70, 200), "청년·신혼부부 대출 문턱", fill=(15, 23, 42), font=self.f_hero, anchor="lt")
+        d3.text((70, 300), "확 낮아진다!", fill=(225, 29, 72), font=self.f_super, anchor="lt")
 
-        y_r = 450
-        for r_code, r_tit, r_sub, r_badge in rows:
-            d3.rounded_rectangle([90, y_r, 990, y_r + 200], radius=20, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
-            d3.text((130, y_r + 53), r_tit, fill=(255, 255, 255), font=self.font_h2, anchor="lm")
-            d3.rounded_rectangle([720, y_r + 30, 950, y_r + 76], radius=8, fill=bg_badge, outline=stroke, width=1)
-            d3.text((835, y_r + 53), r_badge, fill=accent, font=self.font_badge, anchor="mm")
-            d3.text((130, y_r + 120), f"▶ {r_sub}", fill=(203, 213, 225), font=self.font_body, anchor="lm")
-            d3.text((130, y_r + 160), "✓ 공식 최신 고시 기준 실시간 적용", fill=stroke, font=self.font_small, anchor="lm")
-            y_r += 230
+        # 1번 카드: 신혼부부 결혼 페널티 완화
+        d3.rounded_rectangle([70, 480, 1010, 840], radius=24, fill=(248, 250, 252), outline=(226, 232, 240), width=2)
+        d3.rounded_rectangle([100, 510, 150, 560], radius=25, fill=(225, 29, 72))
+        d3.text((125, 535), "1", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
+        d3.text((170, 535), "신혼부부 '결혼 페널티' 폐지", fill=(15, 23, 42), font=self.f_h2, anchor="lm")
 
-        d3.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=(15, 23, 42), outline=stroke, width=2)
-        d3.text((540, 1670), "👉 다음 장: 필수 서류 체크리스트", fill=accent, font=self.font_h3, anchor="mm")
+        # [기존] vs [개선] 화살표 박스
+        d3.rounded_rectangle([100, 590, 480, 800], radius=16, fill=(241, 245, 249))
+        d3.rounded_rectangle([120, 610, 220, 650], radius=8, fill=(100, 116, 139))
+        d3.text((170, 630), "기존", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        d3.text((120, 690), "부부 합산 소득으로 심사", fill=(15, 23, 42), font=self.f_body, anchor="lm")
+        d3.text((120, 740), "결혼 후 소득 초과로 탈락 ❌", fill=(225, 29, 72), font=self.f_body, anchor="lm")
+
+        d3.text((505, 695), "➔", fill=(225, 29, 72), font=self.f_hero, anchor="mm")
+
+        d3.rounded_rectangle([530, 590, 980, 800], radius=16, fill=(254, 242, 242), outline=(254, 205, 211), width=1)
+        d3.rounded_rectangle([550, 610, 650, 650], radius=8, fill=(225, 29, 72))
+        d3.text((600, 630), "개선", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        d3.text((550, 690), "부부 중 1명 소득 기준 인정! ⭕", fill=(159, 18, 57), font=self.f_body, anchor="lm")
+        d3.text((550, 740), "연소득 8,500만 원 이하 보금자리론 이용", fill=(71, 85, 105), font=self.f_small, anchor="lm")
+
+        # 2번 카드: 디딤돌·버팀목 소득 기준 완화
+        d3.rounded_rectangle([70, 880, 1010, 1240], radius=24, fill=(248, 250, 252), outline=(226, 232, 240), width=2)
+        d3.rounded_rectangle([100, 910, 150, 960], radius=25, fill=(30, 58, 138))
+        d3.text((125, 935), "2", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
+        d3.text((170, 935), "디딤돌·버팀목 소득 요건 완화", fill=(15, 23, 42), font=self.f_h2, anchor="lm")
+
+        # 3개 상품 그리드
+        products = [
+            ("보금자리론", "부부 중 1명\n연 7,000만 이하", (22, 101, 52), (240, 253, 244)),
+            ("디딤돌대출", "부부 중 1명\n연 6,000만 이하", (30, 58, 138), (239, 246, 255)),
+            ("버팀목전세", "부부 중 1명\n연 5,000만 이하", (126, 34, 206), (250, 245, 255))
+        ]
+        x_p = 100
+        for p_name, p_desc, p_col, p_bg in products:
+            d3.rounded_rectangle([x_p, 990, x_p + 270, 1190], radius=16, fill=p_bg, outline=(226, 232, 240), width=1)
+            d3.text((x_p + 135, 1040), p_name, fill=p_col, font=self.f_h3, anchor="mm")
+            lines_desc = p_desc.split('\n')
+            d3.text((x_p + 135, 1100), lines_desc[0], fill=(51, 65, 85), font=self.f_small, anchor="mm")
+            d3.text((x_p + 135, 1140), lines_desc[1], fill=p_col, font=self.f_body, anchor="mm")
+            x_p += 295
+
+        # 3번 카드: 2026 청년 주택지원 3종 세트
+        d3.rounded_rectangle([70, 1280, 1010, 1640], radius=24, fill=(240, 253, 250), outline=(153, 246, 228), width=2)
+        d3.rounded_rectangle([100, 1310, 150, 1360], radius=25, fill=(13, 148, 136))
+        d3.text((125, 1335), "3", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
+        d3.text((170, 1335), "2026 청년 주택지원 3종 세트", fill=(15, 23, 42), font=self.f_h2, anchor="lm")
+        d3.text((120, 1410), "✔ 만 39세 이하 무주택 청년 대상 LTV 최대 80% 적용", fill=(15, 23, 42), font=self.f_body, anchor="lm")
+        d3.text((120, 1470), "✔ 빌라·연립·다세대·오피스텔 비아파트 전액 포함", fill=(15, 23, 42), font=self.f_body, anchor="lm")
+        d3.text((120, 1530), "✔ 전세보증금 대출 한도 2억 원 ➔ 3억 원으로 확대", fill=(13, 148, 136), font=self.f_body, anchor="lm")
+        d3.text((120, 1590), "✔ 40년 초장기 분할상환으로 월 원리금 부담 대폭 경감", fill=(71, 85, 105), font=self.f_small, anchor="lm")
+
+        d3.rounded_rectangle([260, 1690, 820, 1780], radius=45, fill=(15, 23, 42))
+        d3.text((540, 1735), "다음 장: 필수 신청 체크리스트 👉", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
         slides.append(img3)
 
-        # ==========================================
-        # Slide 4: 체크리스트 (Step 3)
-        # ==========================================
-        img4, d4, stroke, bg_badge, accent = self._draw_background(theme)
-        d4.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
-        d4.text((540, 172), "🛡️ STEP 03. 필수 서류  [ 4 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+        # ====================================================
+        # SLIDE 4: 필수 준비 서류 & 신청 절차
+        # ====================================================
+        img4, d4 = self._draw_canvas()
+        d4.rounded_rectangle([70, 70, 380, 126], radius=16, fill=(241, 245, 249))
+        d4.text((95, 98), "📝 신청 체크리스트", fill=(71, 85, 105), font=self.f_badge, anchor="lm")
+        d4.text((self.WIDTH - 90, 98), "SLIDE [ 4 / 5 ]", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
 
-        d4.text((540, 310), "실행 전 필수 구비서류 체크", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
-        d4.text((540, 380), "서류 미비로 반려되지 않도록 미리 준비할 목록", fill=(148, 163, 184), font=self.font_h3, anchor="mm")
+        d4.text((70, 200), "신청 전 반드시 챙길", fill=(15, 23, 42), font=self.f_hero, anchor="lt")
+        d4.text((70, 300), "필수 구비서류 4가지", fill=(30, 58, 138), font=self.f_super, anchor="lt")
 
-        y_c = 450
-        for c_code, c_tit, c_sub in chks:
-            d4.rounded_rectangle([90, y_c, 990, y_c + 200], radius=20, fill=(11, 19, 41), outline=stroke, width=2)
-            d4.text((130, y_c + 53), f"✅ {c_tit}", fill=(255, 255, 255), font=self.font_h2, anchor="lm")
-            d4.text((130, y_c + 120), f"▶ {c_sub}", fill=(203, 213, 225), font=self.font_body, anchor="lm")
-            d4.text((130, y_c + 160), "[✓] 서류 준비 상태: 100% 준비 완료", fill=accent, font=self.font_small, anchor="lm")
-            y_c += 230
+        docs = [
+            ("01", "소득금액증명원 (최근 2개년)", "국세청 홈택스에서 원클릭 발급 (근로자/사업자 공통)", (30, 58, 138)),
+            ("02", "건강보험자격득실확인서", "국민건강보험공단 홈페이지 또는 정부24 전자지갑 발급", (22, 101, 52)),
+            ("03", "부동산 등기부등본 (을구 확인)", "인터넷등기소 발급 (근저당, 선순위 채권 확인 필수)", (225, 29, 72)),
+            ("04", "주민등록등본 & 초본", "정부24 발급 (과거 5개년 주소 변동 이력 포함 필수)", (126, 34, 206))
+        ]
 
-        d4.rounded_rectangle([180, 1620, 900, 1720], radius=24, fill=(15, 23, 42), outline=stroke, width=2)
-        d4.text((540, 1670), "👉 마지막 장: 공식 신청처 및 프로필 링크", fill=accent, font=self.font_h3, anchor="mm")
+        y_d = 450
+        for num, tit, desc, col in docs:
+            d4.rounded_rectangle([70, y_d, 1010, y_d + 190], radius=20, fill=(255, 255, 255), outline=(226, 232, 240), width=2)
+            d4.rounded_rectangle([100, y_d + 35, 160, y_d + 95], radius=12, fill=col)
+            d4.text((130, y_d + 65), num, fill=(255, 255, 255), font=self.f_h2, anchor="mm")
+            d4.text((190, y_d + 65), tit, fill=(15, 23, 42), font=self.f_h2, anchor="lm")
+            d4.text((190, y_d + 130), desc, fill=(100, 116, 139), font=self.f_body, anchor="lm")
+            y_d += 220
+
+        # Warning Box
+        d4.rounded_rectangle([70, 1370, 1010, 1620], radius=20, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
+        d4.text((120, 1430), "⚠️ 서류 반려 방지 핵심 주의사항", fill=(159, 18, 57), font=self.f_h2, anchor="lm")
+        d4.text((120, 1495), "• 모든 공적 서류는 신청일 기준 1개월 이내 발급분만 인정됩니다.", fill=(71, 85, 105), font=self.f_body, anchor="lm")
+        d4.text((120, 1555), "• 주민등록번호 뒷자리 7자리 모두 공개된 상태로 발급받아야 합니다.", fill=(71, 85, 105), font=self.f_body, anchor="lm")
+
+        d4.rounded_rectangle([260, 1690, 820, 1780], radius=45, fill=(15, 23, 42))
+        d4.text((540, 1735), "다음 장: 공식 신청 링크 & 모의 계산 👉", fill=(255, 255, 255), font=self.f_h3, anchor="mm")
         slides.append(img4)
 
-        # ==========================================
-        # Slide 5: Final CTA (저장 및 프로필 링크 유도)
-        # ==========================================
-        img5, d5, stroke, bg_badge, accent = self._draw_background(theme)
-        d5.rounded_rectangle([320, 140, 760, 204], radius=32, fill=bg_badge, outline=stroke, width=2)
-        d5.text((540, 172), "📌 OFFICIAL COMPLETE  [ 5 / 5 ]", fill=accent, font=self.font_badge, anchor="mm")
+        # ====================================================
+        # SLIDE 5: 저장 & 공유 유도 아웃트로 (고전환 CTA)
+        # ====================================================
+        img5, d5 = self._draw_canvas()
+        d5.rounded_rectangle([70, 70, 380, 126], radius=16, fill=(241, 245, 249))
+        d5.text((95, 98), "🔖 저장 필수 안내", fill=(71, 85, 105), font=self.f_badge, anchor="lm")
+        d5.text((self.WIDTH - 90, 98), "SLIDE [ 5 / 5 ]", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
 
-        d5.text((540, 360), "나중에 신청할 때 보려면?", fill=(255, 255, 255), font=self.font_h1, anchor="mm")
-        d5.text((540, 440), "지금 놓치면 다시 찾기 어렵습니다!", fill=(251, 191, 36), font=self.font_h2, anchor="mm")
+        d5.text((70, 220), "나중에 필요할 때", fill=(15, 23, 42), font=self.f_hero, anchor="lt")
+        d5.text((70, 320), "우측 하단 [저장] 필수!", fill=(225, 29, 72), font=self.f_super, anchor="lt")
+        d5.text((70, 460), "신청 기간 놓치고 후회하지 않도록 지금 보관해두세요.", fill=(100, 116, 139), font=self.f_h3, anchor="lt")
 
-        # Action Cards
-        d5.rounded_rectangle([90, 530, 990, 750], radius=20, fill=(11, 19, 41), outline=stroke, width=3)
-        d5.text((540, 600), "🔖 우측 하단 [저장] 버튼 필수!", fill=(255, 255, 255), font=self.font_h2, anchor="mm")
-        d5.text((540, 670), "신청 마감 전에 꺼내볼 수 있도록 저장해두세요.", fill=(203, 213, 225), font=self.font_body, anchor="mm")
+        # Big CTA Box 1: Profile Link
+        d5.rounded_rectangle([70, 560, 1010, 960], radius=28, fill=(239, 246, 255), outline=(191, 219, 254), width=3)
+        d5.text((540, 640), "🔗 공식 모의 계산기 & 혜택 신청처", fill=(30, 58, 138), font=self.f_h1, anchor="mm")
+        d5.text((540, 720), "자세한 신청 자격 및 공식 접수 링크는", fill=(71, 85, 105), font=self.f_h3, anchor="mm")
+        
+        # Click button
+        d5.rounded_rectangle([150, 780, 930, 890], radius=24, fill=(30, 58, 138))
+        d5.text((540, 835), "👉 [프로필 링크]에서 1초 만에 확인하기!", fill=(255, 255, 255), font=self.f_h2, anchor="mm")
 
-        d5.rounded_rectangle([90, 790, 990, 1010], radius=20, fill=(11, 19, 41), outline=(51, 65, 85), width=2)
-        d5.text((540, 860), "✈️ 필요한 친구에게 [DM 공유]", fill=(255, 255, 255), font=self.font_h2, anchor="mm")
-        d5.text((540, 930), "혜택 대상인 가족, 지인에게 비행기 아이콘으로 전송!", fill=(148, 163, 184), font=self.font_body, anchor="mm")
+        # Action Sharing Box
+        d5.rounded_rectangle([70, 1020, 1010, 1350], radius=24, fill=(248, 250, 252), outline=(226, 232, 240), width=2)
+        d5.text((120, 1090), "✈️ 주변에 목돈·내집마련 준비 중인 친구에게", fill=(15, 23, 42), font=self.f_h2, anchor="lm")
+        d5.text((120, 1150), "비행기 아이콘을 눌러 이 릴스를 공유해 주세요!", fill=(225, 29, 72), font=self.f_h3, anchor="lm")
+        d5.text((120, 1230), "• 최신 정부지원금과 우대금리 요건이 대폭 완화되었습니다.", fill=(71, 85, 105), font=self.f_body, anchor="lm")
+        d5.text((120, 1280), "• 소득 초과로 포기했던 분들도 다시 신청 가능합니다.", fill=(71, 85, 105), font=self.f_body, anchor="lm")
 
-        # Link CTA Box (핵심 블로그 전환 구역!)
-        d5.rounded_rectangle([90, 1070, 990, 1480], radius=24, fill=bg_badge, outline=stroke, width=3)
-        d5.text((540, 1140), "🔗 공식 신청 사이트 & 모의 계산기", fill=(255, 255, 255), font=self.font_h2, anchor="mm")
-        d5.text((540, 1220), "자세한 신청 자격 및 공식 접수 링크는", fill=accent, font=self.font_h3, anchor="mm")
-        d5.rounded_rectangle([160, 1290, 920, 1400], radius=20, fill=(255, 255, 255))
-        d5.text((540, 1345), "👉 [프로필 링크]에서 즉시 확인!", fill=(15, 23, 42), font=self.font_h2, anchor="mm")
+        # Follow box
+        d5.rounded_rectangle([70, 1400, 1010, 1650], radius=24, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
+        d5.text((540, 1470), "📢 매일 올라오는 알짜 금융·정부지원금 정보", fill=(159, 18, 57), font=self.f_h2, anchor="mm")
+        d5.text((540, 1540), "지금 [팔로우] 누르고 돈 되는 꿀팁을 놓치지 마세요!", fill=(15, 23, 42), font=self.f_h3, anchor="mm")
 
-        d5.text((540, 1580), "📢 팔로우하고 2026 알짜 재테크·지원금 정보 매일 받아보기", fill=(203, 213, 225), font=self.font_h3, anchor="mm")
         slides.append(img5)
-
         return slides
 
     def render_reels_video(self, topic: str, blog_url: str = "") -> dict:
         clean_topic = topic.strip() or "2026 주택담보대출 최저금리 비교 및 절세 가이드"
-        safe_name = re.sub(r'[\s\\/:*?"<>|]+', '_', clean_topic)[:25]
+        safe_name = re.sub(r'[\\s\\/:*?"<>|]+', '_', clean_topic)[:25]
         timestamp = int(time.time())
 
         out_dir = os.path.join(os.getcwd(), "output", "shorts")
@@ -1858,60 +1929,55 @@ class CardNewsReelsGenerator:
         has_bgm = os.path.exists(bgm_path)
 
         total_duration = self.SECONDS_PER_SLIDE * len(slide_imgs)  # 16.0s
-        frames_per_slide = int(self.FPS * self.SECONDS_PER_SLIDE)
 
-        cmd = [
-            self.ffmpeg_exe,
-            "-y",
-            "-f", "rawvideo",
-            "-vcodec", "rawvideo",
-            "-s", f"{self.WIDTH}x{self.HEIGHT}",
-            "-pix_fmt", "rgb24",
-            "-r", str(self.FPS),
-            "-i", "-"
-        ]
+        # Build high quality ffmpeg command
+        inputs = []
+        filter_complex = []
+        for i, sp in enumerate(slide_paths):
+            inputs.extend(["-loop", "1", "-t", str(self.SECONDS_PER_SLIDE), "-i", sp])
+            filter_complex.append(f"[{i}:v]scale={self.WIDTH}:{self.HEIGHT}:force_original_aspect_ratio=decrease,pad={self.WIDTH}:{self.HEIGHT}:(ow-iw)/2:(oh-ih)/2,setsar=1[v{i}];")
+        
+        concat_inputs = "".join([f"[v{i}]" for i in range(len(slide_paths))])
+        filter_complex.append(f"{concat_inputs}concat=n={len(slide_paths)}:v=1:a=0[outv]")
 
+        cmd = [self.ffmpeg_exe, "-y"]
+        cmd.extend(inputs)
         if has_bgm:
+            cmd.extend(["-stream_loop", "-1", "-i", bgm_path])
             cmd.extend([
-                "-stream_loop", "-1",
-                "-i", bgm_path,
-                "-t", str(total_duration),
-                "-af", f"afade=t=out:st={total_duration - 2.0}:d=2.0,volume=0.35",
+                "-filter_complex", "".join(filter_complex),
+                "-map", "[outv]",
+                "-map", f"{len(slide_paths)}:a",
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
                 "-c:a", "aac",
                 "-b:a", "192k",
-                "-shortest"
+                "-shortest",
+                "-t", str(total_duration),
+                video_path
             ])
         else:
-            cmd.extend(["-t", str(total_duration)])
+            cmd.extend([
+                "-filter_complex", "".join(filter_complex),
+                "-map", "[outv]",
+                "-c:v", "libx264",
+                "-preset", "veryfast",
+                "-pix_fmt", "yuv420p",
+                "-t", str(total_duration),
+                video_path
+            ])
 
-        cmd.extend([
-            "-c:v", "libx264",
-            "-preset", "veryfast",
-            "-pix_fmt", "yuv420p",
-            video_path
-        ])
-
-        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        try:
-            for img in slide_imgs:
-                raw_bytes = img.tobytes()
-                for _ in range(frames_per_slide):
-                    proc.stdin.write(raw_bytes)
-            proc.stdin.close()
-            proc.wait(timeout=60)
-        except Exception as e:
-            if proc.poll() is None:
-                proc.kill()
-            raise e
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
         # 3. 인스타그램 최적화 캡션 생성
         caption = (
-            f"📌 {clean_topic} 1분 핵심 요약 카드뉴스\n\n"
+            f"📌 {clean_topic} 1분 핵심 요약 인포그래픽\n\n"
             f"지원 조건, 우대 혜택, 필수 서류까지 한눈에 보기 쉽게 5장으로 정리했습니다.\n\n"
             f"🔖 나중에 신청할 때 찾아보시려면 지금 우측 하단 [저장] 눌러두세요!\n"
             f"✈️ 주변에 필요한 친구나 가족에게 DM으로 공유해주세요.\n\n"
             f"👉 공식 신청 누리집 링크 및 모의 계산기는 [프로필 링크]에서 바로 확인하실 수 있습니다!\n\n"
-            f"#릴스 #카드뉴스 #정보공유 #재테크 #정부지원금 #생활꿀팁 #직장인팁 #인스타릴스"
+            f"#릴스 #카드뉴스 #정보공유 #재테크 #정부지원금 #생활꿀팁 #직장인팁 #인스타릴스 #내집마련"
         )
 
         size_mb = round(os.path.getsize(video_path) / (1024 * 1024), 2) if os.path.exists(video_path) else 0
@@ -1929,7 +1995,7 @@ class CardNewsReelsGenerator:
             "slide_images": slide_paths,
             "slide_urls": slide_urls,
             "instagram_caption": caption,
-            "tags": "#릴스 #카드뉴스 #정보공유 #재테크 #정부지원금 #생활꿀팁 #직장인팁 #인스타릴스",
+            "tags": "#릴스 #카드뉴스 #정보공유 #재테크 #정부지원금 #생활꿀팁 #직장인팁 #인스타릴스 #내집마련",
             "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
         }
 
