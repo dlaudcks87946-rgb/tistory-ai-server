@@ -1523,15 +1523,11 @@ def generate_shorts_pipeline(topic: str, blog_url: str = "", category: str = "au
 
 
 class CardNewsReelsGenerator:
-    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 1장 완결형 바이럴 마스터 인포그래픽 제작 엔진
-    - 1장 완결형: 복잡한 슬라이드 전환 없이 1장의 고밀도 인포그래픽 마스터 시트에 핵심 집약
-    - 디자인 특화:
-      1. 화이트 카드 캔버스 (#FFFFFF) + 연회색 이중 라운드 프레임
-      2. 대형 볼드 타이포그래피 (블랙 & 코랄레드 #E11D48 + 스파클 뱃지)
-      3. 2단 그리드 박스 (납입금액별 vs 소득별 매칭)
-      4. 5열 6행 고대비 현실 계산표 그리드 (그린/브라운/블루/마젠타/크림슨)
-      5. 하이라이트 인용구 카드 + 실전 신청 팁 5개 뱃지 + 저장 유도 바
-    - 오디오: 잔잔하고 평화로운 어쿠스틱 피아노 BGM (calm_piano.mp3) 부드러운 페이드인/아웃 적용
+    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 디자이너급 1장 완결형 마스터 인포그래픽 제작 엔진
+    - 3D 일러스트 렌더링 에셋 결합 (유리 저축통, 3D 신축 아파트 단지)
+    - 100% 한글 폰트 전용 벡터 아이콘 (골드 코인, 에메랄드 체크, 스파클 다이아몬드) 탑재로 글자 깨짐(□) 0%
+    - 5열 현실 계산표 + 2단 비교 박스 + 인용구 팁 카드 + 실천 팁 뱃지
+    - 잔잔하고 감미로운 어쿠스틱 피아노 BGM (calm_piano.mp3) 15초 릴스 영상 생성
     """
     WIDTH = 1080
     HEIGHT = 1920
@@ -1558,32 +1554,56 @@ class CardNewsReelsGenerator:
 
         try:
             if bold_path:
-                self.f_hero = ImageFont.truetype(bold_path, 72)
-                self.f_super = ImageFont.truetype(bold_path, 92)
-                self.f_h1 = ImageFont.truetype(bold_path, 48)
-                self.f_h2 = ImageFont.truetype(bold_path, 36)
-                self.f_h3 = ImageFont.truetype(bold_path, 30)
-                self.f_badge = ImageFont.truetype(bold_path, 24)
-                self.f_table_head = ImageFont.truetype(bold_path, 26)
-                self.f_table_body = ImageFont.truetype(bold_path, 25)
+                self.f_hero = ImageFont.truetype(bold_path, 68)
+                self.f_super = ImageFont.truetype(bold_path, 86)
+                self.f_h1 = ImageFont.truetype(bold_path, 44)
+                self.f_h2 = ImageFont.truetype(bold_path, 34)
+                self.f_h3 = ImageFont.truetype(bold_path, 28)
+                self.f_badge = ImageFont.truetype(bold_path, 23)
+                self.f_table_head = ImageFont.truetype(bold_path, 25)
+                self.f_table_body = ImageFont.truetype(bold_path, 24)
+                self.f_table_highlight = ImageFont.truetype(bold_path, 26)
             else:
-                self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = ImageFont.load_default()
+                self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = self.f_table_highlight = ImageFont.load_default()
 
             if reg_path:
-                self.f_body = ImageFont.truetype(reg_path, 25)
-                self.f_body_bold = ImageFont.truetype(bold_path or reg_path, 25)
+                self.f_body = ImageFont.truetype(reg_path, 24)
+                self.f_body_bold = ImageFont.truetype(bold_path or reg_path, 24)
                 self.f_small = ImageFont.truetype(reg_path, 20)
-                self.f_tiny = ImageFont.truetype(reg_path, 18)
+                self.f_tiny = ImageFont.truetype(reg_path, 17)
+                self.f_icon_won = ImageFont.truetype(bold_path or reg_path, 16)
             else:
-                self.f_body = self.f_body_bold = self.f_small = self.f_tiny = ImageFont.load_default()
+                self.f_body = self.f_body_bold = self.f_small = self.f_tiny = self.f_icon_won = ImageFont.load_default()
         except Exception:
-            self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = ImageFont.load_default()
-            self.f_body = self.f_body_bold = self.f_small = self.f_tiny = ImageFont.load_default()
+            self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = self.f_table_highlight = ImageFont.load_default()
+            self.f_body = self.f_body_bold = self.f_small = self.f_tiny = self.f_icon_won = ImageFont.load_default()
 
     def _draw_drop_shadow_box(self, draw, xy, radius=12, fill=(255, 255, 255), outline=(226, 232, 240), shadow_color=(241, 245, 249)):
         x0, y0, x1, y1 = xy
         draw.rounded_rectangle([x0 + 2, y0 + 3, x1 + 2, y1 + 3], radius=radius, fill=shadow_color)
         draw.rounded_rectangle([x0, y0, x1, y1], radius=radius, fill=fill, outline=outline, width=1)
+
+    def _draw_vector_coin(self, draw, cx, cy, r=14):
+        draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(245, 158, 11), outline=(217, 119, 6), width=1)
+        draw.ellipse([cx - r + 3, cy - r + 3, cx + r - 3, cy + r - 3], fill=(251, 191, 36))
+        draw.text((cx, cy - 1), "W", fill=(180, 83, 9), font=self.f_icon_won, anchor="mm")
+
+    def _draw_vector_check(self, draw, cx, cy, r=13):
+        draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(16, 185, 129))
+        draw.line([(cx - 5, cy), (cx - 1, cy + 4), (cx + 5, cy - 4)], fill=(255, 255, 255), width=2)
+
+    def _draw_star_sparkle(self, draw, cx, cy, size=14, color=(245, 158, 11)):
+        pts = [
+            (cx, cy - size),
+            (cx + size * 0.35, cy - size * 0.35),
+            (cx + size, cy),
+            (cx + size * 0.35, cy + size * 0.35),
+            (cx, cy + size),
+            (cx - size * 0.35, cy + size * 0.35),
+            (cx - size, cy),
+            (cx - size * 0.35, cy - size * 0.35),
+        ]
+        draw.polygon(pts, fill=color)
 
     def generate_single_master_sheet(self, topic: str) -> Image.Image:
         img = Image.new("RGB", (self.WIDTH, self.HEIGHT), (255, 255, 255))
@@ -1597,22 +1617,36 @@ class CardNewsReelsGenerator:
         is_youth = any(k in t_low for k in ["청년", "도약", "희망", "기여금", "비과세", "적금", "저축", "1억", "통장"])
         is_housing = any(k in t_low for k in ["주담대", "대출", "주택", "아파트", "매매", "내집마련", "부동산", "전세", "디딤돌", "보금자리"])
         is_tax = any(k in t_low for k in ["연말정산", "환급", "세금", "소득공제", "세액공제", "절세"])
-        is_welfare = any(k in t_low for k in ["기초연금", "국민연금", "실업급여", "부모급여", "수당", "급여", "생계", "퇴직연금"])
 
         # 1. 상단 브랜드 바
-        brand_name = "💰 청년 금융·정부지원금 연구소" if is_youth else ("🏠 내집마련 실전 연구소" if is_housing else ("💵 연말정산·절세 연구소" if is_tax else ("🏛️ 정부복지·생활지원금 연구소" if is_welfare else "📊 생활 금융·재테크 연구소")))
-        draw.rounded_rectangle([60, 56, 450, 106], radius=14, fill=(241, 245, 249))
-        draw.text((80, 81), brand_name, fill=(51, 65, 85), font=self.f_badge, anchor="lm")
+        brand_name = "청년 금융·정부지원금 연구소" if is_youth else ("내집마련 실전 연구소" if is_housing else ("연말정산·절세 연구소" if is_tax else "생활 금융·재테크 연구소"))
+        draw.rounded_rectangle([60, 56, 440, 106], radius=14, fill=(241, 245, 249))
+        self._draw_star_sparkle(draw, 85, 81, size=9, color=(30, 58, 138))
+        draw.text((105, 81), brand_name, fill=(51, 65, 85), font=self.f_badge, anchor="lm")
         draw.text((self.WIDTH - 70, 81), "2026 OFFICIAL GUIDE", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
 
-        # 2. 메인 헤드라인 및 스파클 뱃지
+        # 2. 우측 상단 3D 일러스트 에셋 합성
+        sprite_path = None
+        base_dir = os.path.dirname(os.path.abspath(__file__))
         if is_youth:
-            subhead = "매월 최대 3.3만 원 기여금 + 이자소득세 15.4% 비과세 혜택"
+            sprite_path = os.path.join(base_dir, "assets", "sprites", "savings_3d_icon.jpg")
+        elif is_housing:
+            sprite_path = os.path.join(base_dir, "assets", "sprites", "apartment_3d_icon.jpg")
+
+        if sprite_path and os.path.exists(sprite_path):
+            try:
+                icon_img = Image.open(sprite_path).convert("RGB")
+                icon_img = icon_img.resize((360, 360), Image.Resampling.LANCZOS)
+                img.paste(icon_img, (670, 115))
+            except Exception as e:
+                pass
+
+        # 3. 메인 헤드라인
+        if is_youth:
+            subhead = "매월 최대 3.3만 원 기여금 + 비과세 혜택"
             line1 = "2026 청년도약계좌"
             line2_strong = "정부기여금 총정리"
             banner_text = "소득구간별 기여금 매칭 & 5년 만기 수령액 현실 계산"
-            badge_title = "💎 2026 개편"
-            badge_sub = "혜택 100% 수령"
             sec1_badge, sec1_title = "01 납입액별", "기여금 매칭"
             sec1_items = [
                 ("월 40만 납입", "기여금 2.4만", (225, 29, 72)),
@@ -1627,6 +1661,7 @@ class CardNewsReelsGenerator:
                 ("4,800만 이하", "매칭률 3.7%", (225, 29, 72)),
                 ("6,000만 이하", "매칭률 3.0%", (225, 29, 72))
             ]
+            sec3_title = "만기 시 실제 수령액 총정리"
             headers = ["월 납입액", "원금(5년)", "정부기여금", "은행이자(최고)", "만기 총수령액"]
             rows = [
                 ("40만 원", "2,400만", "약 144만", "약 370만", "2,914만 원"),
@@ -1637,20 +1672,18 @@ class CardNewsReelsGenerator:
                 ("70만(우대)", "4,200만", "약 144만", "약 710만", "5,054만 원")
             ]
             footnote = "* 기준: 기본 4.5% + 우대 1.5% (최고 6.0%) / 이자소득세 15.4% 비과세 전액 면제 반영"
-            quote_text = "“ 청년도약계좌는 원금보다 '정부 기여금과 15.4% 비과세'가 핵심! ”"
+            quote_title = "“ 청년도약계좌는 원금보다 '정부 기여금과 15.4% 비과세'가 핵심! ”"
             bullets = [
-                "✔ 3년만 유지해도 비과세 혜택 100% 인정 + 정부 기여금 60% 지급으로 개편!",
-                "✔ 개인소득 7,500만 원 이하 & 가구 중위소득 250% 이하 청년 누구나 신청 가능",
-                "✔ 70만 원 납입이 부담되면 40~50만 원만 넣어도 정부 기여금은 최대치 수령!"
+                "3년만 유지해도 비과세 혜택 100% 인정 + 정부 기여금 60% 지급으로 개편!",
+                "개인소득 7,500만 원 이하 & 가구 중위소득 250% 이하 청년 누구나 신청 가능",
+                "70만 원 납입이 부담되면 40~50만 원만 넣어도 정부 기여금은 최대치 수령!"
             ]
-            tips = ["🎯 3년 비과세", "🧮 40만 가성비", "💳 은행앱 접수", "📋 소득증명원", "💰 5천만 목돈"]
+            tips = ["3년 비과세", "40만 가성비", "은행앱 접수", "소득증명원", "5천만 목돈"]
         elif is_housing:
-            subhead = "지금 내 월급으로 얼마짜리 아파트까지 살 수 있을까?"
+            subhead = "내 월급으로 얼마짜리 아파트까지 살 수 있을까?"
             line1 = "내 집 마련"
             line2_strong = "현실 커트라인"
             banner_text = "아파트 매매가별 대출 한도 & 필요 현금 총정리"
-            badge_title = "🏠 LTV 70%"
-            badge_sub = "비규제 수도권"
             sec1_badge, sec1_title = "01 기간별", "1억 모으기"
             sec1_items = [
                 ("3년 목표", "월 278만 원", (225, 29, 72)),
@@ -1665,6 +1698,7 @@ class CardNewsReelsGenerator:
                 ("월 500만", "최대 4.9억", (225, 29, 72)),
                 ("월 600만", "최대 5.8억", (225, 29, 72))
             ]
+            sec3_title = "아파트 가격별 필요 월급 계산"
             headers = ["매매가", "대출금(70%)", "준비할 현금", "매달 원리금", "필요 월급"]
             rows = [
                 ("4.0억", "2.80억", "1.20억", "142만 원", "489만 원"),
@@ -1675,20 +1709,18 @@ class CardNewsReelsGenerator:
                 ("9.0억", "6.00억", "3.00억", "303만 원", "1,047만 원")
             ]
             footnote = "* 기준: 수도권 비규제지역 기준 (LTV 70%, 30년 만기 연 4.2% / 세전 DSR 40% 계산)"
-            quote_text = "“ 내 집 마련은 '월급 액수'보다 '저축률'과 'DSR 관리'가 핵심입니다! ”"
+            quote_title = "“ 내 집 마련은 '월급 액수'보다 '저축률'과 'DSR 관리'가 핵심입니다! ”"
             bullets = [
-                "✔ 소득 300만 원도 DSR 3단계 방어 및 생애최초 LTV 80% 우대 시 내집마련 가능",
-                "✔ 디딤돌·버팀목·보금자리론 정부 특례 결합 시 최저 연 3%대 고정금리 적용",
-                "✔ 신혼부부 부부 중 1명 소득 요건 인정으로 결혼 페널티 전면 폐지!"
+                "소득 300만 원도 DSR 3단계 방어 및 생애최초 LTV 80% 우대 시 내집마련 가능",
+                "디딤돌·버팀목·보금자리론 정부 특례 결합 시 최저 연 3%대 고정금리 적용",
+                "신혼부부 부부 중 1명 소득 요건 인정으로 결혼 페널티 전면 폐지!"
             ]
-            tips = ["🎯 LTV 70%", "🧮 DSR 방어", "💳 디딤돌 특례", "📋 등기부 확인", "💰 생초 우대"]
+            tips = ["LTV 70%", "DSR 방어", "디딤돌 특례", "등기부 확인", "생초 우대"]
         elif is_tax:
-            subhead = "13월의 월급? 세금 폭탄 피하는 카드 황금비율"
+            subhead = "13월의 월급? 세금 폭탄 피하는 황금비율"
             line1 = "2026 연말정산"
             line2_strong = "환급금 극대화"
             banner_text = "총급여별 카드 황금비율 & 세액공제 한도 총정리"
-            badge_title = "💵 최대 환급"
-            badge_sub = "148.5만원 절세"
             sec1_badge, sec1_title = "01 카드공제", "황금 비율"
             sec1_items = [
                 ("총급여 25%까지", "신용카드 결제", (30, 58, 138)),
@@ -1703,6 +1735,7 @@ class CardNewsReelsGenerator:
                 ("5,500만 이하", "16.5% 세액공제", (225, 29, 72)),
                 ("최대 환급액", "148.5만 원 돌려받음", (30, 58, 138))
             ]
+            sec3_title = "연봉별 현실 환급액 계산"
             headers = ["총급여", "25% 문턱금액", "체크카드 목표", "연금/IRP", "평균 환급액"]
             rows = [
                 ("3,500만", "875만 원", "500만 원", "300만 원", "+ 82만 원"),
@@ -1713,34 +1746,33 @@ class CardNewsReelsGenerator:
                 ("1.0억 원", "2,500만 원", "1,800만 원", "900만 원", "+ 284만 원")
             ]
             footnote = "* 기준: 기본 인적공제 + 신용/체크카드 사용 + IRP 세액공제 결합 기준 산정"
-            quote_text = "“ 연말정산은 '몰아서 쓰기'보다 '소득공제 문턱과 IRP 납입'이 핵심! ”"
+            quote_title = "“ 연말정산은 '몰아서 쓰기'보다 '소득공제 문턱과 IRP 납입'이 핵심! ”"
             bullets = [
-                "✔ 총급여의 25% 채운 뒤부터 체크카드·현금영수증으로 결제 수단 전환",
-                "✔ IRP 계좌 연말 12월 일시납으로 최대 148.5만원 세액공제 환급 챙기기",
-                "✔ 시력교정용 안경, 중고생 교복, 월세 이체내역 등 누락 영수증 사전 준비"
+                "총급여의 25% 채운 뒤부터 체크카드·현금영수증으로 결제 수단 전환",
+                "IRP 계좌 연말 12월 일시납으로 최대 148.5만원 세액공제 환급 챙기기",
+                "시력교정용 안경, 중고생 교복, 월세 이체내역 등 누락 영수증 사전 준비"
             ]
-            tips = ["🎯 25% 신용", "🧮 초과 체크", "💳 IRP 900만", "📋 안경/월세", "💰 148만 환급"]
+            tips = ["25% 신용", "초과 체크", "IRP 900만", "안경/월세", "148만 환급"]
         else:
-            subhead = f"모르면 100만 원 손해 보는 {topic[:14]} 핵심 지침"
+            subhead = f"모르면 100만 원 손해 보는 실전 지침"
             line1 = f"{topic[:10]}"
             line2_strong = "핵심 혜택 총정리"
             banner_text = "놓치기 쉬운 필수 조건 & 실질 수혜 혜택 총정리"
-            badge_title = "✨ 공식 개편"
-            badge_sub = "혜택 전액 수령"
             sec1_badge, sec1_title = "01 지원요건", "자격 기준"
             sec1_items = [
                 ("기본 요건", "연령/소득 매칭", (30, 58, 138)),
                 ("우대 대상", "추가 가점 적용", (225, 29, 72)),
-                ("제외 기준", "중복 수혜 방지", (30, 58, 138)),
-                ("심사 기간", "평균 2~3주 소요", (225, 29, 72))
+                ("제외 기준", "중복 수혜 제한", (30, 58, 138)),
+                ("신청 기한", "매월 1회 접수", (225, 29, 72))
             ]
             sec2_badge, sec2_title = "02 혜택규모", "실질 감면"
             sec2_items = [
-                ("기본 혜택", "월 최대 감면", (30, 58, 138)),
+                ("기본 혜택", "월 최대 지원", (30, 58, 138)),
                 ("세제 감면", "소득공제 반영", (30, 58, 138)),
                 ("특별 환급", "비과세 전액 지원", (225, 29, 72)),
-                ("총 수혜액", "연간 수백만 원", (225, 29, 72))
+                ("총 수혜액", "연 수백만 원", (225, 29, 72))
             ]
+            sec3_title = "조건별 실질 수혜 혜택 비교"
             headers = ["구분", "기본 요건", "우대 조건", "월 절감액", "연간 총혜택"]
             rows = [
                 ("1단계", "소득 3,000만", "청년·취약계층", "월 15만 원", "연 180만 원"),
@@ -1751,99 +1783,103 @@ class CardNewsReelsGenerator:
                 ("6단계", "최고 우대형", "전체 충족자", "월 55만 원", "연 660만 원")
             ]
             footnote = "* 기준: 2026 정부 공시 지침 및 각 기관 공식 기준 산정"
-            quote_text = "“ 놓치기 쉬운 필수 정부 혜택, 신청 기간 내 접수가 핵심입니다! ”"
+            quote_title = "“ 놓치기 쉬운 필수 정부 혜택, 신청 기간 내 접수가 핵심입니다! ”"
             bullets = [
-                "✔ 신청 기한 경과 시 소급 적용 불가하므로 공고 즉시 사전 접수 필수",
-                "✔ 비대면 모바일 간편 신청으로 주민센터 방문 없이 즉시 접수 가능",
-                "✔ 필수 증빙서류 사전 완비 시 심사 기간 50% 이상 단축"
+                "신청 기한 경과 시 소급 적용 불가하므로 공고 즉시 사전 접수 필수",
+                "비대면 모바일 간편 신청으로 주민센터 방문 없이 즉시 접수 가능",
+                "필수 증빙서류 사전 완비 시 심사 기간 50% 이상 단축"
             ]
-            tips = ["🎯 지원 대상", "🧮 혜택 최대", "💳 간편 접수", "📋 서류 완비", "💰 전액 수령"]
+            tips = ["지원 대상", "혜택 최대", "간편 접수", "서류 완비", "전액 수령"]
 
-        draw.text((60, 136), subhead, fill=(100, 116, 139), font=self.f_h3, anchor="lt")
-        draw.text((60, 186), line1, fill=(15, 23, 42), font=self.f_hero, anchor="lt")
-        draw.text((60, 276), line2_strong, fill=(225, 29, 72), font=self.f_super, anchor="lt")
-
-        # 우측 상단 포인트 뱃지
-        draw.rounded_rectangle([750, 260, 1020, 370], radius=20, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
-        draw.text((885, 300), badge_title, fill=(225, 29, 72), font=self.f_badge, anchor="mm")
-        draw.text((885, 335), badge_sub, fill=(15, 23, 42), font=self.f_h3, anchor="mm")
+        draw.text((60, 140), subhead, fill=(100, 116, 139), font=self.f_h3, anchor="lt")
+        draw.text((60, 195), line1, fill=(15, 23, 42), font=self.f_hero, anchor="lt")
+        draw.text((60, 280), line2_strong, fill=(225, 29, 72), font=self.f_super, anchor="lt")
+        self._draw_star_sparkle(draw, 60 + int(len(line2_strong) * 52) + 20, 325, size=15, color=(225, 29, 72))
 
         # 네이비 메인 캡슐 배너
-        draw.rounded_rectangle([60, 396, 1020, 470], radius=16, fill=(15, 23, 42))
-        draw.text((540, 433), banner_text, fill=(255, 255, 255), font=self.f_h2, anchor="mm")
+        draw.rounded_rectangle([60, 475, 1020, 545], radius=16, fill=(15, 23, 42))
+        draw.text((540, 510), banner_text, fill=(255, 255, 255), font=self.f_h2, anchor="mm")
 
-        # 3. 2단 그리드 박스 (01 & 02)
-        draw.rounded_rectangle([60, 495, 525, 875], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
-        draw.rounded_rectangle([80, 515, 220, 560], radius=12, fill=(30, 58, 138))
-        draw.text((150, 537), sec1_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
-        draw.text((235, 537), sec1_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
-        y_b1 = 575
+        # 4. 2단 그리드 박스 (01 & 02)
+        draw.rounded_rectangle([60, 565, 525, 920], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
+        draw.rounded_rectangle([80, 585, 230, 628], radius=12, fill=(30, 58, 138))
+        draw.text((155, 606), sec1_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        draw.text((245, 606), sec1_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
+        y_b1 = 640
         for lbl, val, col in sec1_items:
-            self._draw_drop_shadow_box(draw, [80, y_b1, 505, y_b1 + 65], radius=12)
-            draw.text((105, y_b1 + 32), lbl, fill=(51, 65, 85), font=self.f_body, anchor="lm")
-            draw.text((485, y_b1 + 32), val, fill=col, font=self.f_h3, anchor="rm")
-            y_b1 += 74
+            self._draw_drop_shadow_box(draw, [80, y_b1, 505, y_b1 + 60], radius=12)
+            self._draw_vector_coin(draw, 105, y_b1 + 30, r=13)
+            draw.text((130, y_b1 + 30), lbl, fill=(51, 65, 85), font=self.f_body, anchor="lm")
+            draw.text((485, y_b1 + 30), val, fill=col, font=self.f_h3, anchor="rm")
+            y_b1 += 67
 
-        draw.rounded_rectangle([555, 495, 1020, 875], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
-        draw.rounded_rectangle([575, 515, 715, 560], radius=12, fill=(225, 29, 72))
-        draw.text((645, 537), sec2_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
-        draw.text((730, 537), sec2_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
-        y_b2 = 575
+        draw.rounded_rectangle([555, 565, 1020, 920], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
+        draw.rounded_rectangle([575, 585, 725, 628], radius=12, fill=(225, 29, 72))
+        draw.text((650, 606), sec2_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        draw.text((740, 606), sec2_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
+        y_b2 = 640
         for lbl, val, col in sec2_items:
-            self._draw_drop_shadow_box(draw, [575, y_b2, 1000, y_b2 + 65], radius=12)
-            draw.text((600, y_b2 + 32), lbl, fill=(51, 65, 85), font=self.f_body, anchor="lm")
-            draw.text((980, y_b2 + 32), val, fill=col, font=self.f_h3, anchor="rm")
-            y_b2 += 74
+            self._draw_drop_shadow_box(draw, [575, y_b2, 1000, y_b2 + 60], radius=12)
+            self._draw_star_sparkle(draw, 600, y_b2 + 30, size=9, color=(225, 29, 72))
+            draw.text((620, y_b2 + 30), lbl, fill=(51, 65, 85), font=self.f_body, anchor="lm")
+            draw.text((980, y_b2 + 30), val, fill=col, font=self.f_h3, anchor="rm")
+            y_b2 += 67
 
-        # 4. 실전 계산표 (5열 6행 테이블)
-        draw.rounded_rectangle([60, 895, 200, 938], radius=12, fill=(13, 148, 136))
-        draw.text((130, 916), "03 실전 계산", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
-        draw.text((215, 916), "만기 시 실제 수령액 총정리", fill=(15, 23, 42), font=self.f_h2, anchor="lm")
+        # 5. 실전 계산표 (5열 6행 테이블)
+        draw.rounded_rectangle([60, 940, 215, 982], radius=12, fill=(13, 148, 136))
+        draw.text((137, 961), "03 실전 계산", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        draw.text((230, 961), sec3_title, fill=(15, 23, 42), font=self.f_h2, anchor="lm")
 
         cols = [60, 235, 430, 625, 825, 1020]
-        draw.rounded_rectangle([60, 955, 1020, 1020], radius=14, fill=(241, 245, 249))
+        draw.rounded_rectangle([60, 995, 1020, 1055], radius=12, fill=(241, 245, 249))
         for i in range(len(headers)):
             mid_x = (cols[i] + cols[i+1]) // 2
-            draw.text((mid_x, 987), headers[i], fill=(30, 41, 59), font=self.f_table_head, anchor="mm")
+            draw.text((mid_x, 1025), headers[i], fill=(30, 41, 59), font=self.f_table_head, anchor="mm")
 
-        y_tbl = 1030
+        y_tbl = 1065
         for idx, (c1, c2, c3, c4, c5) in enumerate(rows):
             bg_col = (255, 255, 255) if idx % 2 == 0 else (248, 250, 252)
-            draw.rounded_rectangle([60, y_tbl, 1020, y_tbl + 68], radius=10, fill=bg_col, outline=(226, 232, 240), width=1)
+            draw.rounded_rectangle([60, y_tbl, 1020, y_tbl + 64], radius=10, fill=bg_col, outline=(226, 232, 240), width=1)
             
-            draw.text(((cols[0] + cols[1]) // 2, y_tbl + 34), c1, fill=(22, 101, 52), font=self.f_table_body, anchor="mm")
-            draw.text(((cols[1] + cols[2]) // 2, y_tbl + 34), c2, fill=(161, 98, 7), font=self.f_table_body, anchor="mm")
-            draw.text(((cols[2] + cols[3]) // 2, y_tbl + 34), c3, fill=(29, 78, 216), font=self.f_table_body, anchor="mm")
-            draw.text(((cols[3] + cols[4]) // 2, y_tbl + 34), c4, fill=(190, 24, 93), font=self.f_table_body, anchor="mm")
-            draw.text(((cols[4] + cols[5]) // 2, y_tbl + 34), c5, fill=(185, 28, 28), font=self.f_table_head, anchor="mm")
-            y_tbl += 74
+            draw.text(((cols[0] + cols[1]) // 2, y_tbl + 32), c1, fill=(22, 101, 52), font=self.f_table_body, anchor="mm")
+            draw.text(((cols[1] + cols[2]) // 2, y_tbl + 32), c2, fill=(161, 98, 7), font=self.f_table_body, anchor="mm")
+            draw.text(((cols[2] + cols[3]) // 2, y_tbl + 32), c3, fill=(29, 78, 216), font=self.f_table_body, anchor="mm")
+            draw.text(((cols[3] + cols[4]) // 2, y_tbl + 32), c4, fill=(190, 24, 93), font=self.f_table_body, anchor="mm")
+            draw.text(((cols[4] + cols[5]) // 2, y_tbl + 32), c5, fill=(185, 28, 28), font=self.f_table_highlight, anchor="mm")
+            y_tbl += 69
 
-        draw.text((65, y_tbl + 10), footnote, fill=(148, 163, 184), font=self.f_tiny, anchor="lt")
+        draw.text((65, y_tbl + 6), footnote, fill=(148, 163, 184), font=self.f_tiny, anchor="lt")
 
-        # 5. 핵심 정책 및 인용구 콜아웃 카드
-        draw.rounded_rectangle([60, 1515, 1020, 1720], radius=22, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
-        draw.text((95, 1555), quote_text, fill=(159, 18, 57), font=self.f_h3, anchor="lm")
-        draw.text((95, 1605), bullets[0], fill=(71, 85, 105), font=self.f_body, anchor="lm")
-        draw.text((95, 1645), bullets[1], fill=(71, 85, 105), font=self.f_body, anchor="lm")
-        draw.text((95, 1685), bullets[2], fill=(13, 148, 136), font=self.f_body_bold, anchor="lm")
+        # 6. 인용구 및 정책 콜아웃 카드
+        y_q = y_tbl + 38
+        draw.rounded_rectangle([60, y_q, 1020, y_q + 195], radius=20, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
+        draw.text((95, y_q + 36), quote_title, fill=(159, 18, 57), font=self.f_h3, anchor="lm")
+        
+        y_bull = y_q + 80
+        for b_text in bullets:
+            self._draw_vector_check(draw, 105, y_bull)
+            draw.text((130, y_bull), b_text, fill=(71, 85, 105), font=self.f_body, anchor="lm")
+            y_bull += 38
 
-        # 6. 실전 신청 팁 5개 뱃지
-        draw.text((65, 1745), "📌 실전 신청 & 필수 팁", fill=(51, 65, 85), font=self.f_badge, anchor="lm")
+        # 7. 실전 신청 팁 5개 뱃지
+        y_t = y_q + 215
+        draw.text((65, y_t + 15), "실전 신청 & 필수 팁", fill=(51, 65, 85), font=self.f_badge, anchor="lm")
         x_tip = 60
         box_w = 176
         for tip in tips:
-            draw.rounded_rectangle([x_tip, 1768, x_tip + box_w, 1828], radius=14, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-            draw.text((x_tip + box_w // 2, 1798), tip, fill=(15, 23, 42), font=self.f_small, anchor="mm")
+            draw.rounded_rectangle([x_tip, y_t + 38, x_tip + box_w, y_t + 92], radius=14, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
+            self._draw_star_sparkle(draw, x_tip + 22, y_t + 65, size=7, color=(13, 148, 136))
+            draw.text((x_tip + 36, y_t + 65), tip, fill=(15, 23, 42), font=self.f_small, anchor="lm")
             x_tip += box_w + 20
 
-        # 7. 하단 저장 & 프로필 링크 바
-        draw.rounded_rectangle([60, 1845, 1020, 1898], radius=24, fill=(15, 23, 42))
-        draw.text((540, 1871), "🔖 우측 하단 [저장] 누르고 신청할 때 꺼내보세요 | 👉 프로필 링크 확인", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        # 8. 하단 저장 & 프로필 링크 바
+        y_save = y_t + 110
+        draw.rounded_rectangle([60, y_save, 1020, y_save + 60], radius=24, fill=(15, 23, 42))
+        draw.text((540, y_save + 30), "[저장] 누르고 신청할 때 꺼내보세요  |  프로필 링크에서 1초 모의 계산", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
 
         return img
 
     def generate_slides(self, topic: str, blog_url: str = "") -> list:
-        """1장 완결형 마스터 인포그래픽 이미지 반환"""
         return [self.generate_single_master_sheet(topic)]
 
     def render_reels_video(self, topic: str, blog_url: str = "") -> dict:
