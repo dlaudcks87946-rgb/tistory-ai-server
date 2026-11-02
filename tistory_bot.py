@@ -1372,6 +1372,11 @@ class AgentJungSeleniumPublisher:
 
     def handle_tistory_alerts(self, driver, max_wait: float = 3.0):
         """'이어서 작성하시겠습니까?' 자바스크립트 Alert(Confirm) 및 DOM 레이어 팝업 자동 감지 및 안전 취소"""
+        cur = driver.current_url.lower() if driver else ""
+        # 카카오 로그인 페이지 또는 OAuth 인증 중에는 절대 실행하지 않음
+        if any(k in cur for k in ["kakao.com", "login", "auth", "accounts"]):
+            return False
+
         start_t = time.time()
         handled = False
         while time.time() - start_t < max_wait:
@@ -1393,7 +1398,7 @@ class AgentJungSeleniumPublisher:
                     var candidates = Array.from(document.querySelectorAll('button, a, span.btn, div[role="button"], input[type="button"]'));
                     for (var el of candidates) {
                         var txt = (el.innerText || el.textContent || '').trim();
-                        if (txt === '취소' || txt === '아니오' || txt.includes('새로') || txt.includes('취소')) {
+                        if (txt === '취소' || txt === '아니오' || txt === '새로 작성' || txt === '새 글 작성' || txt === '새로 쓰기') {
                             var rect = el.getBoundingClientRect();
                             if (rect.width > 0 && rect.height > 0) {
                                 el.click();
@@ -1598,28 +1603,43 @@ class AgentJungSeleniumPublisher:
                         cur_url = driver.current_url.lower()
                     except Exception:
                         cur_url = ''
-                    # 1) 매초마다 혹시 뜬 '이어서 작성하시겠습니까?' 팝업 자동 감지 및 즉시 취소 처리!
-                    if self.handle_tistory_alerts(driver, max_wait=0.3):
-                        login_passed = True
-                        print(f"\n[정부장 (총괄)] ✅ '이어서 쓰기' 팝업 감지 및 자동 취소 성공! ({sec}초 경과) 즉시 에디터 진입!")
-                        time.sleep(1)
-                        break
-                    # 2) 티스토리 글쓰기 에디터 URL 감지 (manage, post, newpost, entry 등)
+                    # 1) 티스토리 글쓰기 에디터 URL 감지 (manage, post, newpost, entry 등)
                     is_in_editor = any(k in cur_url for k in ['manage', 'post', 'newpost', 'entry']) and not any(k in cur_url for k in ['login', 'accounts.kakao.com', 'auth'])
                     if is_in_editor:
+                        # 글쓰기 제목창 또는 에디터 본문 요소가 로드되었는지 확인
+                        try:
+                            editor_elements = driver.find_elements(By.CSS_SELECTOR, "#post-title-inp, textarea.textarea_tit, input[placeholder*='제목'], [placeholder='제목을 입력하세요'], .tt-input-content, .ProseMirror")
+                        except Exception:
+                            editor_elements = []
+
                         login_passed = True
                         print(f"\n[정부장 (총괄)] ✅ 카카오 로그인 성공 및 에디터 진입 확인 ({cur_url})! ({sec}초 경과)")
                         time.sleep(1)
+                        # 에디터 진입 후 혹시 뜬 '이어서 작성하시겠습니까?' 팝업 자동 취소
+                        self.handle_tistory_alerts(driver, max_wait=1.5)
                         break
-                    # 3) 글쓰기 제목창 또는 본문 에디터 DOM 감지
-                    try:
-                        editor_elements = driver.find_elements(By.CSS_SELECTOR, "#post-title-inp, textarea.textarea_tit, input[placeholder*='제목'], [placeholder='제목을 입력하세요'], .tt-input-content, .ProseMirror")
-                        if editor_elements:
-                            login_passed = True
-                            print(f"\n[정부장 (총괄)] ✅ 글쓰기 에디터 요소 감지 확인! ({sec}초 경과)")
-                            break
-                    except Exception:
-                        pass
+
+                    # 2) 만약 로그인 페이지에서 아이디/비번 입력창이 여전히 비어있다면 자동 재입력 시도 (3초, 8초, 15초)
+                    if self.config.KAKAO_ID and self.config.KAKAO_PW and sec in [3, 8, 15]:
+                        try:
+                            driver.execute_script('''
+                                var btn = document.querySelector('.btn_login.link_kakao_id') || document.querySelector('.btn_kakao');
+                                if (btn) btn.click();
+                            ''')
+                            id_input = driver.find_elements(By.NAME, "loginId")
+                            pw_input = driver.find_elements(By.NAME, "password")
+                            if id_input and pw_input and id_input[0].is_displayed():
+                                if not id_input[0].get_attribute("value"):
+                                    id_input[0].clear()
+                                    id_input[0].send_keys(self.config.KAKAO_ID)
+                                    time.sleep(0.3)
+                                    pw_input[0].clear()
+                                    pw_input[0].send_keys(self.config.KAKAO_PW)
+                                    time.sleep(0.3)
+                                    pw_input[0].send_keys(Keys.ENTER)
+                                    print(f"[정부장 (총괄)] 📲 ({sec}초) 카카오 계정 아이디/비번 자동 입력 제출!")
+                        except Exception:
+                            pass
                     if sec % 15 == 0:
                         print(f"[정부장 (총괄)] ⏳ 로그인 대기 중... ({sec}초 / 최대 180초) - 브라우저에서 로그인을 완료해주세요.")
                 if not login_passed:
