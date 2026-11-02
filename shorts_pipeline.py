@@ -1523,9 +1523,10 @@ def generate_shorts_pipeline(topic: str, blog_url: str = "", category: str = "au
 
 
 class CardNewsReelsGenerator:
-    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 디자이너급 1장 완결형 마스터 인포그래픽 제작 엔진
+    """인스타그램 릴스 & 캐러셀 전용 9:16 (1080x1920) 프리미엄 마스터 인포그래픽 제작 엔진
+    - 폰트 혁신: 대한민국 핀테크 표준 프리텐다드(Pretendard Black / ExtraBold / SemiBold / Medium) 100% 적용
     - 3D 일러스트 렌더링 에셋 결합 (유리 저축통, 3D 신축 아파트 단지)
-    - 100% 한글 폰트 전용 벡터 아이콘 (골드 코인, 에메랄드 체크, 스파클 다이아몬드) 탑재로 글자 깨짐(□) 0%
+    - 100% 자체 벡터 그래픽 (골드 코인, 에메랄드 체크, 스파클 다이아몬드)
     - 5열 현실 계산표 + 2단 비교 박스 + 인용구 팁 카드 + 실천 팁 뱃지
     - 잔잔하고 감미로운 어쿠스틱 피아노 BGM (calm_piano.mp3) 15초 릴스 영상 생성
     """
@@ -1536,54 +1537,60 @@ class CardNewsReelsGenerator:
 
     def __init__(self):
         self.ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
-        bold_candidates = [
-            "C:\\Windows\\Fonts\\malgunbd.ttf",
-            "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-            "malgunbd.ttf"
-        ]
-        reg_candidates = [
-            "C:\\Windows\\Fonts\\malgun.ttf",
-            "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-            "malgun.ttf"
-        ]
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        fonts_dir = os.path.join(base_dir, "assets", "fonts")
 
-        bold_path = next((f for f in bold_candidates if os.path.exists(f)), None)
-        reg_path = next((f for f in reg_candidates if os.path.exists(f)), None)
+        f_black = os.path.join(fonts_dir, "Pretendard-Black.ttf")
+        f_xbold = os.path.join(fonts_dir, "Pretendard-ExtraBold.ttf")
+        f_bold = os.path.join(fonts_dir, "Pretendard-Bold.ttf")
+        f_semi = os.path.join(fonts_dir, "Pretendard-SemiBold.ttf")
+        f_med = os.path.join(fonts_dir, "Pretendard-Medium.ttf")
 
-        try:
-            if bold_path:
-                self.f_hero = ImageFont.truetype(bold_path, 68)
-                self.f_super = ImageFont.truetype(bold_path, 86)
-                self.f_h1 = ImageFont.truetype(bold_path, 44)
-                self.f_h2 = ImageFont.truetype(bold_path, 34)
-                self.f_h3 = ImageFont.truetype(bold_path, 28)
-                self.f_badge = ImageFont.truetype(bold_path, 23)
-                self.f_table_head = ImageFont.truetype(bold_path, 25)
-                self.f_table_body = ImageFont.truetype(bold_path, 24)
-                self.f_table_highlight = ImageFont.truetype(bold_path, 26)
-            else:
-                self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = self.f_table_highlight = ImageFont.load_default()
+        # Headings: Pretendard-Black (초고밀도 볼드, 토스/당근/인스타 감성)
+        if os.path.exists(f_black):
+            self.f_hero = ImageFont.truetype(f_black, 70)
+            self.f_super = ImageFont.truetype(f_black, 90)
+            self.f_banner = ImageFont.truetype(f_black, 34)
+        else:
+            self.f_hero = self.f_super = self.f_banner = ImageFont.load_default()
 
-            if reg_path:
-                self.f_body = ImageFont.truetype(reg_path, 24)
-                self.f_body_bold = ImageFont.truetype(bold_path or reg_path, 24)
-                self.f_small = ImageFont.truetype(reg_path, 20)
-                self.f_tiny = ImageFont.truetype(reg_path, 17)
-                self.f_icon_won = ImageFont.truetype(bold_path or reg_path, 16)
-            else:
-                self.f_body = self.f_body_bold = self.f_small = self.f_tiny = self.f_icon_won = ImageFont.load_default()
-        except Exception:
-            self.f_hero = self.f_super = self.f_h1 = self.f_h2 = self.f_h3 = self.f_badge = self.f_table_head = self.f_table_body = self.f_table_highlight = ImageFont.load_default()
-            self.f_body = self.f_body_bold = self.f_small = self.f_tiny = self.f_icon_won = ImageFont.load_default()
+        if os.path.exists(f_xbold):
+            self.f_sec_head = ImageFont.truetype(f_xbold, 30)
+            self.f_badge_pill = ImageFont.truetype(f_xbold, 22)
+            self.f_table_val = ImageFont.truetype(f_xbold, 27)
+            self.f_card_val = ImageFont.truetype(f_xbold, 28)
+            self.f_quote = ImageFont.truetype(f_xbold, 29)
+        else:
+            self.f_sec_head = self.f_badge_pill = self.f_table_val = self.f_card_val = self.f_quote = ImageFont.load_default()
+
+        if os.path.exists(f_bold):
+            self.f_table_head = ImageFont.truetype(f_bold, 26)
+            self.f_footer = ImageFont.truetype(f_bold, 24)
+            self.f_icon_won = ImageFont.truetype(f_bold, 17)
+        else:
+            self.f_table_head = self.f_footer = self.f_icon_won = ImageFont.load_default()
+
+        if os.path.exists(f_semi):
+            self.f_subhead = ImageFont.truetype(f_semi, 28)
+            self.f_top_brand = ImageFont.truetype(f_semi, 23)
+            self.f_table_body = ImageFont.truetype(f_semi, 25)
+            self.f_tip = ImageFont.truetype(f_semi, 22)
+        else:
+            self.f_subhead = self.f_top_brand = self.f_table_body = self.f_tip = ImageFont.load_default()
+
+        if os.path.exists(f_med):
+            self.f_card_label = ImageFont.truetype(f_med, 25)
+            self.f_bullet = ImageFont.truetype(f_med, 24)
+            self.f_footnote = ImageFont.truetype(f_med, 18)
+        else:
+            self.f_card_label = self.f_bullet = self.f_footnote = ImageFont.load_default()
 
     def _draw_drop_shadow_box(self, draw, xy, radius=12, fill=(255, 255, 255), outline=(226, 232, 240), shadow_color=(241, 245, 249)):
         x0, y0, x1, y1 = xy
         draw.rounded_rectangle([x0 + 2, y0 + 3, x1 + 2, y1 + 3], radius=radius, fill=shadow_color)
         draw.rounded_rectangle([x0, y0, x1, y1], radius=radius, fill=fill, outline=outline, width=1)
 
-    def _draw_vector_coin(self, draw, cx, cy, r=14):
+    def _draw_vector_coin(self, draw, cx, cy, r=15):
         draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(245, 158, 11), outline=(217, 119, 6), width=1)
         draw.ellipse([cx - r + 3, cy - r + 3, cx + r - 3, cy + r - 3], fill=(251, 191, 36))
         draw.text((cx, cy - 1), "W", fill=(180, 83, 9), font=self.f_icon_won, anchor="mm")
@@ -1622,8 +1629,8 @@ class CardNewsReelsGenerator:
         brand_name = "청년 금융·정부지원금 연구소" if is_youth else ("내집마련 실전 연구소" if is_housing else ("연말정산·절세 연구소" if is_tax else "생활 금융·재테크 연구소"))
         draw.rounded_rectangle([60, 56, 440, 106], radius=14, fill=(241, 245, 249))
         self._draw_star_sparkle(draw, 85, 81, size=9, color=(30, 58, 138))
-        draw.text((105, 81), brand_name, fill=(51, 65, 85), font=self.f_badge, anchor="lm")
-        draw.text((self.WIDTH - 70, 81), "2026 OFFICIAL GUIDE", fill=(148, 163, 184), font=self.f_badge, anchor="rm")
+        draw.text((105, 81), brand_name, fill=(51, 65, 85), font=self.f_top_brand, anchor="lm")
+        draw.text((self.WIDTH - 70, 81), "2026 OFFICIAL GUIDE", fill=(148, 163, 184), font=self.f_top_brand, anchor="rm")
 
         # 2. 우측 상단 3D 일러스트 에셋 합성
         sprite_path = None
@@ -1638,7 +1645,7 @@ class CardNewsReelsGenerator:
                 icon_img = Image.open(sprite_path).convert("RGB")
                 icon_img = icon_img.resize((360, 360), Image.Resampling.LANCZOS)
                 img.paste(icon_img, (670, 115))
-            except Exception as e:
+            except Exception:
                 pass
 
         # 3. 메인 헤드라인
@@ -1791,44 +1798,44 @@ class CardNewsReelsGenerator:
             ]
             tips = ["지원 대상", "혜택 최대", "간편 접수", "서류 완비", "전액 수령"]
 
-        draw.text((60, 140), subhead, fill=(100, 116, 139), font=self.f_h3, anchor="lt")
-        draw.text((60, 195), line1, fill=(15, 23, 42), font=self.f_hero, anchor="lt")
-        draw.text((60, 280), line2_strong, fill=(225, 29, 72), font=self.f_super, anchor="lt")
-        self._draw_star_sparkle(draw, 60 + int(len(line2_strong) * 52) + 20, 325, size=15, color=(225, 29, 72))
+        draw.text((60, 140), subhead, fill=(100, 116, 139), font=self.f_subhead, anchor="lt")
+        draw.text((60, 192), line1, fill=(15, 23, 42), font=self.f_hero, anchor="lt")
+        draw.text((60, 276), line2_strong, fill=(225, 29, 72), font=self.f_super, anchor="lt")
+        self._draw_star_sparkle(draw, 60 + int(len(line2_strong) * 55) + 15, 322, size=15, color=(225, 29, 72))
 
-        # 네이비 메인 캡슐 배너
+        # 네이비 메인 캡슐 배너 (Pretendard-Black)
         draw.rounded_rectangle([60, 475, 1020, 545], radius=16, fill=(15, 23, 42))
-        draw.text((540, 510), banner_text, fill=(255, 255, 255), font=self.f_h2, anchor="mm")
+        draw.text((540, 510), banner_text, fill=(255, 255, 255), font=self.f_banner, anchor="mm")
 
-        # 4. 2단 그리드 박스 (01 & 02)
+        # 4. 2단 그리드 박스
         draw.rounded_rectangle([60, 565, 525, 920], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
         draw.rounded_rectangle([80, 585, 230, 628], radius=12, fill=(30, 58, 138))
-        draw.text((155, 606), sec1_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
-        draw.text((245, 606), sec1_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
+        draw.text((155, 606), sec1_badge, fill=(255, 255, 255), font=self.f_badge_pill, anchor="mm")
+        draw.text((245, 606), sec1_title, fill=(15, 23, 42), font=self.f_sec_head, anchor="lm")
         y_b1 = 640
         for lbl, val, col in sec1_items:
             self._draw_drop_shadow_box(draw, [80, y_b1, 505, y_b1 + 60], radius=12)
             self._draw_vector_coin(draw, 105, y_b1 + 30, r=13)
-            draw.text((130, y_b1 + 30), lbl, fill=(51, 65, 85), font=self.f_body, anchor="lm")
-            draw.text((485, y_b1 + 30), val, fill=col, font=self.f_h3, anchor="rm")
+            draw.text((130, y_b1 + 30), lbl, fill=(51, 65, 85), font=self.f_card_label, anchor="lm")
+            draw.text((485, y_b1 + 30), val, fill=col, font=self.f_card_val, anchor="rm")
             y_b1 += 67
 
         draw.rounded_rectangle([555, 565, 1020, 920], radius=20, fill=(248, 250, 252), outline=(203, 213, 225), width=2)
         draw.rounded_rectangle([575, 585, 725, 628], radius=12, fill=(225, 29, 72))
-        draw.text((650, 606), sec2_badge, fill=(255, 255, 255), font=self.f_badge, anchor="mm")
-        draw.text((740, 606), sec2_title, fill=(15, 23, 42), font=self.f_h3, anchor="lm")
+        draw.text((650, 606), sec2_badge, fill=(255, 255, 255), font=self.f_badge_pill, anchor="mm")
+        draw.text((740, 606), sec2_title, fill=(15, 23, 42), font=self.f_sec_head, anchor="lm")
         y_b2 = 640
         for lbl, val, col in sec2_items:
             self._draw_drop_shadow_box(draw, [575, y_b2, 1000, y_b2 + 60], radius=12)
             self._draw_star_sparkle(draw, 600, y_b2 + 30, size=9, color=(225, 29, 72))
-            draw.text((620, y_b2 + 30), lbl, fill=(51, 65, 85), font=self.f_body, anchor="lm")
-            draw.text((980, y_b2 + 30), val, fill=col, font=self.f_h3, anchor="rm")
+            draw.text((620, y_b2 + 30), lbl, fill=(51, 65, 85), font=self.f_card_label, anchor="lm")
+            draw.text((980, y_b2 + 30), val, fill=col, font=self.f_card_val, anchor="rm")
             y_b2 += 67
 
-        # 5. 실전 계산표 (5열 6행 테이블)
+        # 5. 실전 계산표
         draw.rounded_rectangle([60, 940, 215, 982], radius=12, fill=(13, 148, 136))
-        draw.text((137, 961), "03 실전 계산", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
-        draw.text((230, 961), sec3_title, fill=(15, 23, 42), font=self.f_h2, anchor="lm")
+        draw.text((137, 961), "03 실전 계산", fill=(255, 255, 255), font=self.f_badge_pill, anchor="mm")
+        draw.text((230, 961), sec3_title, fill=(15, 23, 42), font=self.f_sec_head, anchor="lm")
 
         cols = [60, 235, 430, 625, 825, 1020]
         draw.rounded_rectangle([60, 995, 1020, 1055], radius=12, fill=(241, 245, 249))
@@ -1845,37 +1852,37 @@ class CardNewsReelsGenerator:
             draw.text(((cols[1] + cols[2]) // 2, y_tbl + 32), c2, fill=(161, 98, 7), font=self.f_table_body, anchor="mm")
             draw.text(((cols[2] + cols[3]) // 2, y_tbl + 32), c3, fill=(29, 78, 216), font=self.f_table_body, anchor="mm")
             draw.text(((cols[3] + cols[4]) // 2, y_tbl + 32), c4, fill=(190, 24, 93), font=self.f_table_body, anchor="mm")
-            draw.text(((cols[4] + cols[5]) // 2, y_tbl + 32), c5, fill=(185, 28, 28), font=self.f_table_highlight, anchor="mm")
+            draw.text(((cols[4] + cols[5]) // 2, y_tbl + 32), c5, fill=(185, 28, 28), font=self.f_table_val, anchor="mm")
             y_tbl += 69
 
-        draw.text((65, y_tbl + 6), footnote, fill=(148, 163, 184), font=self.f_tiny, anchor="lt")
+        draw.text((65, y_tbl + 6), footnote, fill=(148, 163, 184), font=self.f_footnote, anchor="lt")
 
         # 6. 인용구 및 정책 콜아웃 카드
         y_q = y_tbl + 38
         draw.rounded_rectangle([60, y_q, 1020, y_q + 195], radius=20, fill=(254, 242, 242), outline=(254, 205, 211), width=2)
-        draw.text((95, y_q + 36), quote_title, fill=(159, 18, 57), font=self.f_h3, anchor="lm")
+        draw.text((95, y_q + 36), quote_title, fill=(159, 18, 57), font=self.f_quote, anchor="lm")
         
         y_bull = y_q + 80
         for b_text in bullets:
             self._draw_vector_check(draw, 105, y_bull)
-            draw.text((130, y_bull), b_text, fill=(71, 85, 105), font=self.f_body, anchor="lm")
+            draw.text((130, y_bull), b_text, fill=(71, 85, 105), font=self.f_bullet, anchor="lm")
             y_bull += 38
 
         # 7. 실전 신청 팁 5개 뱃지
         y_t = y_q + 215
-        draw.text((65, y_t + 15), "실전 신청 & 필수 팁", fill=(51, 65, 85), font=self.f_badge, anchor="lm")
+        draw.text((65, y_t + 15), "실전 신청 & 필수 팁", fill=(51, 65, 85), font=self.f_top_brand, anchor="lm")
         x_tip = 60
         box_w = 176
         for tip in tips:
             draw.rounded_rectangle([x_tip, y_t + 38, x_tip + box_w, y_t + 92], radius=14, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
             self._draw_star_sparkle(draw, x_tip + 22, y_t + 65, size=7, color=(13, 148, 136))
-            draw.text((x_tip + 36, y_t + 65), tip, fill=(15, 23, 42), font=self.f_small, anchor="lm")
+            draw.text((x_tip + 36, y_t + 65), tip, fill=(15, 23, 42), font=self.f_tip, anchor="lm")
             x_tip += box_w + 20
 
         # 8. 하단 저장 & 프로필 링크 바
         y_save = y_t + 110
         draw.rounded_rectangle([60, y_save, 1020, y_save + 60], radius=24, fill=(15, 23, 42))
-        draw.text((540, y_save + 30), "[저장] 누르고 신청할 때 꺼내보세요  |  프로필 링크에서 1초 모의 계산", fill=(255, 255, 255), font=self.f_badge, anchor="mm")
+        draw.text((540, y_save + 30), "[저장] 누르고 신청할 때 꺼내보세요  |  프로필 링크에서 1초 모의 계산", fill=(255, 255, 255), font=self.f_footer, anchor="mm")
 
         return img
 

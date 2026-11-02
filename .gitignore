@@ -17,6 +17,7 @@ rnd_live_cache.json
 used_keywords.json
 kakao_config.json
 chrome_session/
+.tistory_edge_session/
 apply_batch*.py
 check_chars.py
 assets/sprites/backup/
