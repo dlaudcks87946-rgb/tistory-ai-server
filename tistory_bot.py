@@ -222,23 +222,26 @@ class KeywordRadar:
 
 
     HOT_KEYWORD_DATABASE = [
-
-        {"keyword": "2026 정부 청년 지원금 및 혜택 신청 총정리", "category": "정부지원/복지", "traffic": "월간 8.5만 회", "tag": "🔥 실시간인기", "cat_key": "policy_youth"},
-
-        {"keyword": "2026 AI 에이전트 실무 생산성 도구 가이드", "category": "IT/테크", "traffic": "월간 5.8만 회", "tag": "🌟 황금키워드", "cat_key": "tech_ai"},
-
-        {"keyword": "티스토리 애드센스 고수익 승인 노하우 7가지", "category": "수익/블로그", "traffic": "월간 4.2만 회", "tag": "🔥 인기급상승", "cat_key": "blog_adsense"},
-
-        {"keyword": "직장인 퇴근 후 1시간 파이썬 부업 자동화 꿀팁", "category": "재테크/부업", "traffic": "월간 6.1만 회", "tag": "🌟 황금키워드", "cat_key": "coding_side"},
-
-        {"keyword": "초보자를 위한 가성비 홈카페 원두 & 머신 추천", "category": "생활/취미", "traffic": "월간 3.9만 회", "tag": "☕ 스테디셀러", "cat_key": "home_cafe"},
-
-        {"keyword": "주말 힐링 국내 가을 감성 여행지 베스트 5", "category": "여행/힐링", "traffic": "월간 5.4만 회", "tag": "🍂 계절특수", "cat_key": "travel_healing"},
-
-        {"keyword": "2026 자취생 필수 가성비 무선청소기 솔직 비교 & 실사용 단점 분석", "category": "쇼핑/제휴", "traffic": "월간 8.9만 회", "tag": "🛒 쿠팡1위", "cat_key": "shopping"},
-
-        {"keyword": "K-패스(K-Pass) 교통카드 신청법과 기후동행카드 혜택 정밀 비교", "category": "정부지원/복지", "traffic": "월간 8.6만 회", "tag": "🚌 교통환급", "cat_key": "policy_youth"}
-
+        {"keyword": "카카오톡 조용히 나가기 상대방 알림 확인 및 몰래 퇴장법", "category": "IT/스마트폰", "traffic": "월간 18.5만 회", "tag": "🌟 황금키워드", "cat_key": "tech_life"},
+        {"keyword": "아이폰 배터리 성능 100 유지하는 올바른 충전 습관 5가지", "category": "IT/모바일", "traffic": "월간 16.2만 회", "tag": "🌟 황금키워드", "cat_key": "tech_life"},
+        {"keyword": "비행기 기내 반입 금지 물품 및 보조배터리 용량 규정 총정리", "category": "생활/여행", "traffic": "월간 26.8만 회", "tag": "🌟 황금키워드", "cat_key": "travel_life"},
+        {"keyword": "여권 재발급 온라인 신청 정부24 준비물 및 사진 규격 반려 방지", "category": "생활/행정", "traffic": "월간 21.5만 회", "tag": "🌟 황금키워드", "cat_key": "admin_life"},
+        {"keyword": "유튜브 프리미엄 우회 막힘 후기 및 합법적 할인 대안 3가지", "category": "IT/디지털", "traffic": "월간 22.4만 회", "tag": "🌟 황금키워드", "cat_key": "tech_life"},
+        {"keyword": "다이소 추천 꿀템 살림 정리 수납 전문가들이 극찬한 5가지", "category": "쇼핑/살림", "traffic": "월간 28.3만 회", "tag": "🌟 황금키워드", "cat_key": "shopping"},
+        {"keyword": "주정차 위반 과태료 실시간 조회 및 의견진술 자진납부 20% 감경", "category": "생활/교통", "traffic": "월간 17.9만 회", "tag": "🌟 황금키워드", "cat_key": "transport_life"},
+        {"keyword": "영양제 복용 시간표: 오메가3 유산균 비타민D 마그네슘 최적 조합", "category": "건강/식품", "traffic": "월간 24.6만 회", "tag": "🌟 황금키워드", "cat_key": "health_wellness"},
+        {"keyword": "갤럭시 통화녹음 텍스트 변환 요약 설정 및 음질 개선법", "category": "IT/모바일", "traffic": "월간 12.8만 회", "tag": "🌟 황금키워드", "cat_key": "tech_life"},
+        {"keyword": "KTX 입석 자유석 예매 꿀팁 및 매진 기차표 취소표 잡는 법", "category": "생활/교통", "traffic": "월간 19.4만 회", "tag": "🌟 황금키워드", "cat_key": "transport_life"},
+        {"keyword": "해외여행 환전 수수료 0원 카드 3종 솔직 비교 (트래블로그 vs 트래블월렛 vs 토스)", "category": "생활/여행", "traffic": "월간 14.7만 회", "tag": "🌟 황금키워드", "cat_key": "travel_life"},
+        {"keyword": "공복 혈당 정상 수치 낮추는 식단 및 아침 식사 후 걷기 운동법", "category": "건강/식단", "traffic": "월간 21.3만 회", "tag": "🌟 황금키워드", "cat_key": "health_wellness"},
+        {"keyword": "직장인 챗GPT 업무 활용 프롬프트 10선: 보고서 이메일 10분 완성", "category": "IT/생산성", "traffic": "월간 19.8만 회", "tag": "🌟 황금키워드", "cat_key": "work_productivity"},
+        {"keyword": "해외직구 알리 테무 관부가세 면제 한도 150달러 계산법 및 통관조회", "category": "쇼핑/직구", "traffic": "월간 18.7만 회", "tag": "🌟 황금키워드", "cat_key": "shopping"},
+        {"keyword": "역류성 식도염 증상 완화에 좋은 음식과 잠잘 때 베개 각도 조절법", "category": "건강/식습관", "traffic": "월간 18.9만 회", "tag": "🌟 황금키워드", "cat_key": "health_wellness"},
+        {"keyword": "세탁기 통세척 과탄산소다 넣는 법 및 세탁조 찌꺼기 완벽 청소법", "category": "생활/살림", "traffic": "월간 14.9만 회", "tag": "🌟 황금키워드", "cat_key": "home_life"},
+        {"keyword": "자취생 필수 가성비 무선청소기 솔직 비교 & 실사용 단점 분석", "category": "쇼핑/가전", "traffic": "월간 16.4만 회", "tag": "🌟 황금키워드", "cat_key": "shopping"},
+        {"keyword": "엑셀 VLOOKUP 함수 오류(#N/A) 해결 및 XLOOKUP 함수 실무 적용법", "category": "직장인/실무", "traffic": "월간 15.6만 회", "tag": "🌟 황금키워드", "cat_key": "work_productivity"},
+        {"keyword": "인스타 디엠 몰래 읽기 비행기 탑승 모드 읽음 표시 확인법", "category": "IT/SNS", "traffic": "월간 14.1만 회", "tag": "🌟 황금키워드", "cat_key": "tech_life"},
+        {"keyword": "거북목 일자목 교정 스트레칭 및 사무실 모니터 눈높이 세팅법", "category": "건강/자세", "traffic": "월간 14.5만 회", "tag": "🌟 황금키워드", "cat_key": "health_wellness"}
     ]
 
 
